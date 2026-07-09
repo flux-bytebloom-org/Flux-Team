@@ -1,6 +1,4 @@
-#Flux 
-
-## 3. Communication & SLAs (Abdelrahman)
+## 3. Communication & SLAs (Abdelrahman Hayel Shat)
 
 ### 3.1 Internal Communications Protocols
 
