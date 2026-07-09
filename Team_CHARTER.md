@@ -33,7 +33,6 @@ and stress-free process for everyone on the team.
 ---
 
 ## Comments Rules
-## Comments Rules
 
 We write comments to clarify the **"why"**, not the **"what"**.
 
