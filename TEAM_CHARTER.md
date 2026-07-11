@@ -169,7 +169,7 @@ The project will follow a modular package structure to keep the code organized a
 src/
  ├── main/
  │   ├── kotlin/
- │   │   └── org.logiroute/
+ │   │   └── org.byteBloom/
  │   │        ├── models/
  │   │        ├── usecases/
  │   │        ├── repository/
