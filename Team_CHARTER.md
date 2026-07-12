@@ -1,4 +1,4 @@
-### Branch Types & Naming Conventions
+### Branch Types & Naming Conventions (sara alajjouri)
 
 1. **`main` (Production Branch)**
   * Contains production-ready code.
@@ -10,19 +10,19 @@
   * Merges into `main` during release cycles.
 
 3. **`feature/<short-description>`**
-  * Cut from: `develop`
+  *  derived from: `develop`
   * Merges back into: `develop`
   * Purpose: Developing new functionality or user stories.
   * *Example:* `feature/user-authentication`, `feature/cart-payment-gateway`
 
 4. **`fix/<short-description>` / `bugfix/<short-description>`**
-  * Cut from: `develop`
+  *  derived from: `develop`
   * Merges back into: `develop`
   * Purpose: Resolving non-critical bugs found during development/QA.
   * *Example:* `fix/null-pointer-login`, `fix/profile-image-upload`
 
 5. **`hotfix/<short-description>`**
-  * Cut from: `main`
+  *  derived from: `main`
   * Merges back into: `main` AND `develop`
   * Purpose: Emergency patches for production issues.
   * *Example:* `hotfix/security-patch-v1.0.1`
