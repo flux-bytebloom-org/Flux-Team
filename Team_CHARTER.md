@@ -1,6 +1,6 @@
 ### Branch Types & Naming Conventions (sara alajjouri)
 
-1. **`main` (Production Branch)**
+1. **`main` (Production Branch)** 
   * Contains production-ready code.
   * Direct commits are strictly **forbidden**.
   * Protected branch: Requires approval from maintainers and passing CI/CD pipelines.
@@ -10,7 +10,7 @@
   * Merges into `main` during release cycles.
 
 3. **`feature/<short-description>`**
-  *  derived from: `develop`
+  * derived from: `develop`
   * Merges back into: `develop`
   * Purpose: Developing new functionality or user stories.
   * *Example:* `feature/user-authentication`, `feature/cart-payment-gateway`
@@ -22,7 +22,7 @@
   * *Example:* `fix/null-pointer-login`, `fix/profile-image-upload`
 
 5. **`hotfix/<short-description>`**
-  *  derived from: `main`
+  *  Derived from: `main`
   * Merges back into: `main` AND `develop`
   * Purpose: Emergency patches for production issues.
   * *Example:* `hotfix/security-patch-v1.0.1`
