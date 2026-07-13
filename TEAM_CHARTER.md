@@ -1,3 +1,119 @@
+# Git Workflow & Commit Conventions(sara alajjouri)
+
+## 1. Branch Types & Naming Conventions
+
+### 1.1 `main` (Production Branch)
+- Contains production-ready code.
+- Direct commits are strictly **forbidden**.
+- Protected branch: Requires approval from maintainers and passing CI/CD pipelines.
+
+### 1.2 `develop` (Integration Branch)
+- Primary development branch containing the latest delivered features for the next release.
+- Merges into `main` during release cycles.
+
+### 1.3 `feature/<short-description>`
+- **Cut from:** `develop`
+- **Merges back into:** `develop`
+- **Purpose:** Developing new functionality or user stories.
+- **Example:** `feature/user-authentication`, `feature/cart-payment-gateway`
+
+### 1.4 `fix/<short-description>` / `bugfix/<short-description>`
+- **Cut from:** `develop`
+- **Merges back into:** `develop`
+- **Purpose:** Resolving non-critical bugs found during development/QA.
+- **Example:** `fix/null-pointer-login`, `fix/profile-image-upload`
+
+### 1.5 `hotfix/<short-description>`
+- **Cut from:** `main`
+- **Merges back into:** `main` AND `develop`
+- **Purpose:** Emergency patches for production issues.
+- **Example:** `hotfix/security-patch-v1.0.1`
+
+---
+
+## 2. Branch Naming Rules
+
+```
+<type>/<short-description>
+```
+
+- `<type>` must match the same types used in commits (`feat`, `fix`, `refactor`, etc.)
+- `<short-description>` **must always be in English**, written in kebab-case (lowercase words separated by `-`), with no spaces, special characters, or non-English text.
+- No vague abbreviations (e.g. `fx`, `updt`) — the name must be clear and understandable to any team member.
+
+### Branch Types Table
+
+| Type | Usage | Example |
+|------|-------|---------|
+| `feature` | New feature | `feature/user-authentication` |
+| `fix` / `bugfix` | Non-critical bug fix | `fix/null-pointer-login` |
+| `hotfix` | Emergency production fix | `hotfix/security-patch-v1.0.1` |
+| `refactor` | Code restructuring | `refactor/wallet-balance-logic` |
+| `chore` | Maintenance (dependencies, config) | `chore/update-gradle-version` |
+| `docs` | Documentation-only changes | `docs/update-readme` |
+| `test` | Adding/editing tests | `test/auth-viewmodel-unit-tests` |
+
+### Additional Rules
+1. **Strictly forbidden**: Arabic names or transliterations (e.g. `feature/tasjeel-dokhool` ❌).
+2. The name must reflect the **actual content** of the change, not just a ticket number (avoid `feature/task-123` alone — prefer `feature/task-123-user-authentication`).
+3. If there's a clear module scope, include it in the description: `feature/wallet-currency-conversion`.
+4. All lowercase, words separated by `-` (not `_` or camelCase).
+
+---
+
+## 3. Strict Commit Message Prefix Rules (Conventional Commits)
+
+To maintain a clean, readable, and parseable Git history, all commit messages **MUST** adhere strictly to the **Conventional Commits** standard using explicit `<type>` prefixes.
+
+### Commit Format Structure
+```text
+<type>(<scope>): <short summary in imperative mood>
+```
+
+### Commit Types (`<type>`)
+
+| Type | When to use it | Example |
+|------|-----------------|---------|
+| `feat` | Adding a new feature | `feat(auth): add Google sign-in option` |
+| `fix` | Fixing a bug | `fix(cart): resolve null pointer on empty checkout` |
+| `docs` | Documentation-only changes (README, comments) | `docs(readme): update setup instructions` |
+| `style` | Formatting changes that don't affect logic (spacing, semicolons) | `style(login): fix indentation in LoginScreen` |
+| `refactor` | Restructuring code without changing its behavior | `refactor(wallet): simplify balance calculation logic` |
+| `perf` | Performance improvements | `perf(list): optimize recyclerview rendering` |
+| `test` | Adding or editing tests | `test(auth): add unit tests for login viewmodel` |
+
+### Scope Rule (optional but recommended)
+`<scope>` identifies the part of the project affected, e.g.: `auth`, `wallet`, `cart`, `ui`, `db`.
+
+```
+feat(wallet): add currency conversion support
+fix(profile): correct image upload crash on Android 12
+```
+
+### Additional Commit Rules
+1. Summary **must be in imperative mood** ("add" not "added" or "adding").
+2. First letter after `:` must be **lowercase**.
+3. No period (`.`) at the end of the summary.
+4. Max **72 characters** for the first line.
+5. If a change is breaking, add `!` after the type/scope and explain in the body:
+   ```
+   feat(api)!: change response format for /users endpoint
+
+   BREAKING CHANGE: response now returns paginated object instead of array
+   ```
+
+---
+
+## 4. Full Example (Branch + Commits)
+
+```
+Branch: feature/wallet-currency-conversion
+
+Commits:
+feat(wallet): add currency conversion support
+test(wallet): add unit tests for conversion rates
+docs(wallet): document conversion API usage
+```
 # Clean Code Standards (sameera sweedan)
 
 We define clean code as code that is easily understood by all team members.
