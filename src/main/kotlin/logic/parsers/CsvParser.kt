@@ -2,7 +2,6 @@ package org.byte_bloom.flux.logic.parsers
 
 object CsvParser {
 
-
     fun cleanLines(
         rawLines: List<String>
     ): List<String> {

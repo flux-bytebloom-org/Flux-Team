@@ -3,39 +3,37 @@ package logic.sorters
 import org.byte_bloom.flux.dataholders.Package
 import org.byte_bloom.flux.dataholders.Priority
 
-
 class SelectionSort {
 
     fun sort(packages: List<Package>): List<Package> {
         val mutablePackages = packages.toMutableList()
         val packageListSize = mutablePackages.size
 
-        for( i in 0 until (packageListSize-1)) {
-            var maxIndex = i
+        for( currentIndex in 0 until (packageListSize-1)) {
+            var maxIndex = currentIndex
 
-            for (j in i + 1  until packageListSize) {
-                if( isSconedHigher(mutablePackages[maxIndex],mutablePackages[j])){
-                    maxIndex = j
+            for (scanIndex in currentIndex + 1  until packageListSize) {
+                if( isSecondHigher(mutablePackages[maxIndex],mutablePackages[scanIndex])){
+                    maxIndex = scanIndex
                 }
             }
 
-            //now ew have the index of the max
-            if (maxIndex != i) {
+            //now we have the index of the max, so we will shift forwrd the others to make his space
+
+            if (maxIndex != currentIndex) {
                 val maxPackage = mutablePackages[maxIndex]
-                for( k in maxIndex downTo i+1) {
-                    mutablePackages[k] = mutablePackages[k-1]
+                for( shiftIndex in maxIndex downTo currentIndex+1) {
+                    mutablePackages[shiftIndex] = mutablePackages[shiftIndex-1]
                 }
-                mutablePackages[i] = maxPackage
+                mutablePackages[currentIndex] = maxPackage
             }
         }
         return mutablePackages
     }
 
-    private fun isSconedHigher(first : Package , second : Package) : Boolean {
-        //first is the max , second is اللي ممكن يتشقلب مهاع
-        // لذاك السوال هنا هل التاني اكبر من الاور؟
 
-        //check porortiy
+    private fun isSecondHigher(first : Package , second : Package) : Boolean {
+
         val firstPackegePrioriytyRank:Int = getPriorityRank(first.priority)
         val secondPackegePrioriytyRank:Int  = getPriorityRank(second.priority)
 
@@ -49,12 +47,16 @@ class SelectionSort {
     }
 
     private fun getPriorityRank(priority: Priority): Int {
-        return if (priority == Priority.URGENT) {
-            3
-        } else if (priority == Priority.STANDARD) {
-            2
-        } else {
-            1
+        return when (priority) {
+            Priority.URGENT -> {
+                3
+            }
+            Priority.STANDARD -> {
+                2
+            }
+            else -> {
+                1
+            }
         }
     }
 }
