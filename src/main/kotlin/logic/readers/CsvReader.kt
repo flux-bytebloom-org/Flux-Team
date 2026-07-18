@@ -1,10 +1,11 @@
-package org.byte_bloom.flux.logic
+package org.byte_bloom.flux.logic.readers
 
 import java.io.File
 
 object CsvReader {
 
     fun read(filePath: String): List<String> {
+
         val file = File(filePath)
 
         if (!file.exists()) {
@@ -13,7 +14,5 @@ object CsvReader {
         }
 
         return file.readLines()
-            .drop(1)
-            .filter { it.isNotBlank() }
     }
 }
