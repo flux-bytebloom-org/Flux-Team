@@ -1,8 +1,4 @@
-package org.byte_bloom.flux.data.datasource
-
-
-
-import java.io.File
+package org.byte_bloom.flux.logic
 
 object CsvReader {
 

@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.model
+package org.byte_bloom.flux.dataholders
 
 enum class Priority {
     URGENT,

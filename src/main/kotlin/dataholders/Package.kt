@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.data.model
+package org.byte_bloom.flux.dataholders
 
 
 
