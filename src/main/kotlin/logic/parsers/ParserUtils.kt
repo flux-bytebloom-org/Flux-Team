@@ -4,7 +4,6 @@ import org.byte_bloom.flux.logic.utils.ParserLogger
 
 object ParserUtils {
 
-
     fun splitColumns(line: String): List<String> {
 
         return line
@@ -12,7 +11,6 @@ object ParserUtils {
             .split(",")
             .map { it.trim() }
     }
-
 
     fun parseDoubleOrDefault(
         value: String,

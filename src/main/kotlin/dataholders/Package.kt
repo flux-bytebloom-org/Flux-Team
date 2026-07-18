@@ -1,7 +1,5 @@
 package org.byte_bloom.flux.dataholders
 
-
-
 data class Package(
     val id: String,
     val weight: Double,

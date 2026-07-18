@@ -5,24 +5,17 @@ import org.byte_bloom.flux.logic.utils.ParserLogger
 
 object RouteParser {
 
-
     fun parse(
         lines: List<String>
     ):List<Route>{
 
-
         val routes =
             mutableListOf<Route>()
 
-
-
         for(line in lines){
-
 
             val columns =
                 ParserUtils.splitColumns(line)
-
-
 
             if(columns.size !=4){
 
@@ -33,12 +26,8 @@ object RouteParser {
                 continue
             }
 
-
-
             val routeId = columns[0]
             val hubId = columns[1]
-
-
 
             if(routeId.isEmpty() || hubId.isEmpty()){
 
@@ -49,8 +38,6 @@ object RouteParser {
                 continue
             }
 
-
-
             val distance =
                 ParserUtils.parseDoubleOrDefault(
                     columns[2],
@@ -58,14 +45,12 @@ object RouteParser {
                     line
                 )
 
-
             val delay =
                 ParserUtils.parseDoubleOrDefault(
                     columns[3],
                     "delay",
                     line
                 )
-
 
             routes.add(
                 Route(
@@ -76,7 +61,6 @@ object RouteParser {
                 )
             )
         }
-
 
         return routes
     }

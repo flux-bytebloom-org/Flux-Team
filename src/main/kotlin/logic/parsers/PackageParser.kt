@@ -6,22 +6,15 @@ import org.byte_bloom.flux.logic.utils.ParserLogger
 
 object PackageParser {
 
-
     fun parse(
         lines: List<String>
     ): List<Package> {
 
-
         val packages = mutableListOf<Package>()
-
 
         for(line in lines){
 
-
-            val columns =
-                ParserUtils.splitColumns(line)
-
-
+            val columns = ParserUtils.splitColumns(line)
 
             if(columns.size != 4){
 
@@ -32,14 +25,10 @@ object PackageParser {
                 continue
             }
 
-
-
             val id = columns[0]
             val weightValue = columns[1]
             val destination = columns[2]
             val priorityValue = columns[3]
-
-
 
             if(id.isEmpty() || destination.isEmpty()){
 
@@ -50,8 +39,6 @@ object PackageParser {
                 continue
             }
 
-
-
             val weight =
                 ParserUtils.parseDoubleOrDefault(
                     weightValue,
@@ -59,11 +46,8 @@ object PackageParser {
                     line
                 )
 
-
             val priority =
                 parsePriority(priorityValue)
-
-
 
             packages.add(
                 Package(
@@ -75,26 +59,20 @@ object PackageParser {
             )
         }
 
-
         return packages
     }
-
-
 
     private fun parsePriority(
         value:String
     ): Priority {
-
 
         return when(value.uppercase()){
 
             "URGENT" ->
                 Priority.URGENT
 
-
             "STANDARD" ->
                 Priority.STANDARD
-
 
             else ->
                 Priority.LOW

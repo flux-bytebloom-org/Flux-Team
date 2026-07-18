@@ -5,27 +5,17 @@ import org.byte_bloom.flux.logic.utils.ParserLogger
 
 object FleetParser {
 
-
     fun parse(
         lines: List<String>
     ):List<Fleet>{
 
-
-        val fleet =
-            mutableListOf<Fleet>()
-
-
+        val fleet = mutableListOf<Fleet>()
 
         for(line in lines){
 
-
-            val columns =
-                ParserUtils.splitColumns(line)
-
-
+            val columns = ParserUtils.splitColumns(line)
 
             if(columns.size !=4){
-
                 ParserLogger.warning(
                     "Invalid fleet row: $line"
                 )
@@ -33,12 +23,8 @@ object FleetParser {
                 continue
             }
 
-
-
             val vehicleId = columns[0]
             val hubId = columns[1]
-
-
 
             if(vehicleId.isEmpty() || hubId.isEmpty()){
 
@@ -49,8 +35,6 @@ object FleetParser {
                 continue
             }
 
-
-
             val capacity =
                 ParserUtils.parseDoubleOrDefault(
                     columns[2],
@@ -58,16 +42,12 @@ object FleetParser {
                     line
                 )
 
-
-
             val cost =
                 ParserUtils.parseDoubleOrDefault(
                     columns[3],
                     "cost",
                     line
                 )
-
-
 
             fleet.add(
                 Fleet(
@@ -78,7 +58,6 @@ object FleetParser {
                 )
             )
         }
-
 
         return fleet
     }
