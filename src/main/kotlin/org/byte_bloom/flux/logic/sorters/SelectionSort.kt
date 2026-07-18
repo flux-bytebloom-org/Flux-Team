@@ -1,4 +1,4 @@
-package logic.sorters
+package org.byte_bloom.flux.logic.sorters
 
 import org.byte_bloom.flux.dataholders.Package
 import org.byte_bloom.flux.dataholders.Priority
