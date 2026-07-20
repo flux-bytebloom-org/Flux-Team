@@ -1,6 +1,6 @@
 package org.byte_bloom.flux.dataholders
 
-data class Fleet(
+data class Vehicle(
     val vehicleId: String,
     val currentHubId: String,
     val maxCapacityKg: Double,

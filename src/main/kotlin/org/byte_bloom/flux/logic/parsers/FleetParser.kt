@@ -1,15 +1,15 @@
 package org.byte_bloom.flux.logic.parsers
 
-import org.byte_bloom.flux.dataholders.Fleet
+import org.byte_bloom.flux.dataholders.Vehicle
 import org.byte_bloom.flux.logic.utils.ParserLogger
 
 object FleetParser {
 
     fun parse(
         lines: List<String>
-    ):List<Fleet>{
+    ):List<Vehicle>{
 
-        val fleet = mutableListOf<Fleet>()
+        val fleet = mutableListOf<Vehicle>()
 
         for(line in lines){
 
@@ -35,8 +35,7 @@ object FleetParser {
                 continue
             }
 
-            val capacity =
-                ParserUtils.parseDoubleOrDefault(
+            val capacity =ParserUtils.parseDoubleOrDefault(
                     columns[2],
                     "capacity",
                     line
@@ -50,7 +49,7 @@ object FleetParser {
                 )
 
             fleet.add(
-                Fleet(
+                Vehicle(
                     vehicleId,
                     hubId,
                     capacity,
