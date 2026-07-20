@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.utils.parsers
 
 import org.byte_bloom.flux.dataholders.Vehicle
-import org.byte_bloom.flux.utils.ParserLogger
+import org.byte_bloom.flux.utils.printWarningLogger
 
 
 
@@ -13,10 +13,10 @@ fun parseVehicles(
 
     for(line in lines){
 
-        val columns = ParserUtils.splitColumns(line)
+        val columns = splitColumns(line)
 
         if(columns.size !=4){
-            ParserLogger.warning(
+            printWarningLogger(
                 "Invalid fleet row: $line"
             )
 
@@ -28,21 +28,21 @@ fun parseVehicles(
 
         if(vehicleId.isEmpty() || hubId.isEmpty()){
 
-            ParserLogger.warning(
+            printWarningLogger(
                 "Missing fleet data: $line"
             )
 
             continue
         }
 
-        val capacity =ParserUtils.parseDoubleOrDefault(
+        val capacity =parseDoubleOrDefault(
                 columns[2],
                 "capacity",
                 line
             )
 
         val cost =
-            ParserUtils.parseDoubleOrDefault(
+            parseDoubleOrDefault(
                 columns[3],
                 "cost",
                 line

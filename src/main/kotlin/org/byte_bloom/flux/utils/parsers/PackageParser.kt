@@ -2,80 +2,79 @@ package org.byte_bloom.flux.utils.parsers
 
 import org.byte_bloom.flux.dataholders.Package
 import org.byte_bloom.flux.dataholders.Priority
-import org.byte_bloom.flux.utils.ParserLogger
+import org.byte_bloom.flux.utils.printWarningLogger
 
-object PackageParser {
 
-    fun parse(
-        lines: List<String>
-    ): List<Package> {
 
-        val packages = mutableListOf<Package>()
+fun parsePackages(
+    lines: List<String>
+): List<Package> {
 
-        for(line in lines){
+    val packages = mutableListOf<Package>()
 
-            val columns = ParserUtils.splitColumns(line)
+    for(line in lines){
 
-            if(columns.size != 4){
+        val columns = splitColumns(line)
 
-                ParserLogger.warning(
-                    "Invalid column count: $line"
-                )
+        if(columns.size != 4){
 
-                continue
-            }
-
-            val id = columns[0]
-            val weightValue = columns[1]
-            val destination = columns[2]
-            val priorityValue = columns[3]
-
-            if(id.isEmpty() || destination.isEmpty()){
-
-                ParserLogger.warning(
-                    "Missing required fields: $line"
-                )
-
-                continue
-            }
-
-            val weight =
-                ParserUtils.parseDoubleOrDefault(
-                    weightValue,
-                    "weight",
-                    line
-                )
-
-            val priority =
-                parsePriority(priorityValue)
-
-            packages.add(
-                Package(
-                    id,
-                    weight,
-                    destination,
-                    priority
-                )
+            printWarningLogger(
+                "Invalid column count: $line"
             )
+
+            continue
         }
 
-        return packages
+        val id = columns[0]
+        val weightValue = columns[1]
+        val destination = columns[2]
+        val priorityValue = columns[3]
+
+        if(id.isEmpty() || destination.isEmpty()){
+
+            printWarningLogger(
+                "Missing required fields: $line"
+            )
+
+            continue
+        }
+
+        val weight =
+            parseDoubleOrDefault(
+                weightValue,
+                "weight",
+                line
+            )
+
+        val priority =
+            parsePriority(priorityValue)
+
+        packages.add(
+            Package(
+                id,
+                weight,
+                destination,
+                priority
+            )
+        )
     }
 
-    private fun parsePriority(
-        value:String
-    ): Priority {
+    return packages
+}
 
-        return when(value.uppercase()){
+private fun parsePriority(
+    value:String
+): Priority {
 
-            "URGENT" ->
-                Priority.URGENT
+    return when(value.uppercase()){
 
-            "STANDARD" ->
-                Priority.STANDARD
+        "URGENT" ->
+            Priority.URGENT
 
-            else ->
-                Priority.LOW
-        }
+        "STANDARD" ->
+            Priority.STANDARD
+
+        else ->
+            Priority.LOW
     }
 }

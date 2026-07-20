@@ -2,17 +2,14 @@ package org.byte_bloom.flux.utils.readers
 
 import java.io.File
 
-object CsvReader {
+fun readCsv(filePath: String): List<String> {
 
-    fun read(filePath: String): List<String> {
+    val file = File(filePath)
 
-        val file = File(filePath)
-
-        if (!file.exists()) {
-            println("File not found: $filePath")
-            return emptyList()
-        }
-
-        return file.readLines()
+    if (!file.exists()) {
+        println("File not found: $filePath")
+        return emptyList()
     }
+
+    return file.readLines()
 }

@@ -1,53 +1,52 @@
 package org.byte_bloom.flux.utils.parsers
 
 import org.byte_bloom.flux.dataholders.Warehouse
-import org.byte_bloom.flux.utils.ParserLogger
+import org.byte_bloom.flux.utils.printWarningLogger
 
-object WarehouseParser {
 
-    fun parse(
-        lines: List<String>
-    ):List<Warehouse>{
 
-        val warehouses =
-            mutableListOf<Warehouse>()
+fun parseWarehouses(
+    lines: List<String>
+):List<Warehouse>{
 
-        for(line in lines){
+    val warehouses =
+        mutableListOf<Warehouse>()
 
-            val columns =
-                ParserUtils.splitColumns(line)
+    for(line in lines){
 
-            if(columns.size != 3){
+        val columns =
+            splitColumns(line)
 
-                ParserLogger.warning(
-                    "Invalid warehouse row: $line"
-                )
+        if(columns.size != 3){
 
-                continue
-            }
-
-            val id = columns[0]
-            val name = columns[1]
-            val zone = columns[2]
-
-            if(id.isEmpty()){
-
-                ParserLogger.warning(
-                    "Missing warehouse id: $line"
-                )
-
-                continue
-            }
-
-            warehouses.add(
-                Warehouse(
-                    id,
-                    name,
-                    zone
-                )
+            printWarningLogger(
+                "Invalid warehouse row: $line"
             )
+
+            continue
         }
 
-        return warehouses
+        val id = columns[0]
+        val name = columns[1]
+        val zone = columns[2]
+
+        if(id.isEmpty()){
+
+            printWarningLogger(
+                "Missing warehouse id: $line"
+            )
+
+            continue
+        }
+
+        warehouses.add(
+            Warehouse(
+                id,
+                name,
+                zone
+            )
+        )
     }
+
+    return warehouses
 }

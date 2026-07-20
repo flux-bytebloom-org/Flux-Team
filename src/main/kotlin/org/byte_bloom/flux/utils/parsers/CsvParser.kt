@@ -1,14 +1,12 @@
 package org.byte_bloom.flux.utils.parsers
 
-object CsvParser {
 
-    fun cleanLines(
-        rawLines: List<String>
-    ): List<String> {
+fun cleanLines(
+    rawLines: List<String>
+): List<String> {
 
-        return rawLines
-            .drop(1)
-            .map { it.trim() }
-            .filter { it.isNotEmpty() }
-    }
+    return rawLines
+        .drop(1)
+        .map { it.trim() }
+        .filter { it.isNotEmpty() }
 }
