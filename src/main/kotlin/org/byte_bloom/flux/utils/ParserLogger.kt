@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.logic.utils
+package org.byte_bloom.flux.utils
 
 object ParserLogger {
 

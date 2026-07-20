@@ -1,7 +1,7 @@
-package org.byte_bloom.flux.logic.parsers
+package org.byte_bloom.flux.utils.parsers
 
 import org.byte_bloom.flux.dataholders.Route
-import org.byte_bloom.flux.logic.utils.ParserLogger
+import org.byte_bloom.flux.utils.ParserLogger
 
 object RouteParser {
 

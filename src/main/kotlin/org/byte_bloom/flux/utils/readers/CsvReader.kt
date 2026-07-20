@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.logic.readers
+package org.byte_bloom.flux.utils.readers
 
 import java.io.File
 

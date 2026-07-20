@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.logic.parsers
+package org.byte_bloom.flux.utils.parsers
 
 object CsvParser {
 
