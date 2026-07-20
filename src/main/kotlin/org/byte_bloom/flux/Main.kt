@@ -1,7 +1,7 @@
 package org.byte_bloom.flux
 
-import org.byte_bloom.flux.logic.parsers.*
-import org.byte_bloom.flux.logic.readers.CsvReader
+import org.byte_bloom.flux.utils.parsers.*
+import org.byte_bloom.flux.utils.readers.CsvReader
 import org.byte_bloom.flux.logic.sorters.SelectionSort
 
 
@@ -22,7 +22,7 @@ fun main() {
 
     val fleetLines = CsvReader.read("src/main/resources/fleet.csv")
     val cleanFleetLines = CsvParser.cleanLines(fleetLines)
-    val fleet = FleetParser.parse(cleanFleetLines)
+    val fleet = parseVehicles(cleanFleetLines)
 
     println("--- Parsing Summary ---")
     println("Packages parsed successfully: ${packages.size}")
