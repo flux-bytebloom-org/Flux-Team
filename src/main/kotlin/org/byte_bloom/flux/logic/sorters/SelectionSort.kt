@@ -5,55 +5,93 @@ import org.byte_bloom.flux.dataholders.Priority
 
 
 fun sortByPriorityAndWeightDescending(packages: List<Package>): List<Package> {
-    val mutablePackages = packages.toMutableList()
-    val packageListSize = mutablePackages.size
+    val sortedPackages = packages.toMutableList()
 
-    for( currentIndex in 0 until (packageListSize-1)) {
-        var maxIndex = currentIndex
+    performSelectionSort(sortedPackages)
 
-        for (scanIndex in currentIndex + 1  until packageListSize) {
-            if( hasHigherPriorityThenWeight(mutablePackages[scanIndex],mutablePackages[maxIndex])){
-                maxIndex = scanIndex
-            }
-        }
-
-        //now we have the index of the max, so we will shift forwrd the others to make his space
-
-        if (maxIndex != currentIndex) {
-            val maxPackage = mutablePackages[maxIndex]
-            for( shiftIndex in maxIndex downTo currentIndex+1) {
-                mutablePackages[shiftIndex] = mutablePackages[shiftIndex-1]
-            }
-            mutablePackages[currentIndex] = maxPackage
-        }
-    }
-    return mutablePackages
+    return sortedPackages
 }
 
 
-private fun hasHigherPriorityThenWeight(first : Package , second : Package) : Boolean {
+private fun performSelectionSort(packages: MutableList<Package>) {
 
-    val firstPackagePriorityRank:Int = getPriorityRank(first.priority)
-    val secondPackagePriorityRank:Int  = getPriorityRank(second.priority)
+    for (currentIndex in 0 until packages.size - 1) {
 
-    if (firstPackagePriorityRank > secondPackagePriorityRank ) {
-        return true
-    }else if ( firstPackagePriorityRank == secondPackagePriorityRank){
-        return (first.weight > second.weight)
+        val highestIndex = findHighestPackageIndex(
+            packages,
+            currentIndex
+        )
+
+        if (highestIndex != currentIndex) {
+            movePackageToPosition(
+                packages,
+                highestIndex,
+                currentIndex
+            )
+        }
     }
-    return false
 }
+
+
+private fun findHighestPackageIndex(
+    packages: List<Package>,
+    startIndex: Int
+): Int {
+
+    var highestIndex = startIndex
+
+    for (index in startIndex + 1 until packages.size) {
+
+        if (hasHigherPriorityThenWeight(
+                packages[index],
+                packages[highestIndex]
+            )
+        ) {
+            highestIndex = index
+        }
+    }
+
+    return highestIndex
+}
+
+
+private fun movePackageToPosition(
+    packages: MutableList<Package>,
+    fromIndex: Int,
+    toIndex: Int
+) {
+
+    val packageToMove = packages[fromIndex]
+
+    for (index in fromIndex downTo toIndex + 1) {
+        packages[index] = packages[index - 1]
+    }
+
+    packages[toIndex] = packageToMove
+}
+
+
+private fun hasHigherPriorityThenWeight(
+    first: Package,
+    second: Package
+): Boolean {
+
+    val firstRank = getPriorityRank(first.priority)
+    val secondRank = getPriorityRank(second.priority)
+
+    return when {
+        firstRank > secondRank -> true
+        firstRank == secondRank -> first.weight > second.weight
+        else -> false
+    }
+}
+
 
 private fun getPriorityRank(priority: Priority): Int {
+
     return when (priority) {
-        Priority.URGENT -> {
-            3
-        }
-        Priority.STANDARD -> {
-            2
-        }
-        else -> {
-            1
-        }
+        Priority.URGENT -> 3
+        Priority.STANDARD -> 2
+        else -> 1
     }
 }
