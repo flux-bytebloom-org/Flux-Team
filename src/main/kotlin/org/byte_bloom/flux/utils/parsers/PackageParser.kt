@@ -4,7 +4,7 @@ import org.byte_bloom.flux.dataholders.Package
 import org.byte_bloom.flux.dataholders.Priority
 import org.byte_bloom.flux.utils.printWarningLogger
 
-private const val COLUMN_NUMBER = 4
+private const val PACKAGE_COLUMN_NUMBER= 4
 
 private const val COLUMN_INDEX_ID = 0
 private const val COLUMN_INDEX_WEIGHT = 1
@@ -17,7 +17,7 @@ fun parsePackages(lines: List<String>): List<Package> {
     for (line in lines) {
         val columns = splitColumns(line)
 
-        if (columns.size != COLUMN_NUMBER) {
+        if (columns.size != PACKAGE_COLUMN_NUMBER) {
             printWarningLogger("Invalid column count: $line")
             continue
         }

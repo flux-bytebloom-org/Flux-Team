@@ -15,11 +15,17 @@ fun parseRoutes(lines: List<String>): List<Route> {
     val routes = mutableListOf<Route>()
     for (line in lines) {
         val columns = splitColumns(line)
-        if (columns.size != ROUTE_COLUMN_NUMBER) { printWarningLogger("Invalid route row: $line"); continue }
+        if (columns.size != ROUTE_COLUMN_NUMBER) {
+            printWarningLogger("Invalid route row: $line")
+            continue
+        }
 
         val routeId = columns[ROUTE_COLUMN_INDEX_ROUTE_ID]
         val hubId = columns[ROUTE_COLUMN_INDEX_HUB_ID]
-        if (routeId.isEmpty() || hubId.isEmpty()) { printWarningLogger("Missing route data: $line"); continue }
+        if (routeId.isEmpty() || hubId.isEmpty()) {
+            printWarningLogger("Missing route data: $line")
+            continue
+        }
 
         val distance = parseDoubleOrDefault(columns[ROUTE_COLUMN_INDEX_DISTANCE], "distance", line)
         val delay = parseDoubleOrDefault(columns[ROUTE_COLUMN_INDEX_DELAY], "delay", line)
