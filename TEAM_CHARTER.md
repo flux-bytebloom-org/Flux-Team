@@ -275,40 +275,82 @@ To ensure high-quality, maintainable, and readable code, we strictly adhere to t
 
 ---
 
-# 4. Architecture & Project Structure (Maria Zourob)
+# 4. Architecture & Project Structure (Maria Anwar Zourob)
 
-The project will follow a modular package structure to keep the code organized and maintainable.
+The project follows a modular package structure to keep the code organized,
+maintainable, and easy to extend.
 
 ## 4.1 Package Structure
 
 ```
 src/
- ├── main/
- │   ├── kotlin/
- │   │   └── org.byteBloom/
- │   │        ├── models/
- │   │        ├── usecases/
- │   │        ├── repository/
- │   │        ├── services/
- │   │        ├── utils/
- │   │        └── Main.kt
- │   └── resources/
- └── test/
+ └── main/
+     ├── kotlin/
+     │    └── org.byte_bloom.flux/
+     │          ├── dataholders/
+     │          │      ├── Package.kt
+     │          │      ├── Priority.kt
+     │          │      ├── Route.kt
+     │          │      ├── Vehicle.kt
+     │          │      └── Warehouse.kt
+     │          │
+     │          ├── logic/
+     │          │      └── sorters/
+     │          │             └── SelectionSort.kt
+     │          │
+     │          ├── utils/
+     │          │      ├── parsers/
+     │          │      │      ├── CsvParser.kt
+     │          │      │      ├── FleetParser.kt
+     │          │      │      ├── PackageParser.kt
+     │          │      │      ├── ParserUtils.kt
+     │          │      │      ├── RouteParser.kt
+     │          │      │      └── WarehouseParser.kt
+     │          │      │
+     │          │      ├── readers/
+     │          │      │      └── CsvReader.kt
+     │          │      │
+     │          │      └── ParserLogger.kt
+     │          │
+     │          └── Main.kt
+     │
+     └── resources/
 ```
+
 
 ## 4.2 Package Responsibilities
 
-- **models** → Contains data classes and domain models.
-- **usecases** → Contains business logic.
-- **repository** → Handles data access.
-- **services** → Contains service implementations.
-- **utils** → Shared helper functions.
-- **resources** → Configuration files.
+- **dataholders**
+  → Contains data classes and enums that represent the core domain objects,
+  such as Package, Warehouse, Route, Vehicle, and Priority.
+
+- **logic**
+  → Contains the application's processing logic and operations.
+  This includes sorting algorithms and other business-related operations.
+
+- **logic.sorters**
+  → Responsible for implementing sorting strategies without relying on
+  built-in sorting functions.
+
+- **utils.parsers**
+  → Responsible for converting raw CSV data into structured domain objects.
+  Includes validation, cleaning, and handling invalid input cases.
+
+- **utils.readers**
+  → Responsible for reading raw data from CSV files and preparing it
+  for further processing.
+
+- **ParserLogger**
+  → Provides logging utilities for reporting parsing warnings and errors.
+
+- **resources**
+  → Contains input datasets and configuration files used by the application.
 
 ## 4.3 Architecture Rules
 
-- Keep business logic inside usecases.
-- One responsibility per class.
-- Avoid circular dependencies.
-- Keep packages independent whenever possible.
-- Follow separation of concerns.
+- Each class should have a single responsibility.
+- Data models should only represent application data.
+- Parsing logic should be separated from file reading logic.
+- Business logic should remain independent from data input sources.
+- Packages should have clear responsibilities and avoid unnecessary dependencies.
+- Utility classes should provide reusable helper functionality.
