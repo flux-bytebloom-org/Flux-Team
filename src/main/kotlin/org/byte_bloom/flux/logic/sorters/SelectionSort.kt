@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.logic.sorters
 
-import org.byte_bloom.flux.dataholders.Package
-import org.byte_bloom.flux.dataholders.Priority
+import org.byte_bloom.flux.data.dataholders.Package
+import org.byte_bloom.flux.data.dataholders.Priority
 
 
 fun sortByPriorityAndWeightDescending(packages: List<Package>): List<Package> {

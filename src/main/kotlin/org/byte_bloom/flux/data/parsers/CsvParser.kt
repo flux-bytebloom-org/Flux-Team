@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.utils.parsers
+package org.byte_bloom.flux.data.parsers
 
 
 fun cleanLines(
