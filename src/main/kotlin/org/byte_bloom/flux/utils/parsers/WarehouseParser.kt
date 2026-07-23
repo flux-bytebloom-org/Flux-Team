@@ -1,52 +1,41 @@
-package org.byte_bloom.flux.utils.parsers
-
+import org.byte_bloom.flux.utils.parsers.splitColumns
 import org.byte_bloom.flux.dataholders.Warehouse
 import org.byte_bloom.flux.utils.printWarningLogger
 
+private const val EXPECTED_WAREHOUSE_COLUMNS_COUNT = 3
 
+fun parseWarehouses(rawWarehouseLines: List<String>): List<Warehouse> {
+    val parsedWarehousesList = mutableListOf<Warehouse>()
 
-fun parseWarehouses(
-    lines: List<String>
-):List<Warehouse>{
-
-    val warehouses =
-        mutableListOf<Warehouse>()
-
-    for(line in lines){
-
-        val columns =
-            splitColumns(line)
-
-        if(columns.size != 3){
-
-            printWarningLogger(
-                "Invalid warehouse row: $line"
-            )
-
-            continue
+    for (rawLine in rawWarehouseLines) {
+        val parsedWarehouse = parseSingleWarehouseLine(rawLine)
+        if (parsedWarehouse != null) {
+            parsedWarehousesList.add(parsedWarehouse)
         }
+    }
+    return parsedWarehousesList
+}
 
-        val id = columns[0]
-        val name = columns[1]
-        val zone = columns[2]
+private fun parseSingleWarehouseLine(rawLine: String): Warehouse? {
+    val warehouseColumns = splitColumns(rawLine)
 
-        if(id.isEmpty()){
-
-            printWarningLogger(
-                "Missing warehouse id: $line"
-            )
-
-            continue
-        }
-
-        warehouses.add(
-            Warehouse(
-                id,
-                name,
-                zone
-            )
-        )
+    if (warehouseColumns.size != EXPECTED_WAREHOUSE_COLUMNS_COUNT) {
+        printWarningLogger("Invalid warehouse row: $rawLine")
+        return null
     }
 
-    return warehouses
+    val warehouseId = warehouseColumns[0]
+    val warehouseName = warehouseColumns[1]
+    val warehouseZone = warehouseColumns[2]
+
+    if (warehouseId.isEmpty()) {
+        printWarningLogger("Missing warehouse id: $rawLine")
+        return null
+    }
+
+    return Warehouse(
+        id = warehouseId,
+        name = warehouseName,
+        regionalZone = warehouseZone
+    )
 }
