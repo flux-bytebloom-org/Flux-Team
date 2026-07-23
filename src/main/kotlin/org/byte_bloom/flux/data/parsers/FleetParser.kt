@@ -11,18 +11,18 @@ private const val CAPACITY_INDEX = 2
 private const val COST_INDEX = 3
 
 
-fun parseVehicles(lines: List<String>): List<Vehicle> {
+fun parseFleet(lines: List<String>): List<Vehicle> {
 
-    val vehicles = mutableListOf<Vehicle>()
+    val fleet = mutableListOf<Vehicle>()
 
     for (line in lines) {
         val vehicle = parseVehicleLine(line)
 
         if (vehicle != null) {
-            vehicles.add(vehicle)
+            fleet.add(vehicle)
         }
     }
-    return vehicles
+    return fleet
 }
 
 
