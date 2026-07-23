@@ -3,12 +3,13 @@ package org.byte_bloom.flux.data.parsers
 import org.byte_bloom.flux.data.dataholders.Route
 import org.byte_bloom.flux.utils.printWarningLogger
 
-private const val ROUTE_COLUMN_COUNT = 4
+private const val ROUTE_COLUMN_COUNT = 5
 
 private const val ROUTE_ID_INDEX = 0
-private const val DESTINATION_HUB_ID_INDEX = 1
-private const val DISTANCE_INDEX = 2
-private const val TYPICAL_DELAY_INDEX = 3
+private const val ORIGIN_HUB_ID_INDEX = 1
+private const val DESTINATION_HUB_ID_INDEX = 2
+private const val DISTANCE_INDEX = 3
+private const val TYPICAL_DELAY_INDEX = 4
 
 fun parseRoutes(lines: List<String>): List<Route> {
 
@@ -49,9 +50,14 @@ private fun hasRequiredRouteData(
 ): Boolean {
 
     val routeId = columns[ROUTE_ID_INDEX]
+    val originHubId = columns[ORIGIN_HUB_ID_INDEX]
     val destinationHubId = columns[DESTINATION_HUB_ID_INDEX]
 
-    if (routeId.isEmpty() || destinationHubId.isEmpty()) {
+    if (
+        routeId.isEmpty() ||
+        originHubId.isEmpty() ||
+        destinationHubId.isEmpty()
+    ) {
 
         printWarningLogger(
             "Missing route data: $line"
@@ -69,6 +75,7 @@ private fun createRoute(
 ): Route {
 
     val routeId = columns[ROUTE_ID_INDEX]
+    val originHubId = columns[ORIGIN_HUB_ID_INDEX]
     val destinationHubId = columns[DESTINATION_HUB_ID_INDEX]
 
     val distance = parseDoubleOrDefault(
@@ -84,9 +91,10 @@ private fun createRoute(
     )
 
     return Route(
-        routeId,
-        destinationHubId,
-        distance,
-        typicalDelay
+        routeId = routeId,
+        originHubId = originHubId,
+        destinationHubId = destinationHubId,
+        distanceKm = distance,
+        typicalDelayMin = typicalDelay
     )
 }
