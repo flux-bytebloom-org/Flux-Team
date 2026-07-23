@@ -1,7 +1,14 @@
-package org.byte_bloom.flux.utils.parsers
+package org.byte_bloom.flux.data.parsers
 
-import org.byte_bloom.flux.dataholders.Vehicle
+import org.byte_bloom.flux.data.dataholders.Vehicle
 import org.byte_bloom.flux.utils.printWarningLogger
+
+private const val VEHICLE_COLUMN_COUNT = 4
+
+private const val VEHICLE_ID_INDEX = 0
+private const val HUB_ID_INDEX = 1
+private const val CAPACITY_INDEX = 2
+private const val COST_INDEX = 3
 
 
 fun parseVehicles(lines: List<String>): List<Vehicle> {
@@ -9,12 +16,12 @@ fun parseVehicles(lines: List<String>): List<Vehicle> {
     val vehicles = mutableListOf<Vehicle>()
 
     for (line in lines) {
+        val vehicle = parseVehicleLine(line)
 
-        parseVehicleLine(line)?.let {
-            vehicles.add(it)
+        if (vehicle != null) {
+            vehicles.add(vehicle)
         }
     }
-
     return vehicles
 }
 
@@ -23,7 +30,7 @@ private fun parseVehicleLine(line: String): Vehicle? {
 
     val columns = splitColumns(line)
 
-    if (!hasValidColumnCount(columns, line)) {
+    if (!hasValidColumnCount(columns, VEHICLE_COLUMN_COUNT ,line , "vehicle")) {
         return null
     }
 
@@ -35,22 +42,6 @@ private fun parseVehicleLine(line: String): Vehicle? {
 }
 
 
-private fun hasValidColumnCount(
-    columns: List<String>,
-    line: String
-): Boolean {
-
-    if (columns.size != 4) {
-
-        printWarningLogger(
-            "Invalid fleet row: $line"
-        )
-
-        return false
-    }
-
-    return true
-}
 
 
 private fun hasRequiredVehicleData(
@@ -58,8 +49,8 @@ private fun hasRequiredVehicleData(
     line: String
 ): Boolean {
 
-    val vehicleId = columns[0]
-    val hubId = columns[1]
+    val vehicleId = columns[VEHICLE_ID_INDEX]
+    val hubId = columns[HUB_ID_INDEX]
 
     if (vehicleId.isEmpty() || hubId.isEmpty()) {
 
@@ -79,17 +70,17 @@ private fun createVehicle(
     line: String
 ): Vehicle {
 
-    val vehicleId = columns[0]
-    val hubId = columns[1]
+    val vehicleId = columns[VEHICLE_ID_INDEX]
+    val hubId = columns[HUB_ID_INDEX]
 
     val capacity = parseDoubleOrDefault(
-        columns[2],
+        columns[CAPACITY_INDEX],
         "capacity",
         line
     )
 
     val cost = parseDoubleOrDefault(
-        columns[3],
+        columns[COST_INDEX],
         "cost",
         line
     )
