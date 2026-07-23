@@ -1,14 +1,13 @@
 package org.byte_bloom.flux
 
-import org.byte_bloom.flux.utils.parsers.*
-import org.byte_bloom.flux.utils.readers.readCsv
+import org.byte_bloom.flux.data.parsers.*
+import org.byte_bloom.flux.data.readers.readCsv
 import org.byte_bloom.flux.logic.sorters.sortByPriorityAndWeightDescending
 
 
 fun main() {
 
-
-    val packageLines = readCsv("src/main/resources/packages.csv")
+ val packageLines = readCsv("src/main/resources/packages.csv")
     val cleanPackageLines = cleanLines(packageLines)
     val packages = parsePackages(cleanPackageLines)
 
