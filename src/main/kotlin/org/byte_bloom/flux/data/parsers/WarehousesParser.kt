@@ -69,7 +69,7 @@ private fun createWarehouse(
     val warehouseRegionalZone = columns[WAREHOUSE_REGIONAL_ZONE_INDEX]
 
     return Warehouse(
-        id = warehouseId,
+        warehouseId = warehouseId,
         name = warehouseName,
         regionalZone = warehouseRegionalZone
     )

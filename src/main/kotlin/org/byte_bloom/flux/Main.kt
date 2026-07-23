@@ -7,7 +7,7 @@ import org.byte_bloom.flux.logic.sorters.sortByPriorityAndWeightDescending
 
 fun main() {
 
- val packageLines = readCsv("src/main/resources/packages.csv")
+    val packageLines = readCsv("src/main/resources/packages.csv")
     val cleanPackageLines = cleanLines(packageLines)
     val packages = parsePackages(cleanPackageLines)
 
@@ -21,7 +21,7 @@ fun main() {
 
     val fleetLines = readCsv("src/main/resources/fleet.csv")
     val cleanFleetLines = cleanLines(fleetLines)
-    val fleet = parseVehicles(cleanFleetLines)
+    val fleet = parseFleet(cleanFleetLines)
 
     println("--- Parsing Summary ---")
     println("Packages parsed successfully: ${packages.size}")
@@ -34,7 +34,7 @@ fun main() {
     println("\n--- Top 3 Urgent & Heaviest Packages ---")
     val topPackages = sortedPackages.take(3)
     topPackages.forEach { pkg ->
-        println("ID: ${pkg.id}, Weight: ${pkg.weight}, Dest: ${pkg.destinationHubId}, Priority: ${pkg.priority}")
+        println("ID: ${pkg.packageId}, Weight: ${pkg.weight}, Dest: ${pkg.destinationHubId}, Priority: ${pkg.priority}")
     }
 
 
