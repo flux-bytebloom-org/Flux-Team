@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.dataholders
+package org.byte_bloom.flux.data.dataholders
 
 data class Package(
     val id: String,
