@@ -3,8 +3,12 @@ package org.byte_bloom.flux.logic.sorters
 import org.byte_bloom.flux.data.dataholders.Package
 import org.byte_bloom.flux.data.dataholders.Priority
 
+private const val URGENT_PRIORITY_RANK = 3
+private const val STANDARD_PRIORITY_RANK = 2
+private const val LOW_PRIORITY_RANK = 1
 
 fun sortByPriorityAndWeightDescending(packages: List<Package>): List<Package> {
+
     val sortedPackages = packages.toMutableList()
 
     performSelectionSort(sortedPackages)
@@ -15,7 +19,10 @@ fun sortByPriorityAndWeightDescending(packages: List<Package>): List<Package> {
 
 private fun performSelectionSort(packages: MutableList<Package>) {
 
-    for (currentIndex in 0 until packages.size - 1) {
+    val firstPackageIndex = 0
+    val lastPackageIndex = packages.size - 1
+
+    for (currentIndex in firstPackageIndex until lastPackageIndex) {
 
         val highestIndex = findHighestPackageIndex(
             packages,
@@ -40,7 +47,10 @@ private fun findHighestPackageIndex(
 
     var highestIndex = startIndex
 
-    for (index in startIndex + 1 until packages.size) {
+    val firstComparisonIndex = startIndex + 1
+    val lastPackageIndex = packages.size - 1
+
+    for (index in firstComparisonIndex..lastPackageIndex) {
 
         if (hasHigherPriorityThenWeight(
                 packages[index],
@@ -90,8 +100,8 @@ private fun hasHigherPriorityThenWeight(
 private fun getPriorityRank(priority: Priority): Int {
 
     return when (priority) {
-        Priority.URGENT -> 3
-        Priority.STANDARD -> 2
-        else -> 1
+        Priority.URGENT -> URGENT_PRIORITY_RANK
+        Priority.STANDARD -> STANDARD_PRIORITY_RANK
+        Priority.LOW -> LOW_PRIORITY_RANK
     }
 }

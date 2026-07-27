@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.data.parsers
 
 import org.byte_bloom.flux.data.dataholders.Route
-import org.byte_bloom.flux.utils.printWarningLogger
+import org.byte_bloom.flux.utils.logWarning
 
 private const val ROUTE_COLUMN_COUNT = 5
 
@@ -59,7 +59,7 @@ private fun hasRequiredRouteData(
         destinationHubId.isEmpty()
     ) {
 
-        printWarningLogger(
+        logWarning(
             "Missing route data: $line"
         )
 

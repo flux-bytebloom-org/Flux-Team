@@ -2,7 +2,7 @@ package org.byte_bloom.flux.data.parsers
 
 import org.byte_bloom.flux.data.dataholders.Package
 import org.byte_bloom.flux.data.dataholders.Priority
-import org.byte_bloom.flux.utils.printWarningLogger
+import org.byte_bloom.flux.utils.logWarning
 
 private const val PACKAGE_COLUMN_COUNT = 4
 
@@ -54,7 +54,7 @@ private fun hasRequiredPackageData(
 
     if (packageId.isEmpty() || destinationHubId.isEmpty()) {
 
-        printWarningLogger(
+        logWarning(
             "Missing required package data: $line"
         )
 
