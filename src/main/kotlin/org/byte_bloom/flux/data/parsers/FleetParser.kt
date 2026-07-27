@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.data.parsers
 
 import org.byte_bloom.flux.data.dataholders.Vehicle
-import org.byte_bloom.flux.utils.printWarningLogger
+import org.byte_bloom.flux.utils.logWarning
 
 private const val VEHICLE_COLUMN_COUNT = 4
 
@@ -54,7 +54,7 @@ private fun hasRequiredVehicleData(
 
     if (vehicleId.isEmpty() || hubId.isEmpty()) {
 
-        printWarningLogger(
+        logWarning(
             "Missing fleet data: $line"
         )
 
