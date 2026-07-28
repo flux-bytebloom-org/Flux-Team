@@ -1,9 +1,18 @@
 package org.byte_bloom.flux
 
-import org.byte_bloom.flux.data.dataholders.*
-import org.byte_bloom.flux.data.parsers.*
+import org.byte_bloom.flux.data.dataholders.Package
+import org.byte_bloom.flux.data.dataholders.Route
+import org.byte_bloom.flux.data.dataholders.Vehicle
+import org.byte_bloom.flux.data.dataholders.Warehouse
+import org.byte_bloom.flux.data.parsers.cleanLines
+import org.byte_bloom.flux.data.parsers.parseFleet
+import org.byte_bloom.flux.data.parsers.parsePackages
+import org.byte_bloom.flux.data.parsers.parseRoutes
+import org.byte_bloom.flux.data.parsers.parseWarehouses
 import org.byte_bloom.flux.data.readers.readCsv
 import org.byte_bloom.flux.logic.sorters.sortByPriorityAndWeightDescending
+
+private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 
 fun main() {
 
@@ -79,7 +88,7 @@ private fun printTopPriorityPackages(
 
     println("\n--- Top 3 Urgent & Heaviest Packages ---")
 
-    val topPackages = sortedPackages.take(3)
+    val topPackages = sortedPackages.take(TOP_PACKAGES_DISPLAY_COUNT)
     topPackages.forEach { pkg ->
         println("ID: ${pkg.packageId}, Weight: ${pkg.weight}, Dest: ${pkg.destinationHubId}, Priority: ${pkg.priority}")
     }

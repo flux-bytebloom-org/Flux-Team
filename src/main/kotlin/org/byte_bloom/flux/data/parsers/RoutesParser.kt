@@ -28,20 +28,23 @@ fun parseRoutes(lines: List<String>): List<Route> {
 }
 
 private fun parseRouteLine(
-    line: String
+    rawLine: String
 ): Route? {
 
-    val columns = splitColumns(line)
+    val columns = splitColumns(rawLine)
 
-    if (!hasValidColumnCount(columns, ROUTE_COLUMN_COUNT, line, "route")) {
+    if (!hasValidColumnCount(
+            columns,
+            expectedColumnCount = ROUTE_COLUMN_COUNT,
+            rawLine,
+            rowType = "route"
+        ) ||
+        !hasRequiredRouteData(columns, rawLine)
+    ) {
         return null
     }
 
-    if (!hasRequiredRouteData(columns, line)) {
-        return null
-    }
-
-    return createRoute(columns, line)
+    return createRoute(columns, rawLine)
 }
 
 private fun hasRequiredRouteData(
