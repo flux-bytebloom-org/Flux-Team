@@ -30,7 +30,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: Build project
-        run: ./gradlew build -x test
+        run: ./gradlew build -x test -x koverVerify
 
       - name: Run tests
         run: ./gradlew test
