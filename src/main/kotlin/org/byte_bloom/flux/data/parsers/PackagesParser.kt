@@ -28,20 +28,23 @@ fun parsePackages(lines: List<String>): List<Package> {
 }
 
 private fun parsePackageLine(
-    line: String
+    rawLine: String
 ): Package? {
 
-    val columns = splitColumns(line)
+    val columns = splitColumns(rawLine)
 
-    if (!hasValidColumnCount(columns, PACKAGE_COLUMN_COUNT, line, "package")) {
+    if (!hasValidColumnCount(
+            columns,
+            expectedColumnCount = PACKAGE_COLUMN_COUNT,
+            rawLine,
+            rowType = "package"
+        ) ||
+        !hasRequiredPackageData(columns, rawLine)
+    ) {
         return null
     }
 
-    if (!hasRequiredPackageData(columns, line)) {
-        return null
-    }
-
-    return createPackage(columns, line)
+    return createPackage(columns, rawLine)
 }
 
 private fun hasRequiredPackageData(
