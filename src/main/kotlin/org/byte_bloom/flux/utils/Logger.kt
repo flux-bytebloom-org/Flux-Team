@@ -1,6 +1,6 @@
 package org.byte_bloom.flux.utils
 
 
-fun printWarningLogger(message: String) {
+fun logWarning(message: String) {
     println("WARNING: $message")
 }

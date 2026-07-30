@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.dataholders
+package org.byte_bloom.flux.data.dataholders
 
 data class Vehicle(
     val vehicleId: String,

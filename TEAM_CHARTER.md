@@ -1,11 +1,10 @@
-# Git Workflow & Commit Conventions(sara alajjouri)
+# Git Workflow & Commit Conventions(Sara Alajjouri)
 
 ## 1. Branch Types & Naming Conventions
 
 ### 1.1 `main` (Production Branch)
 - Contains production-ready code.
 - Direct commits are strictly **forbidden**.
-- Protected branch: Requires approval from maintainers and passing CI/CD pipelines.
 
 ### 1.2 `develop` (Integration Branch)
 - Primary development branch containing the latest delivered features for the next release.
@@ -17,7 +16,7 @@
 - **Purpose:** Developing new functionality or user stories.
 - **Example:** `feature/user-authentication`, `feature/cart-payment-gateway`
 
-### 1.4 `fix/<short-description>` / `bugfix/<short-description>`
+### 1.4 `fix/<short-description>`
 - **Cut from:** `develop`
 - **Merges back into:** `develop`
 - **Purpose:** Resolving non-critical bugs found during development/QA.
@@ -46,7 +45,7 @@
 | Type | Usage | Example |
 |------|-------|---------|
 | `feature` | New feature | `feature/user-authentication` |
-| `fix` / `bugfix` | Non-critical bug fix | `fix/null-pointer-login` |
+| `fix` | Non-critical bug fix | `fix/null-pointer-login` |
 | `hotfix` | Emergency production fix | `hotfix/security-patch-v1.0.1` |
 | `refactor` | Code restructuring | `refactor/wallet-balance-logic` |
 | `chore` | Maintenance (dependencies, config) | `chore/update-gradle-version` |
@@ -114,7 +113,7 @@ feat(wallet): add currency conversion support
 test(wallet): add unit tests for conversion rates
 docs(wallet): document conversion API usage
 ```
-# Clean Code Standards (sameera sweedan)
+# Clean Code Standards (Sameera Sweedan)
 
 We define clean code as code that is easily understood by all team members.
 It should be readable and maintainable by any team member.
@@ -275,40 +274,82 @@ To ensure high-quality, maintainable, and readable code, we strictly adhere to t
 
 ---
 
-# 4. Architecture & Project Structure (Maria Zourob)
+# 4. Architecture & Project Structure (Maria Anwar Zourob)
 
-The project will follow a modular package structure to keep the code organized and maintainable.
+The project follows a modular package structure to keep the code organized,
+maintainable, and easy to extend.
 
 ## 4.1 Package Structure
 
 ```
-src/
- ├── main/
- │   ├── kotlin/
- │   │   └── org.byteBloom/
- │   │        ├── models/
- │   │        ├── usecases/
- │   │        ├── repository/
- │   │        ├── services/
- │   │        ├── utils/
- │   │        └── Main.kt
- │   └── resources/
- └── test/
+src
+└── main
+    ├── kotlin
+    │   └── org.byte_bloom.flux
+    │       ├── data
+    │       │   ├── dataholders
+    │       │   │   ├── Package.kt
+    │       │   │   ├── Priority.kt
+    │       │   │   ├── Route.kt
+    │       │   │   ├── Vehicle.kt
+    │       │   │   └── Warehouse.kt
+    │       │   │
+    │       │   ├── parsers
+    │       │   │   ├── FleetParser.kt
+    │       │   │   ├── PackagesParser.kt
+    │       │   │   ├── ParserUtils.kt
+    │       │   │   ├── RoutesParser.kt
+    │       │   │   └── WarehousesParser.kt
+    │       │   │
+    │       │   └── readers
+    │       │       └── CsvReader.kt
+    │       │
+    │       ├── logic
+    │       │   └── sorters
+    │       │       └── SelectionSort.kt
+    │       │
+    │       ├── utils
+    │       │   └── Logger.kt
+    │       │
+    │       └── Main.kt
+    │
+    └── resources
 ```
+
 
 ## 4.2 Package Responsibilities
 
-- **models** → Contains data classes and domain models.
-- **usecases** → Contains business logic.
-- **repository** → Handles data access.
-- **services** → Contains service implementations.
-- **utils** → Shared helper functions.
-- **resources** → Configuration files.
+- **dataholders**
+  → Contains data classes and enums that represent the core domain objects,
+  such as Package, Warehouse, Route, Vehicle, and Priority.
+
+- **logic**
+  → Contains the application's processing logic and operations.
+  This includes sorting algorithms and other business-related operations.
+
+- **logic.sorters**
+  → Responsible for implementing sorting strategies without relying on
+  built-in sorting functions.
+
+- **utils.parsers**
+  → Responsible for converting raw CSV data into structured domain objects.
+  Includes validation, cleaning, and handling invalid input cases.
+
+- **utils.readers**
+  → Responsible for reading raw data from CSV files and preparing it
+  for further processing.
+
+- **ParserLogger**
+  → Provides logging utilities for reporting parsing warnings and errors.
+
+- **resources**
+  → Contains input datasets and configuration files used by the application.
 
 ## 4.3 Architecture Rules
 
-- Keep business logic inside usecases.
-- One responsibility per class.
-- Avoid circular dependencies.
-- Keep packages independent whenever possible.
-- Follow separation of concerns.
+- Each class should have a single responsibility.
+- Data models should only represent application data.
+- Parsing logic should be separated from file reading logic.
+- Business logic should remain independent from data input sources.
+- Packages should have clear responsibilities and avoid unnecessary dependencies.
+- Utility classes should provide reusable helper functionality.
