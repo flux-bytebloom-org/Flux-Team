@@ -35,7 +35,8 @@ fun main() {
     println("\n--- Top 3 Urgent & Heaviest Packages ---")
     val topPackages = sortedPackages.take(3)
     topPackages.forEach { pkg ->
-        println("ID: ${pkg.id}, Weight: ${pkg.weight}, Dest: ${pkg.destinationHubId}, Priority: ${pkg.priority}")
+       // println("ID: ${pkg.id}, Weight: ${pkg.weight}, Dest: ${pkg.destinationHubId}, Priority: ${pkg.priority}")
+
     }
 
 
