@@ -9,6 +9,8 @@ import org.byte_bloom.flux.data.parsers.parseFleet
 import org.byte_bloom.flux.data.parsers.parsePackages
 import org.byte_bloom.flux.data.parsers.parseRoutes
 import org.byte_bloom.flux.data.parsers.parseWarehouses
+import org.byte_bloom.flux.domain.model.*
+import org.byte_bloom.flux.data.parsers.*
 import org.byte_bloom.flux.data.readers.readCsv
 import org.byte_bloom.flux.logic.sorters.sortByPriorityAndWeightDescending
 
@@ -90,6 +92,6 @@ private fun printTopPriorityPackages(
 
     val topPackages = sortedPackages.take(TOP_PACKAGES_DISPLAY_COUNT)
     topPackages.forEach { pkg ->
-        println("ID: ${pkg.packageId}, Weight: ${pkg.weight}, Dest: ${pkg.destinationHubId}, Priority: ${pkg.priority}")
+println("ID: ${pkg.packageId}, Weight: ${pkg.weight}, Dest: ${pkg.destinationHubId}, Priority: ${pkg.priority}")
     }
 }
