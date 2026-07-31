@@ -13,6 +13,9 @@ import org.byte_bloom.flux.data.parsers.parseFleet
 import org.byte_bloom.flux.data.parsers.cleanLines
 
 import org.byte_bloom.flux.data.readers.readCsv
+import org.byte_bloom.flux.domain.pricing.EcoStrategy
+import org.byte_bloom.flux.domain.pricing.ExpressStrategy
+import org.byte_bloom.flux.domain.pricing.RoutePricingEngine
 import org.byte_bloom.flux.logic.sorters.sortByPriorityAndWeightDescending
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
@@ -93,7 +96,8 @@ private fun printTopPriorityPackages(
 
     val topPackages = sortedPackages.take(TOP_PACKAGES_DISPLAY_COUNT)
     topPackages.forEach { pkg ->
-println("ID: ${pkg.packageId}, Weight: ${pkg.weight}, Dest: ${pkg.destinationHubId}, Priority: ${pkg.priority}")
+
+        println("ID: ${pkg.packageId}, Weight: ${pkg.weight}, Dest: ${pkg.destinationHubId}, Priority: ${pkg.priority}")
     }
 
 
