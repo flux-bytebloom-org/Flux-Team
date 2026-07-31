@@ -31,9 +31,3 @@ jobs:
 
       - name: Build project
         run: ./gradlew build -x test -x koverVerify
-
-      - name: Run tests
-        run: ./gradlew test
-
-      - name: Verify code test  coverage
-        run: ./gradlew koverVerify

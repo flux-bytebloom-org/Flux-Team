@@ -1,9 +1,10 @@
 package org.byte_bloom.flux.domain.model
 
 data class Package(
-    val Packageid: String,
+    val packageId: String,
     val weight: Double?,
-    val originHubId: Warehouse,
-    val destinationHubId: Warehouse,
+    val originHubId: String,
+    val destinationHubId: String,
     val priority: Priority
 )
+// originHubId and destinationHubId ==> warehouse

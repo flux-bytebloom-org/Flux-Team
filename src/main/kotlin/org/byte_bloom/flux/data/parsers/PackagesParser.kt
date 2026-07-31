@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.data.parsers
 
-import org.byte_bloom.flux.data.dataholders.Package
-import org.byte_bloom.flux.data.dataholders.Priority
+import org.byte_bloom.flux.domain.model.Package
+import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.utils.logWarning
 
 private const val PACKAGE_COLUMN_COUNT = 4
@@ -87,10 +87,11 @@ private fun createPackage(
     )
 
     return Package(
-        packageId,
-        weight,
-        destinationHubId,
-        priority
+        packageId = packageId,
+        weight = weight,
+        destinationHubId = destinationHubId,
+        priority = priority,
+        originHubId = ""
     )
 }
 

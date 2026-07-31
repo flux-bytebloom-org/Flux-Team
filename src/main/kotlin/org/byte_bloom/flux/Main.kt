@@ -1,14 +1,17 @@
 package org.byte_bloom.flux
 
-import org.byte_bloom.flux.data.dataholders.Package
-import org.byte_bloom.flux.data.dataholders.Route
-import org.byte_bloom.flux.data.dataholders.Vehicle
-import org.byte_bloom.flux.data.dataholders.Warehouse
-import org.byte_bloom.flux.data.parsers.cleanLines
-import org.byte_bloom.flux.data.parsers.parseFleet
+
+import org.byte_bloom.flux.domain.model.Package
+import org.byte_bloom.flux.domain.model.Warehouse
+import org.byte_bloom.flux.domain.model.Route
+import org.byte_bloom.flux.domain.model.Vehicle
+
 import org.byte_bloom.flux.data.parsers.parsePackages
-import org.byte_bloom.flux.data.parsers.parseRoutes
 import org.byte_bloom.flux.data.parsers.parseWarehouses
+import org.byte_bloom.flux.data.parsers.parseRoutes
+import org.byte_bloom.flux.data.parsers.parseFleet
+import org.byte_bloom.flux.data.parsers.cleanLines
+
 import org.byte_bloom.flux.data.readers.readCsv
 import org.byte_bloom.flux.logic.sorters.sortByPriorityAndWeightDescending
 
