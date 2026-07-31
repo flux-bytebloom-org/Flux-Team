@@ -73,7 +73,7 @@ private fun createWarehouse(
 
     return Warehouse(
         warehouseId = warehouseId,
-        warehouseName = warehouseName,
-        regionalZone = warehouseRegionalZone
+        regionalZone = warehouseRegionalZone,
+        name =warehouseName
     )
 }
