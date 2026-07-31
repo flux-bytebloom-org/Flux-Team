@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.data.parsers
 
 
-import org.byte_bloom.flux.data.dataholders.Warehouse
+import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.utils.logWarning
 
 private const val WAREHOUSE_COLUMN_COUNT = 3
@@ -70,7 +70,7 @@ private fun createWarehouse(
 
     return Warehouse(
         warehouseId = warehouseId,
-        name = warehouseName,
+        warehouseName = warehouseName,
         regionalZone = warehouseRegionalZone
     )
 }

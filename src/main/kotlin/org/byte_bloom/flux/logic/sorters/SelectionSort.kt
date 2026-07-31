@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.logic.sorters
 
-import org.byte_bloom.flux.data.dataholders.Package
-import org.byte_bloom.flux.data.dataholders.Priority
+import org.byte_bloom.flux.domain.model.Package
+import org.byte_bloom.flux.domain.model.Priority
 
 private const val URGENT_PRIORITY_RANK = 3
 private const val STANDARD_PRIORITY_RANK = 2
@@ -88,10 +88,16 @@ private fun hasHigherPriorityThenWeight(
 
     val firstRank = getPriorityRank(first.priority)
     val secondRank = getPriorityRank(second.priority)
-
+    /*
     return when {
         firstRank > secondRank -> true
         firstRank == secondRank -> first.weight > second.weight
+        else -> false
+    }*/
+    return when {
+        firstRank > secondRank -> true
+        firstRank == secondRank ->
+            (first.weight ?: -1.0) > (second.weight ?: -1.0)
         else -> false
     }
 }
