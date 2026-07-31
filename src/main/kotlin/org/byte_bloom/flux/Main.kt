@@ -1,5 +1,5 @@
 package org.byte_bloom.flux
-
+import org.byte_bloom.flux.domain.pricing.*
 import org.byte_bloom.flux.data.dataholders.Package
 import org.byte_bloom.flux.data.dataholders.Route
 import org.byte_bloom.flux.data.dataholders.Vehicle
@@ -92,4 +92,35 @@ private fun printTopPriorityPackages(
     topPackages.forEach { pkg ->
 println("ID: ${pkg.packageId}, Weight: ${pkg.weight}, Dest: ${pkg.destinationHubId}, Priority: ${pkg.priority}")
     }
+
+
+    /*For Maria Testing */
+
+    val engine = RoutePricingEngine(
+        EcoStrategy()
+    )
+
+
+    println(
+        "Eco cost: " +
+                engine.calculateTransitCost(
+                    100.0,
+                    50.0
+                )
+    )
+
+
+    engine.changeStrategy(
+        ExpressStrategy()
+    )
+
+
+    println(
+        "Express cost: " +
+                engine.calculateTransitCost(
+                    100.0,
+                    50.0
+                )
+    )
+
 }
