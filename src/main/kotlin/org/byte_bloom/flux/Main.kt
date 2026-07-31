@@ -19,6 +19,8 @@ import org.byte_bloom.flux.domain.pricing.RoutePricingEngine
 import org.byte_bloom.flux.logic.sorters.sortByPriorityAndWeightDescending
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
+private const val TEST_TRANSIT_DISTANCE = 100.0
+private const val TEST_TRANSIT_WEIGHT = 50.0
 
 fun main() {
 
@@ -35,6 +37,8 @@ fun main() {
     )
 
     printTopPriorityPackages(packages)
+
+    testPricingEngineMaria()
 }
 
 
@@ -99,35 +103,33 @@ private fun printTopPriorityPackages(
 
         println("ID: ${pkg.packageId}, Weight: ${pkg.weight}, Dest: ${pkg.destinationHubId}, Priority: ${pkg.priority}")
     }
+}
 
 
-    /*For Maria Testing */
+/* For Maria Testing */
+private fun testPricingEngineMaria() {
 
     val engine = RoutePricingEngine(
         EcoStrategy()
     )
 
-
     println(
         "Eco cost: " +
                 engine.calculateTransitCost(
-                    100.0,
-                    50.0
+                    TEST_TRANSIT_DISTANCE,
+                    TEST_TRANSIT_WEIGHT
                 )
     )
-
 
     engine.changeStrategy(
         ExpressStrategy()
     )
 
-
     println(
         "Express cost: " +
                 engine.calculateTransitCost(
-                    100.0,
-                    50.0
+                    TEST_TRANSIT_DISTANCE,
+                    TEST_TRANSIT_WEIGHT
                 )
     )
-
 }

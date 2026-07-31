@@ -1,5 +1,7 @@
 package org.byte_bloom.flux.domain.pricing
 
+private const val ECO_COST_PER_KM_PER_KG = 0.5
+private const val ECO_PRIORITY_MULTIPLIER = 1.0
 class EcoStrategy : DispatchStrategy {
 
 
@@ -8,11 +10,11 @@ class EcoStrategy : DispatchStrategy {
         weight: Double
     ): Double {
 
-        return distanceKm * weight * 0.5
+        return distanceKm * weight * ECO_COST_PER_KM_PER_KG
     }
 
 
     override fun getPriorityMultiplier(): Double {
-        return 1.0
+        return ECO_PRIORITY_MULTIPLIER
     }
 }

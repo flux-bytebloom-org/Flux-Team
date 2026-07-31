@@ -1,5 +1,8 @@
 package org.byte_bloom.flux.domain.pricing
 
+private const val FRAGILE_COST_MULTIPLIER = 1.2
+private const val FRAGILE_PRIORITY_MULTIPLIER = 1.5
+private const val FRAGILE_BASE_COST = 50
 class FragileStrategy : DispatchStrategy {
 
 
@@ -8,11 +11,11 @@ class FragileStrategy : DispatchStrategy {
         weight: Double
     ): Double {
 
-        return (distanceKm * weight * 1.2) + 50
+        return (distanceKm * weight * FRAGILE_COST_MULTIPLIER) + FRAGILE_BASE_COST
     }
 
 
     override fun getPriorityMultiplier(): Double {
-        return 1.5
+        return FRAGILE_PRIORITY_MULTIPLIER
     }
 }
