@@ -1,6 +1,6 @@
 package org.byte_bloom.flux.data.parsers
 
-import org.byte_bloom.flux.data.dataholders.Route
+import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.utils.logWarning
 
 private const val ROUTE_COLUMN_COUNT = 5
@@ -95,8 +95,8 @@ private fun createRoute(
 
     return Route(
         routeId = routeId,
-        originHubId = originHubId,
-        destinationHubId = destinationHubId,
+        originHub = originHubId,
+        destinationHub = destinationHubId,
         distanceKm = distance,
         typicalDelayMin = typicalDelay
     )

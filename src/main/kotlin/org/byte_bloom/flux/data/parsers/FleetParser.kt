@@ -1,6 +1,6 @@
 package org.byte_bloom.flux.data.parsers
 
-import org.byte_bloom.flux.data.dataholders.Vehicle
+import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.utils.logWarning
 
 private const val VEHICLE_COLUMN_COUNT = 4
