@@ -30,11 +30,14 @@ private fun parseWarehouseLine(rawLine: String): Warehouse? {
 
     val columns = splitColumns(rawLine)
 
-    if (!hasValidColumnCount(columns, WAREHOUSE_COLUMN_COUNT, rawLine, "warehouse")) {
-        return null
-    }
-
-    if (!hasRequiredWarehouseData(columns, rawLine)) {
+    if (!hasValidColumnCount(
+            columns,
+            expectedColumnCount = WAREHOUSE_COLUMN_COUNT,
+            rawLine,
+            rowType = "warehouse"
+        ) ||
+        !hasRequiredWarehouseData(columns, rawLine)
+    ) {
         return null
     }
 

@@ -26,27 +26,28 @@ fun parseFleet(lines: List<String>): List<Vehicle> {
 }
 
 
-private fun parseVehicleLine(line: String): Vehicle? {
+private fun parseVehicleLine(rawLine: String): Vehicle? {
 
-    val columns = splitColumns(line)
+    val columns = splitColumns(rawLine)
 
-    if (!hasValidColumnCount(columns, VEHICLE_COLUMN_COUNT ,line , "vehicle")) {
+    if (!hasValidColumnCount(
+            columns,
+            expectedColumnCount = VEHICLE_COLUMN_COUNT,
+            rawLine,
+            rowType = "vehicle"
+        ) ||
+        !hasRequiredVehicleData(columns, rawLine)
+    ) {
         return null
     }
 
-    if (!hasRequiredVehicleData(columns, line)) {
-        return null
-    }
-
-    return createVehicle(columns, line)
+    return createVehicle(columns, rawLine)
 }
-
-
 
 
 private fun hasRequiredVehicleData(
     columns: List<String>,
-    line: String
+    rawLine: String
 ): Boolean {
 
     val vehicleId = columns[VEHICLE_ID_INDEX]
@@ -55,7 +56,7 @@ private fun hasRequiredVehicleData(
     if (vehicleId.isEmpty() || hubId.isEmpty()) {
 
         logWarning(
-            "Missing fleet data: $line"
+            "Missing fleet data: $rawLine"
         )
 
         return false
@@ -67,7 +68,7 @@ private fun hasRequiredVehicleData(
 
 private fun createVehicle(
     columns: List<String>,
-    line: String
+    rawLine: String
 ): Vehicle {
 
     val vehicleId = columns[VEHICLE_ID_INDEX]
@@ -76,13 +77,13 @@ private fun createVehicle(
     val capacity = parseDoubleOrDefault(
         columns[CAPACITY_INDEX],
         "capacity",
-        line
+        rawLine
     )
 
     val cost = parseDoubleOrDefault(
         columns[COST_INDEX],
         "cost",
-        line
+        rawLine
     )
 
     return Vehicle(
