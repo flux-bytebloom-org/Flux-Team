@@ -76,11 +76,17 @@ private fun printTopPriorityPackages(packages: List<Package>) {
     println("\n--- Top 3 Urgent & Heaviest Packages ---")
     val topPackages = sortedPackages.take(TOP_PACKAGES_DISPLAY_COUNT)
     topPackages.forEach { pkg ->
-
-        println("ID: ${pkg.packageId}, Weight: ${pkg.weight}, Dest: ${pkg.destinationHubId}, Priority: ${pkg.priority}")
+        printPackageLine(pkg)
     }
-}
 
+}
+private fun printPackageLine(pkg: Package) {
+    val id = pkg.packageId
+    val weight = pkg.weight
+    val dest = pkg.destinationHubId
+    val priority = pkg.priority
+    println("ID: $id, Weight: $weight, Dest: $dest, Priority: $priority")
+}
 
 /* For Maria Testing */
 private fun testPricingEngineMaria() {
@@ -108,34 +114,26 @@ private fun testPricingEngineMaria() {
                     TEST_TRANSIT_WEIGHT
                 )
     )
-        printPackageLine(pkg)
-    }
+
 }
 
-private fun printPackageLine(pkg: Package) {
-    val id = pkg.packageId
-    val weight = pkg.weight
-    val dest = pkg.destinationHubId
-    val priority = pkg.priority
-    println("ID: $id, Weight: $weight, Dest: $dest, Priority: $priority")
-}
+
 private const val HEAVY_PACKAGE_WEIGHT = 50.0
 private const val MEDIUM_PACKAGE_WEIGHT = 10.5
 private const val LIGHT_PACKAGE_WEIGHT = 2.0
 private fun testWarehouseQuickSort() {
     println("\n--- Testing Warehouse Cargo QuickSort ---")
-    val warehouse = Warehouse("WH-1", "Gaza Hub", "Zone-1").apply {
-        cargoQueue.addAll(
-            listOf(
-                Package("PKG-1", LIGHT_PACKAGE_WEIGHT, "H1", "H2", Priority.LOW),
-                Package("PKG-2", MEDIUM_PACKAGE_WEIGHT, "H1", "H2", Priority.URGENT),
-                Package("PKG-3", null, "H1", "H2", Priority.LOW),
-                Package("PKG-4", HEAVY_PACKAGE_WEIGHT, "H1", "H2", Priority.STANDARD)
-            )
-        )
-    }
 
-    println("Before sorting: ${warehouse.cargoQueue.map { it.weight }}")
+    val warehouse = Warehouse("WH-1", "Gaza Hub", "Zone-1")
+    val packagesToAdd = listOf(
+        Package("PKG-1", LIGHT_PACKAGE_WEIGHT, "H1", "H2", Priority.LOW),
+        Package("PKG-2", MEDIUM_PACKAGE_WEIGHT, "H1", "H2", Priority.URGENT),
+        Package("PKG-3", null, "H1", "H2", Priority.LOW),
+        Package("PKG-4", HEAVY_PACKAGE_WEIGHT, "H1", "H2", Priority.STANDARD)
+    )
+    packagesToAdd.forEach { warehouse.addPackage(it) }
+
+    println("Before sorting: ${warehouse.getCargoQueue().map { it.weight }}")
     warehouse.sortCargoQueue()
-    println("After sorting:  ${warehouse.cargoQueue.map { it.weight }}")
+    println("After sorting:  ${warehouse.getCargoQueue().map { it.weight }}")
 }
