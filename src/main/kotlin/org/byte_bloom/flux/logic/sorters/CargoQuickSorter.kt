@@ -1,8 +1,11 @@
 /**
- * 1. In-Place Sorting: Modifies `cargoQueue` directly to minimize memory allocations when processing large datasets.
- * 2. Tailrec Partitioning: Uses `tailrec` recursion in `partitionCargoByWeightDescending` to eliminate stack-overflow risks.
- * 3. Safe Null Handling: Treats `null` weights as 0.0 to keep corrupted data at the end of the queue without failing execution.
- * 4. Priority Routing: Orders heavier packages first to maximize transport payload capacity.
+ * WHY THIS IMPLEMENTATION:
+ * 1. In-Place Sorting: Modifies list directly to
+ *    minimize memory allocations.
+ * 2. Tailrec Partitioning: Eliminates stack overflow
+ *    risks during deep recursive sorting.
+ * 3. Safe Null Handling: Defaults missing weights to 0.0
+ *    to push invalid entries to the end safely.
  */
 package org.byte_bloom.flux.logic.sorters
 

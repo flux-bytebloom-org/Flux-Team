@@ -81,16 +81,18 @@ private fun printPackageLine(pkg: Package) {
     val priority = pkg.priority
     println("ID: $id, Weight: $weight, Dest: $dest, Priority: $priority")
 }
-
+private const val HEAVY_PACKAGE_WEIGHT = 50.0
+private const val MEDIUM_PACKAGE_WEIGHT = 10.5
+private const val LIGHT_PACKAGE_WEIGHT = 2.0
 private fun testWarehouseQuickSort() {
     println("\n--- Testing Warehouse Cargo QuickSort ---")
     val warehouse = Warehouse("WH-1", "Gaza Hub", "Zone-1").apply {
         cargoQueue.addAll(
             listOf(
-                Package("PKG-1", 15.0, "H1", "H2", Priority.LOW),
-                Package("PKG-2", 78.5, "H1", "H2", Priority.URGENT),
+                Package("PKG-1", LIGHT_PACKAGE_WEIGHT, "H1", "H2", Priority.LOW),
+                Package("PKG-2", MEDIUM_PACKAGE_WEIGHT, "H1", "H2", Priority.URGENT),
                 Package("PKG-3", null, "H1", "H2", Priority.LOW),
-                Package("PKG-4", 120.0, "H1", "H2", Priority.STANDARD)
+                Package("PKG-4", LIGHT_PACKAGE_WEIGHT, "H1", "H2", Priority.STANDARD)
             )
         )
     }
