@@ -4,14 +4,15 @@ package org.byte_bloom.flux.data.parsers
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.utils.logWarning
 
-private const val WAREHOUSE_COLUMN_COUNT = 3
+private const val WAREHOUSE_COLUMN_COUNT = 5
 
 private const val WAREHOUSE_ID_INDEX = 0
 private const val WAREHOUSE_NAME_INDEX = 1
 private const val WAREHOUSE_REGIONAL_ZONE_INDEX = 2
+private const val WAREHOUSE_LATITUDE_INDEX = 3
+private const val WAREHOUSE_LONGITUDE_INDEX = 4
 
 fun parseWarehouses(rawWarehouseLines: List<String>): List<Warehouse> {
-
     val warehouses = mutableListOf<Warehouse>()
 
     for (rawLine in rawWarehouseLines) {
@@ -73,7 +74,9 @@ private fun createWarehouse(
 
     return Warehouse(
         warehouseId = warehouseId,
+        name = warehouseName,
         regionalZone = warehouseRegionalZone,
-        name =warehouseName
+        latitude = columns[WAREHOUSE_LATITUDE_INDEX].toDoubleOrNull() ?: 0.0,
+        longitude = columns[WAREHOUSE_LONGITUDE_INDEX].toDoubleOrNull() ?: 0.0
     )
 }

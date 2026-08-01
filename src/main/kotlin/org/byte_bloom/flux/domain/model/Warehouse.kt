@@ -5,7 +5,9 @@ import org.byte_bloom.flux.logic.sorters.sortCargoByWeightDescending
 class Warehouse(
     val warehouseId: String,
     val name: String,
-    val regionalZone: String
+    val regionalZone: String,
+    val latitude: Double,
+    val longitude: Double
 ) {
 
     private val cargoQueue = mutableListOf<Package>()
