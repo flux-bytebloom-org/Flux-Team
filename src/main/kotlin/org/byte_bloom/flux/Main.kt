@@ -124,7 +124,7 @@ private const val LIGHT_PACKAGE_WEIGHT = 2.0
 private fun testWarehouseQuickSort() {
     println("\n--- Testing Warehouse Cargo QuickSort ---")
 
-    val warehouse = Warehouse("WH-1", "Gaza Hub", "Zone-1")
+    val warehouse = Warehouse("WH-1", "Gaza Hub", "Zone-1", 31.5, 34.5)
     val packagesToAdd = listOf(
         Package("PKG-1", LIGHT_PACKAGE_WEIGHT, "H1", "H2", Priority.LOW),
         Package("PKG-2", MEDIUM_PACKAGE_WEIGHT, "H1", "H2", Priority.URGENT),
