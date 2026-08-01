@@ -11,7 +11,7 @@ package org.byte_bloom.flux.logic.sorters
 
 import org.byte_bloom.flux.domain.model.Package
 
-private const val DEFAULT_WEIGHT_FOR_MISSING_VALUE = 0.0
+private const val DEFAULT_WEIGHT_FOR_MISSING_VALUE = -1.0
 private const val MIN_PACKAGES_TO_SORT = 1
 private const val FIRST_INDEX = 0
 private const val INDEX_OFFSET = 1
