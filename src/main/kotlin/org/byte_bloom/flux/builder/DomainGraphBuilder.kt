@@ -1,6 +1,9 @@
 package org.byte_bloom.flux.builder
 
-import org.byte_bloom.flux.domain.model.*
+import org.byte_bloom.flux.domain.model.Warehouse
+import org.byte_bloom.flux.domain.model.Package
+import org.byte_bloom.flux.domain.model.Route
+import org.byte_bloom.flux.domain.model.Vehicle
 
 /**
  * Responsible for constructing the internal state of the logistics network.
@@ -39,5 +42,7 @@ class DomainGraphBuilder {
         }
 
         return warehouses
+        
     }
+
 }
