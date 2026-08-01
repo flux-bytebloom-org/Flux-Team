@@ -2,12 +2,13 @@ package org.byte_bloom.flux.builder
 
 import org.byte_bloom.flux.domain.model.*
 
+/**
+ * Responsible for constructing the internal state of the logistics network.
+ * By mapping domain entities to their respective hubs, this builder ensures
+ * that warehouses have full context of available packages, vehicles, and routes.
+ */
 class DomainGraphBuilder {
 
-    /**
-     * يقوم ببناء الرسم البياني (Graph) بربط الكائنات ببعضها البعض.
-     * تستخدم هذه الدالة الـ HashMaps لضمان تعقيد زمني خطي O(N).
-     */
     fun buildGraph(
         warehouses: List<Warehouse>,
         packages: List<Package>,
@@ -15,26 +16,28 @@ class DomainGraphBuilder {
         vehicles: List<Vehicle>
     ): List<Warehouse> {
 
-        // 1. فهرسة المخازن (Indexing) - تحويل القائمة إلى Map لسرعة الوصول O(1)
+        // Indexing warehouses by ID to allow O(1) constant-time lookups,
+        // avoiding nested loops which would degrade performance as data grows.
         val warehouseMap = warehouses.associateBy { it.warehouseId }
 
-        // 2. ربط الشحنات (Packages) بالمخازن بناءً على الوجهة
+        // Distribute packages to their respective destination hubs to ensure
+        // the warehouse model correctly reflects current inventory demands.
         packages.forEach { pkg ->
-            // نستخدم ?. للآمان في حال كان الـ ID غير موجود بالخطأ
             warehouseMap[pkg.destinationHubId]?.cargoQueue?.add(pkg)
         }
 
-        // 3. ربط المركبات (Vehicles) بالمخازن بناءً على موقعها الحالي
+        // Attach vehicles to their current location to maintain an accurate
+        // state of available transport resources at each specific node.
         vehicles.forEach { vehicle ->
             warehouseMap[vehicle.currentHub]?.stationedVehicles?.add(vehicle)
         }
 
-        // 4. ربط المسارات (Routes) بالمخازن بناءً على نقطة الانطلاق
+        // Configure network topography by linking origin hubs to their allowed
+        // outgoing routes, enabling pathfinding algorithms to traverse the graph.
         routes.forEach { route ->
             warehouseMap[route.originHub]?.outgoingRoutes?.add(route)
         }
 
-        // نرجع قائمة المخازن، وهي الآن تحتوي على كل العلاقات المترابطة (Graph)
         return warehouses
     }
 }
