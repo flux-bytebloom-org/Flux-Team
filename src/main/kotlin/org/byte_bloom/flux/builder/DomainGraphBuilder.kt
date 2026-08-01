@@ -42,7 +42,7 @@ class DomainGraphBuilder {
         }
 
         return warehouses
-        
+
     }
 
 }
