@@ -92,7 +92,7 @@ private fun testWarehouseQuickSort() {
                 Package("PKG-1", LIGHT_PACKAGE_WEIGHT, "H1", "H2", Priority.LOW),
                 Package("PKG-2", MEDIUM_PACKAGE_WEIGHT, "H1", "H2", Priority.URGENT),
                 Package("PKG-3", null, "H1", "H2", Priority.LOW),
-                Package("PKG-4", LIGHT_PACKAGE_WEIGHT, "H1", "H2", Priority.STANDARD)
+                Package("PKG-4", HEAVY_PACKAGE_WEIGHT, "H1", "H2", Priority.STANDARD)
             )
         )
     }
