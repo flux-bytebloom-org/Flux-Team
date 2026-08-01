@@ -1,6 +1,5 @@
 package org.byte_bloom.flux
 
-
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.model.Route
@@ -34,7 +33,6 @@ fun main() {
     printTopPriorityPackages(packages)
 }
 
-
 private fun loadPackages(): List<Package> {
 
     val lines = readCsv("src/main/resources/packages.csv")
@@ -67,7 +65,6 @@ private fun loadFleet(): List<Vehicle> {
     return parseFleet(cleanFleetLines)
 }
 
-
 private fun printParsingSummary(
     packages: List<Package>,
     warehouses: List<Warehouse>,
@@ -93,6 +90,15 @@ private fun printTopPriorityPackages(
 
     val topPackages = sortedPackages.take(TOP_PACKAGES_DISPLAY_COUNT)
     topPackages.forEach { pkg ->
-println("ID: ${pkg.packageId}, Weight: ${pkg.weight}, Dest: ${pkg.destinationHubId}, Priority: ${pkg.priority}")
+        printPackageLine(pkg)
     }
+    // saraTest()
+}
+
+private fun printPackageLine(pkg: Package) {
+    val id = pkg.packageId
+    val weight = pkg.weight
+    val dest = pkg.destinationHubId
+    val priority = pkg.priority
+    println("ID: $id, Weight: $weight, Dest: $dest, Priority: $priority")
 }
