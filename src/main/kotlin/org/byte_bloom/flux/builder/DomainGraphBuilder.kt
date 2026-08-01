@@ -26,19 +26,19 @@ class DomainGraphBuilder {
         // Distribute packages to their respective destination hubs to ensure
         // the warehouse model correctly reflects current inventory demands.
         packages.forEach { pkg ->
-            warehouseMap[pkg.destinationHubId]?.cargoQueue?.add(pkg)
+            warehouseMap[pkg.destinationHubId]?.addPackage(pkg)
         }
 
         // Attach vehicles to their current location to maintain an accurate
         // state of available transport resources at each specific node.
         vehicles.forEach { vehicle ->
-            warehouseMap[vehicle.currentHub]?.stationedVehicles?.add(vehicle)
+            warehouseMap[vehicle.currentHub]?.addVehicle(vehicle)
         }
 
         // Configure network topography by linking origin hubs to their allowed
         // outgoing routes, enabling pathfinding algorithms to traverse the graph.
         routes.forEach { route ->
-            warehouseMap[route.originHub]?.outgoingRoutes?.add(route)
+            warehouseMap[route.originHub]?.addRoute(route)
         }
 
         return warehouses

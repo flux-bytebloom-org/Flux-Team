@@ -6,6 +6,9 @@ import org.byte_bloom.flux.data.parsers.parsePackages
 import org.byte_bloom.flux.data.parsers.parseRoutes
 import org.byte_bloom.flux.data.parsers.parseWarehouses
 import org.byte_bloom.flux.data.readers.readCsv
+import org.byte_bloom.flux.domain.pricing.EcoStrategy
+import org.byte_bloom.flux.domain.pricing.ExpressStrategy
+import org.byte_bloom.flux.domain.pricing.RoutePricingEngine
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.Route
@@ -14,6 +17,8 @@ import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.logic.sorters.sortByPriorityAndWeightDescending
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
+private const val TEST_TRANSIT_DISTANCE = 100.0
+private const val TEST_TRANSIT_WEIGHT = 50.0
 
 fun main() {
     val packages = loadPackages()
@@ -24,6 +29,7 @@ fun main() {
     printParsingSummary(packages, warehouses, routes, fleet)
     printTopPriorityPackages(packages)
 
+    testPricingEngineMaria()
     testWarehouseQuickSort()
 }
 
@@ -72,8 +78,8 @@ private fun printTopPriorityPackages(packages: List<Package>) {
     topPackages.forEach { pkg ->
         printPackageLine(pkg)
     }
-}
 
+}
 private fun printPackageLine(pkg: Package) {
     val id = pkg.packageId
     val weight = pkg.weight
@@ -81,23 +87,53 @@ private fun printPackageLine(pkg: Package) {
     val priority = pkg.priority
     println("ID: $id, Weight: $weight, Dest: $dest, Priority: $priority")
 }
+
+/* For Maria Testing */
+private fun testPricingEngineMaria() {
+
+    val engine = RoutePricingEngine(
+        EcoStrategy()
+    )
+
+    println(
+        "Eco cost: " +
+                engine.calculateTransitCost(
+                    TEST_TRANSIT_DISTANCE,
+                    TEST_TRANSIT_WEIGHT
+                )
+    )
+
+    engine.changeStrategy(
+        ExpressStrategy()
+    )
+
+    println(
+        "Express cost: " +
+                engine.calculateTransitCost(
+                    TEST_TRANSIT_DISTANCE,
+                    TEST_TRANSIT_WEIGHT
+                )
+    )
+
+}
+
+
 private const val HEAVY_PACKAGE_WEIGHT = 50.0
 private const val MEDIUM_PACKAGE_WEIGHT = 10.5
 private const val LIGHT_PACKAGE_WEIGHT = 2.0
 private fun testWarehouseQuickSort() {
     println("\n--- Testing Warehouse Cargo QuickSort ---")
-    val warehouse = Warehouse("WH-1", "Gaza Hub", "Zone-1").apply {
-        cargoQueue.addAll(
-            listOf(
-                Package("PKG-1", LIGHT_PACKAGE_WEIGHT, "H1", "H2", Priority.LOW),
-                Package("PKG-2", MEDIUM_PACKAGE_WEIGHT, "H1", "H2", Priority.URGENT),
-                Package("PKG-3", null, "H1", "H2", Priority.LOW),
-                Package("PKG-4", HEAVY_PACKAGE_WEIGHT, "H1", "H2", Priority.STANDARD)
-            )
-        )
-    }
 
-    println("Before sorting: ${warehouse.cargoQueue.map { it.weight }}")
+    val warehouse = Warehouse("WH-1", "Gaza Hub", "Zone-1")
+    val packagesToAdd = listOf(
+        Package("PKG-1", LIGHT_PACKAGE_WEIGHT, "H1", "H2", Priority.LOW),
+        Package("PKG-2", MEDIUM_PACKAGE_WEIGHT, "H1", "H2", Priority.URGENT),
+        Package("PKG-3", null, "H1", "H2", Priority.LOW),
+        Package("PKG-4", HEAVY_PACKAGE_WEIGHT, "H1", "H2", Priority.STANDARD)
+    )
+    packagesToAdd.forEach { warehouse.addPackage(it) }
+
+    println("Before sorting: ${warehouse.getCargoQueue().map { it.weight }}")
     warehouse.sortCargoQueue()
-    println("After sorting:  ${warehouse.cargoQueue.map { it.weight }}")
+    println("After sorting:  ${warehouse.getCargoQueue().map { it.weight }}")
 }
