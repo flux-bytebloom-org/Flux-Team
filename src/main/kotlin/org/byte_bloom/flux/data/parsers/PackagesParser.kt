@@ -4,12 +4,13 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.utils.logWarning
 
-private const val PACKAGE_COLUMN_COUNT = 4
+private const val PACKAGE_COLUMN_COUNT = 5
 
 private const val PACKAGE_ID_INDEX = 0
 private const val PACKAGE_WEIGHT_INDEX = 1
-private const val PACKAGE_DESTINATION_INDEX = 2
-private const val PACKAGE_PRIORITY_INDEX = 3
+private const val PACKAGE_ORIGIN_INDEX = 2
+private const val PACKAGE_DESTINATION_INDEX = 3
+private const val PACKAGE_PRIORITY_INDEX = 4
 
 fun parsePackages(lines: List<String>): List<Package> {
 
@@ -53,10 +54,14 @@ private fun hasRequiredPackageData(
 ): Boolean {
 
     val packageId = columns[PACKAGE_ID_INDEX]
+    val originHubId = columns[PACKAGE_ORIGIN_INDEX]
     val destinationHubId = columns[PACKAGE_DESTINATION_INDEX]
 
-    if (packageId.isEmpty() || destinationHubId.isEmpty()) {
-
+    if (
+        packageId.isEmpty() ||
+        originHubId.isEmpty() ||
+        destinationHubId.isEmpty()
+    ) {
         logWarning(
             "Missing required package data: $line"
         )
@@ -80,6 +85,8 @@ private fun createPackage(
         line
     )
 
+    val originHubId = columns[PACKAGE_ORIGIN_INDEX]
+
     val destinationHubId = columns[PACKAGE_DESTINATION_INDEX]
 
     val priority = parsePriority(
@@ -89,9 +96,9 @@ private fun createPackage(
     return Package(
         packageId = packageId,
         weight = weight,
+        originHubId = originHubId,
         destinationHubId = destinationHubId,
-        priority = priority,
-        originHubId = ""
+        priority = priority
     )
 }
 

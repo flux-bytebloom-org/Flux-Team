@@ -23,6 +23,15 @@ class DomainGraphBuilder {
         // avoiding nested loops which would degrade performance as data grows.
         val warehouseMap = warehouses.associateBy { it.warehouseId }
 
+        /*
+        for detket
+        val packagesByDestination = packages.groupBy { it.destinationHubId }
+
+        val routesByOrigin = routes.groupBy { it.originHub }
+
+        val vehiclesByCurrentHub = vehicles.groupBy { it.currentHub }
+        */
+
         // Distribute packages to their respective destination hubs to ensure
         // the warehouse model correctly reflects current inventory demands.
         packages.forEach { pkg ->
