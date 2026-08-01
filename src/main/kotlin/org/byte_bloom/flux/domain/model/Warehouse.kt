@@ -36,4 +36,10 @@ class Warehouse(
     fun getStationedVehicles(): List<Vehicle> {
         return stationedVehicles.toList()
     }
+    
+    fun sortCargoQueue() {
+        sortCargoByWeightDescending(cargoQueue)
+    }
+
+    
 }
