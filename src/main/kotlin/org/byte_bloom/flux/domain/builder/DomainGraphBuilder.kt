@@ -1,9 +1,9 @@
-package org.byte_bloom.flux.builder
+package org.byte_bloom.flux.domain.builder
 
-import org.byte_bloom.flux.domain.model.Warehouse
-import org.byte_bloom.flux.domain.model.Package
-import org.byte_bloom.flux.domain.model.Route
-import org.byte_bloom.flux.domain.model.Vehicle
+import org.byte_bloom.flux.data.dataholders.WarehouseRaw
+import org.byte_bloom.flux.data.dataholders.PackageRaw
+import org.byte_bloom.flux.data.dataholders.RouteRaw
+import org.byte_bloom.flux.data.dataholders.VehicleRaw
 
 /**
  * Responsible for constructing the internal state of the logistics network.
@@ -13,11 +13,11 @@ import org.byte_bloom.flux.domain.model.Vehicle
 class DomainGraphBuilder {
 
     fun buildGraph(
-        warehouses: List<Warehouse>,
-        packages: List<Package>,
-        routes: List<Route>,
-        vehicles: List<Vehicle>
-    ): List<Warehouse> {
+        warehouses: List<WarehouseRaw>,
+        packages: List<PackageRaw>,
+        routes: List<RouteRaw>,
+        vehicles: List<VehicleRaw>
+    ): List<WarehouseRaw> {
 
         // Indexing warehouses by ID to allow O(1) constant-time lookups,
         // avoiding nested loops which would degrade performance as data grows.

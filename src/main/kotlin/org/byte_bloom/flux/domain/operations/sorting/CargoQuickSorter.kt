@@ -7,16 +7,16 @@
  * 3. Safe Null Handling: Defaults missing weights to 0.0
  *    to push invalid entries to the end safely.
  */
-package org.byte_bloom.flux.logic.sorters
+package org.byte_bloom.flux.domain.operations.sorting
 
-import org.byte_bloom.flux.domain.model.Package
+import org.byte_bloom.flux.data.dataholders.PackageRaw
 
 private const val DEFAULT_WEIGHT_FOR_MISSING_VALUE = -1.0
 private const val MIN_PACKAGES_TO_SORT = 1
 private const val FIRST_INDEX = 0
 private const val INDEX_OFFSET = 1
 
-fun sortCargoByWeightDescending(cargoQueue: MutableList<Package>) {
+fun sortCargoByWeightDescending(cargoQueue: MutableList<PackageRaw>) {
     val totalPackages = cargoQueue.size
 
     if (totalPackages <= MIN_PACKAGES_TO_SORT) return
@@ -24,7 +24,7 @@ fun sortCargoByWeightDescending(cargoQueue: MutableList<Package>) {
     quickSortPackages(cargoQueue, startIndex = FIRST_INDEX, endIndex = totalPackages - INDEX_OFFSET)
 }
 
-private fun quickSortPackages(cargoQueue: MutableList<Package>, startIndex: Int, endIndex: Int) {
+private fun quickSortPackages(cargoQueue: MutableList<PackageRaw>, startIndex: Int, endIndex: Int) {
     if (startIndex < endIndex) {
         val pivotIndex = partitionCargoByWeightDescending(
             cargoQueue = cargoQueue,
@@ -40,7 +40,7 @@ private fun quickSortPackages(cargoQueue: MutableList<Package>, startIndex: Int,
 }
 
 private tailrec fun partitionCargoByWeightDescending(
-    cargoQueue: MutableList<Package>,
+    cargoQueue: MutableList<PackageRaw>,
     startIndex: Int,
     endIndex: Int,
     currentIndex: Int,
@@ -70,7 +70,7 @@ private tailrec fun partitionCargoByWeightDescending(
     )
 }
 
-private fun swapPackages(cargoQueue: MutableList<Package>, firstIndex: Int, secondIndex: Int) {
+private fun swapPackages(cargoQueue: MutableList<PackageRaw>, firstIndex: Int, secondIndex: Int) {
     if (firstIndex != secondIndex) {
         val temporaryPackageHolder = cargoQueue[firstIndex]
         cargoQueue[firstIndex] = cargoQueue[secondIndex]

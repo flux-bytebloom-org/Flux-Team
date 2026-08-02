@@ -6,15 +6,15 @@ import org.byte_bloom.flux.data.parsers.parsePackages
 import org.byte_bloom.flux.data.parsers.parseRoutes
 import org.byte_bloom.flux.data.parsers.parseWarehouses
 import org.byte_bloom.flux.data.readers.readCsv
-import org.byte_bloom.flux.domain.pricing.EcoStrategy
-import org.byte_bloom.flux.domain.pricing.ExpressStrategy
-import org.byte_bloom.flux.domain.pricing.RoutePricingEngine
-import org.byte_bloom.flux.domain.model.Package
-import org.byte_bloom.flux.domain.model.Priority
-import org.byte_bloom.flux.domain.model.Route
-import org.byte_bloom.flux.domain.model.Vehicle
-import org.byte_bloom.flux.domain.model.Warehouse
-import org.byte_bloom.flux.logic.sorters.sortByPriorityAndWeightDescending
+import org.byte_bloom.flux.domain.operations.pricing.EcoStrategy
+import org.byte_bloom.flux.domain.operations.pricing.ExpressStrategy
+import org.byte_bloom.flux.domain.operations.pricing.RoutePricingEngine
+import org.byte_bloom.flux.data.dataholders.PackageRaw
+import org.byte_bloom.flux.data.dataholders.Priority
+import org.byte_bloom.flux.data.dataholders.RouteRaw
+import org.byte_bloom.flux.data.dataholders.VehicleRaw
+import org.byte_bloom.flux.data.dataholders.WarehouseRaw
+import org.byte_bloom.flux.domain.operations.sorting.sortByPriorityAndWeightDescending
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 private const val TEST_TRANSIT_DISTANCE = 100.0
@@ -33,35 +33,35 @@ fun main() {
     testWarehouseQuickSort()
 }
 
-private fun loadPackages(): List<Package> {
+private fun loadPackages(): List<PackageRaw> {
     val lines = readCsv("src/main/resources/packages.csv")
     val cleanLines = cleanLines(lines)
     return parsePackages(cleanLines)
 }
 
-private fun loadWarehouses(): List<Warehouse> {
+private fun loadWarehouses(): List<WarehouseRaw> {
     val lines = readCsv("src/main/resources/warehouses.csv")
     val cleanLines = cleanLines(lines)
     return parseWarehouses(cleanLines)
 }
 
-private fun loadRoutes(): List<Route> {
+private fun loadRoutes(): List<RouteRaw> {
     val routeLines = readCsv("src/main/resources/routes.csv")
     val cleanRouteLines = cleanLines(routeLines)
     return parseRoutes(cleanRouteLines)
 }
 
-private fun loadFleet(): List<Vehicle> {
+private fun loadFleet(): List<VehicleRaw> {
     val fleetLines = readCsv("src/main/resources/fleet.csv")
     val cleanFleetLines = cleanLines(fleetLines)
     return parseFleet(cleanFleetLines)
 }
 
 private fun printParsingSummary(
-    packages: List<Package>,
-    warehouses: List<Warehouse>,
-    routes: List<Route>,
-    fleet: List<Vehicle>
+    packages: List<PackageRaw>,
+    warehouses: List<WarehouseRaw>,
+    routes: List<RouteRaw>,
+    fleet: List<VehicleRaw>
 ) {
     println("--- Parsing Summary ---")
     println("Packages parsed successfully: ${packages.size}")
@@ -70,7 +70,7 @@ private fun printParsingSummary(
     println("Fleet parsed successfully: ${fleet.size}")
 }
 
-private fun printTopPriorityPackages(packages: List<Package>) {
+private fun printTopPriorityPackages(packages: List<PackageRaw>) {
     val sortedPackages = sortByPriorityAndWeightDescending(packages)
 
     println("\n--- Top 3 Urgent & Heaviest Packages ---")
@@ -80,7 +80,7 @@ private fun printTopPriorityPackages(packages: List<Package>) {
     }
 
 }
-private fun printPackageLine(pkg: Package) {
+private fun printPackageLine(pkg: PackageRaw) {
     val id = pkg.packageId
     val weight = pkg.weight
     val dest = pkg.destinationHubId
@@ -126,12 +126,12 @@ private const val LONGITUDE = 34.5
 private fun testWarehouseQuickSort() {
     println("\n--- Testing Warehouse Cargo QuickSort ---")
 
-    val warehouse = Warehouse("WH-1", "Gaza Hub", "Zone-1", LATITUDE, LONGITUDE)
+    val warehouse = WarehouseRaw("WH-1", "Gaza Hub", "Zone-1", LATITUDE, LONGITUDE)
     val packagesToAdd = listOf(
-        Package("PKG-1", LIGHT_PACKAGE_WEIGHT, "H1", "H2", Priority.LOW),
-        Package("PKG-2", MEDIUM_PACKAGE_WEIGHT, "H1", "H2", Priority.URGENT),
-        Package("PKG-3", null, "H1", "H2", Priority.LOW),
-        Package("PKG-4", HEAVY_PACKAGE_WEIGHT, "H1", "H2", Priority.STANDARD)
+        PackageRaw("PKG-1", LIGHT_PACKAGE_WEIGHT, "H1", "H2", Priority.LOW),
+        PackageRaw("PKG-2", MEDIUM_PACKAGE_WEIGHT, "H1", "H2", Priority.URGENT),
+        PackageRaw("PKG-3", null, "H1", "H2", Priority.LOW),
+        PackageRaw("PKG-4", HEAVY_PACKAGE_WEIGHT, "H1", "H2", Priority.STANDARD)
     )
     packagesToAdd.forEach { warehouse.addPackage(it) }
 

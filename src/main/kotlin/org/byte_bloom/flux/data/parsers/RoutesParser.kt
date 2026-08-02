@@ -1,6 +1,6 @@
 package org.byte_bloom.flux.data.parsers
 
-import org.byte_bloom.flux.domain.model.Route
+import org.byte_bloom.flux.data.dataholders.RouteRaw
 import org.byte_bloom.flux.utils.logWarning
 
 private const val ROUTE_COLUMN_COUNT = 5
@@ -11,9 +11,9 @@ private const val DESTINATION_HUB_ID_INDEX = 2
 private const val DISTANCE_INDEX = 3
 private const val TYPICAL_DELAY_INDEX = 4
 
-fun parseRoutes(lines: List<String>): List<Route> {
+fun parseRoutes(lines: List<String>): List<RouteRaw> {
 
-    val routes = mutableListOf<Route>()
+    val routes = mutableListOf<RouteRaw>()
 
     for (line in lines) {
 
@@ -29,7 +29,7 @@ fun parseRoutes(lines: List<String>): List<Route> {
 
 private fun parseRouteLine(
     rawLine: String
-): Route? {
+): RouteRaw? {
 
     val columns = splitColumns(rawLine)
 
@@ -75,7 +75,7 @@ private fun hasRequiredRouteData(
 private fun createRoute(
     columns: List<String>,
     line: String
-): Route {
+): RouteRaw {
 
     val routeId = columns[ROUTE_ID_INDEX]
     val originHubId = columns[ORIGIN_HUB_ID_INDEX]
@@ -93,7 +93,7 @@ private fun createRoute(
         line
     )
 
-    return Route(
+    return RouteRaw(
         routeId = routeId,
         originHub = originHubId,
         destinationHub = destinationHubId,

@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.data.parsers
 
 
-import org.byte_bloom.flux.domain.model.Warehouse
+import org.byte_bloom.flux.data.dataholders.WarehouseRaw
 import org.byte_bloom.flux.utils.logWarning
 
 private const val WAREHOUSE_COLUMN_COUNT = 5
@@ -12,8 +12,8 @@ private const val WAREHOUSE_REGIONAL_ZONE_INDEX = 2
 private const val WAREHOUSE_LATITUDE_INDEX = 3
 private const val WAREHOUSE_LONGITUDE_INDEX = 4
 
-fun parseWarehouses(rawWarehouseLines: List<String>): List<Warehouse> {
-    val warehouses = mutableListOf<Warehouse>()
+fun parseWarehouses(rawWarehouseLines: List<String>): List<WarehouseRaw> {
+    val warehouses = mutableListOf<WarehouseRaw>()
 
     for (rawLine in rawWarehouseLines) {
 
@@ -27,7 +27,7 @@ fun parseWarehouses(rawWarehouseLines: List<String>): List<Warehouse> {
     return warehouses
 }
 
-private fun parseWarehouseLine(rawLine: String): Warehouse? {
+private fun parseWarehouseLine(rawLine: String): WarehouseRaw? {
 
     val columns = splitColumns(rawLine)
 
@@ -66,13 +66,13 @@ private fun hasRequiredWarehouseData(
 
 private fun createWarehouse(
     columns: List<String>
-): Warehouse {
+): WarehouseRaw {
 
     val warehouseId = columns[WAREHOUSE_ID_INDEX]
     val warehouseName = columns[WAREHOUSE_NAME_INDEX]
     val warehouseRegionalZone = columns[WAREHOUSE_REGIONAL_ZONE_INDEX]
 
-    return Warehouse(
+    return WarehouseRaw(
         warehouseId = warehouseId,
         name = warehouseName,
         regionalZone = warehouseRegionalZone,

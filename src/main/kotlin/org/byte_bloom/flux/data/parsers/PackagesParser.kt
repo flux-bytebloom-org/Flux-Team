@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.data.parsers
 
-import org.byte_bloom.flux.domain.model.Package
-import org.byte_bloom.flux.domain.model.Priority
+import org.byte_bloom.flux.data.dataholders.PackageRaw
+import org.byte_bloom.flux.data.dataholders.Priority
 import org.byte_bloom.flux.utils.logWarning
 
 private const val PACKAGE_COLUMN_COUNT = 5
@@ -12,9 +12,9 @@ private const val PACKAGE_ORIGIN_INDEX = 2
 private const val PACKAGE_DESTINATION_INDEX = 3
 private const val PACKAGE_PRIORITY_INDEX = 4
 
-fun parsePackages(lines: List<String>): List<Package> {
+fun parsePackages(lines: List<String>): List<PackageRaw> {
 
-    val packages = mutableListOf<Package>()
+    val packages = mutableListOf<PackageRaw>()
 
     for (line in lines) {
 
@@ -30,7 +30,7 @@ fun parsePackages(lines: List<String>): List<Package> {
 
 private fun parsePackageLine(
     rawLine: String
-): Package? {
+): PackageRaw? {
 
     val columns = splitColumns(rawLine)
 
@@ -75,7 +75,7 @@ private fun hasRequiredPackageData(
 private fun createPackage(
     columns: List<String>,
     line: String
-): Package {
+): PackageRaw {
 
     val packageId = columns[PACKAGE_ID_INDEX]
 
@@ -93,7 +93,7 @@ private fun createPackage(
         columns[PACKAGE_PRIORITY_INDEX]
     )
 
-    return Package(
+    return PackageRaw(
         packageId = packageId,
         weight = weight,
         originHubId = originHubId,
