@@ -16,63 +16,70 @@ private const val MIN_PACKAGES_TO_SORT = 1
 private const val FIRST_INDEX = 0
 private const val INDEX_OFFSET = 1
 
+//added a new data class to hold the original index of each package to save the stability
+private data class IndexedPackage(val originalIndex: Int, val pkg: Package)
+
 fun sortCargoByWeightDescending(cargoQueue: MutableList<Package>) {
     val totalPackages = cargoQueue.size
-
     if (totalPackages <= MIN_PACKAGES_TO_SORT) return
 
-    quickSortPackages(cargoQueue, startIndex = FIRST_INDEX, endIndex = totalPackages - INDEX_OFFSET)
-}
 
-private fun quickSortPackages(cargoQueue: MutableList<Package>, startIndex: Int, endIndex: Int) {
-    if (startIndex < endIndex) {
-        val pivotIndex = partitionCargoByWeightDescending(
-            cargoQueue = cargoQueue,
-            startIndex = startIndex,
-            endIndex = endIndex,
-            currentIndex = startIndex,
-            boundaryIndex = startIndex - INDEX_OFFSET
-        )
+    val indexed = cargoQueue
+        .mapIndexed { index, pkg -> IndexedPackage(index, pkg) }
+        .toMutableList()
 
-        quickSortPackages(cargoQueue, startIndex, pivotIndex - INDEX_OFFSET)
-        quickSortPackages(cargoQueue, pivotIndex + INDEX_OFFSET, endIndex)
+    quickSortIndexed(indexed, startIndex = FIRST_INDEX, endIndex = totalPackages - INDEX_OFFSET)
+
+    for (i in cargoQueue.indices) {
+        cargoQueue[i] = indexed[i].pkg
     }
 }
 
-private tailrec fun partitionCargoByWeightDescending(
-    cargoQueue: MutableList<Package>,
+private fun quickSortIndexed(list: MutableList<IndexedPackage>, startIndex: Int, endIndex: Int) {
+    if (startIndex < endIndex) {
+        val pivotIndex = partitionIndexed(list, startIndex, endIndex, startIndex, startIndex - INDEX_OFFSET)
+        quickSortIndexed(list, startIndex, pivotIndex - INDEX_OFFSET)
+        quickSortIndexed(list, pivotIndex + INDEX_OFFSET, endIndex)
+    }
+}
+
+private tailrec fun partitionIndexed(
+    list: MutableList<IndexedPackage>,
     startIndex: Int,
     endIndex: Int,
     currentIndex: Int,
     boundaryIndex: Int
 ): Int {
     if (currentIndex >= endIndex) {
-        swapPackages(cargoQueue, boundaryIndex + INDEX_OFFSET, endIndex)
+        swapIndexed(list, boundaryIndex + INDEX_OFFSET, endIndex)
         return boundaryIndex + INDEX_OFFSET
     }
-    val currentWeight = cargoQueue[currentIndex].weight ?: DEFAULT_WEIGHT_FOR_MISSING_VALUE
-    val pivotWeight = cargoQueue[endIndex].weight ?: DEFAULT_WEIGHT_FOR_MISSING_VALUE
 
-    val nextBoundary = if (currentWeight >= pivotWeight) {
-        swapPackages(cargoQueue, boundaryIndex + INDEX_OFFSET, currentIndex)
+    val nextBoundary = if (comesBeforeOrEqual(list[currentIndex], list[endIndex])) {
+        swapIndexed(list, boundaryIndex + INDEX_OFFSET, currentIndex)
         boundaryIndex + INDEX_OFFSET
     } else {
         boundaryIndex
     }
 
-    return partitionCargoByWeightDescending(
-        cargoQueue = cargoQueue,
-        startIndex = startIndex,
-        endIndex = endIndex,
-        currentIndex = currentIndex + INDEX_OFFSET,
-        boundaryIndex = nextBoundary
-    )
+    return partitionIndexed(list, startIndex, endIndex, currentIndex + INDEX_OFFSET, nextBoundary)
 }
 
-private fun swapPackages(cargoQueue: MutableList<Package>, firstIndex: Int, secondIndex: Int) {
+// 5. دالة المقارنة الجديدة: الأعلى وزنًا يسبق، وعند التعادل الأقدم موقعًا يسبق
+private fun comesBeforeOrEqual(a: IndexedPackage, b: IndexedPackage): Boolean {
+    val weightA = a.pkg.weight ?: DEFAULT_WEIGHT_FOR_MISSING_VALUE
+    val weightB = b.pkg.weight ?: DEFAULT_WEIGHT_FOR_MISSING_VALUE
+
+    return when {
+        weightA != weightB -> weightA > weightB
+        else -> a.originalIndex <= b.originalIndex
+    }
+}
+
+private fun swapIndexed(list: MutableList<IndexedPackage>, firstIndex: Int, secondIndex: Int) {
     if (firstIndex != secondIndex) {
-        val temporaryPackageHolder = cargoQueue[firstIndex]
-        cargoQueue[firstIndex] = cargoQueue[secondIndex]
-        cargoQueue[secondIndex] = temporaryPackageHolder
+        val temp = list[firstIndex]
+        list[firstIndex] = list[secondIndex]
+        list[secondIndex] = temp
     }
 }
