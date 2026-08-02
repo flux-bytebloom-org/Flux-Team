@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.logic.sorters
+package org.byte_bloom.flux.domain.operations.sorting
 
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority

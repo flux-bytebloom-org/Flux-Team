@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.pricing
+package org.byte_bloom.flux.domain.operations.pricing
 
 
 class RoutePricingEngine(

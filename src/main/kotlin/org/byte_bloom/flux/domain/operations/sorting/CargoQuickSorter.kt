@@ -7,7 +7,7 @@
  * 3. Safe Null Handling: Defaults missing weights to 0.0
  *    to push invalid entries to the end safely.
  */
-package org.byte_bloom.flux.logic.sorters
+package org.byte_bloom.flux.domain.operations.sorting
 
 import org.byte_bloom.flux.domain.model.Package
 

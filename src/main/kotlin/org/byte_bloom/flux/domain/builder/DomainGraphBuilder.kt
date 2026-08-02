@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.builder
+package org.byte_bloom.flux.domain.builder
 
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.model.Package

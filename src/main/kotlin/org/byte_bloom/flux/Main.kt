@@ -6,15 +6,15 @@ import org.byte_bloom.flux.data.parsers.parsePackages
 import org.byte_bloom.flux.data.parsers.parseRoutes
 import org.byte_bloom.flux.data.parsers.parseWarehouses
 import org.byte_bloom.flux.data.readers.readCsv
-import org.byte_bloom.flux.domain.pricing.EcoStrategy
-import org.byte_bloom.flux.domain.pricing.ExpressStrategy
-import org.byte_bloom.flux.domain.pricing.RoutePricingEngine
+import org.byte_bloom.flux.domain.operations.pricing.EcoStrategy
+import org.byte_bloom.flux.domain.operations.pricing.ExpressStrategy
+import org.byte_bloom.flux.domain.operations.pricing.RoutePricingEngine
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
-import org.byte_bloom.flux.logic.sorters.sortByPriorityAndWeightDescending
+import org.byte_bloom.flux.domain.operations.sorting.sortByPriorityAndWeightDescending
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 private const val TEST_TRANSIT_DISTANCE = 100.0
