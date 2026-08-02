@@ -4,7 +4,6 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
-import kotlin.collections.forEach
 
 
 fun printWarehouseGraph(warehouses: List<Warehouse>) {

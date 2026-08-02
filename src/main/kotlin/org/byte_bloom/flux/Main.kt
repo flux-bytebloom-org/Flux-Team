@@ -1,17 +1,17 @@
 package org.byte_bloom.flux
 
-import org.byte_bloom.flux.data.loaders.loadFleet
-import org.byte_bloom.flux.data.loaders.loadPackages
-import org.byte_bloom.flux.data.loaders.loadRoutes
-import org.byte_bloom.flux.data.loaders.loadWarehouses
-import org.byte_bloom.flux.utils.printWarehouseGraph
 import org.byte_bloom.flux.data.dataholders.PackageRaw
 import org.byte_bloom.flux.data.dataholders.RouteRaw
 import org.byte_bloom.flux.data.dataholders.VehicleRaw
 import org.byte_bloom.flux.data.dataholders.WarehouseRaw
+import org.byte_bloom.flux.data.loaders.loadFleet
+import org.byte_bloom.flux.data.loaders.loadPackages
+import org.byte_bloom.flux.data.loaders.loadRoutes
+import org.byte_bloom.flux.data.loaders.loadWarehouses
 import org.byte_bloom.flux.domain.builder.DomainGraphBuilder
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.operations.sorting.sortByPriorityAndWeightDescending
+import org.byte_bloom.flux.utils.printWarehouseGraph
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 
@@ -60,6 +60,7 @@ private fun printTopPriorityPackages(packages: List<PackageRaw>) {
     }
 
 }
+
 private fun printPackageLine(pkg: PackageRaw) {
     val id = pkg.id
     val weight = pkg.weight
@@ -67,7 +68,6 @@ private fun printPackageLine(pkg: PackageRaw) {
     val priority = pkg.priority
     println("ID: $id, Weight: $weight, Dest: $dest, Priority: $priority")
 }
-
 
 
 private fun testBidirectionalIdentity(warehouses: List<Warehouse>) {
@@ -82,7 +82,6 @@ private fun testBidirectionalIdentity(warehouses: List<Warehouse>) {
 
     val vehicle = warehouse.getStationedVehicles().first()
 
-    // فحص identity حقيقي: نفس عنوان الذاكرة، مو مجرد == (equals محتوى)
     val isSameReference = warehouse === vehicle.currentHub
 
     println("Warehouse: ${warehouse.name} (${System.identityHashCode(warehouse)})")

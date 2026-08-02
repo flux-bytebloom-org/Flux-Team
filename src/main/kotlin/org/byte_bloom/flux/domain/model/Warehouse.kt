@@ -8,8 +8,7 @@ data class Warehouse(
     val regionalZone: String,
     val latitude: Double,
     val longitude: Double
-)
-{
+) {
 
     private val cargoQueue = mutableListOf<Package>()
     private val outgoingRoutes = mutableListOf<Route>()
