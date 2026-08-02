@@ -95,8 +95,8 @@ private fun createRoute(
 
     return RouteRaw(
         id = routeId,
-        originHub = originHubId,
-        destinationHub = destinationHubId,
+        originHubId = originHubId,
+        destinationHubId = destinationHubId,
         distanceKm = distance,
         typicalDelayMin = typicalDelay
     )
