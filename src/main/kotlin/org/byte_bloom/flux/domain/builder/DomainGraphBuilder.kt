@@ -88,7 +88,12 @@ class DomainGraphBuilder {
                 return@forEach
             }
             rawVehicles.forEach { raw ->
-                warehouse.addVehicle(Vehicle(id = raw.id, maxCapacityKg = raw.maxCapacityKg, costPerKm = raw.costPerKm, currentHub = warehouse))
+                warehouse.addVehicle(Vehicle(
+                    id = raw.id,
+                    maxCapacityKg = raw.maxCapacityKg,
+                    costPerKm = raw.costPerKm,
+                    currentHub = warehouse
+                ))
             }
         }
     }
