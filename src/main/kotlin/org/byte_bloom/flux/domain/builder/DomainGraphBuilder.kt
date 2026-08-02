@@ -20,7 +20,6 @@ class DomainGraphBuilder {
     private fun buildWarehouses(
         warehouseRaws: List<WarehouseRaw>
     ): Map<String, Warehouse> {
-
         return warehouseRaws.associateBy(
             keySelector = { it.id },
             valueTransform = { raw ->
@@ -35,18 +34,10 @@ class DomainGraphBuilder {
         )
     }
 
-    fun buildGraph(
-        warehouses: List<WarehouseRaw>,
+    private fun attachPackages(
         packages: List<PackageRaw>,
-        routes: List<RouteRaw>,
-        vehicles: List<VehicleRaw>
-    ): List<Warehouse> {
-
-        // Build domain warehouses and index them by ID
-        // to allow O(1) constant-time lookups.
-        val warehouseMap = buildWarehouses(warehouses)
-
-        // Distribute packages to their respective destination hubs.
+        warehouseMap: Map<String, Warehouse>
+    ) {
         packages.forEach { pkg ->
             warehouseMap[pkg.destinationHubId]?.addPackage(
                 Package(
@@ -58,31 +49,52 @@ class DomainGraphBuilder {
                 )
             )
         }
+    }
 
-        // Attach vehicles to their current location.
+    private fun attachVehicles(
+        vehicles: List<VehicleRaw>,
+        warehouseMap: Map<String, Warehouse>
+    ) {
         vehicles.forEach { vehicle ->
             warehouseMap[vehicle.currentHub]?.addVehicle(
                 Vehicle(
-                   id= vehicle.id,
-                    maxCapacityKg=vehicle.maxCapacityKg,
-                    costPerKm= vehicle.costPerKm,
-                    currentHub= warehouseMap[vehicle.currentHub]!!
+                    id = vehicle.id,
+                    maxCapacityKg = vehicle.maxCapacityKg,
+                    costPerKm = vehicle.costPerKm,
+                    currentHub = warehouseMap[vehicle.currentHub]!!
                 )
             )
         }
+    }
 
-        // Attach outgoing routes to their origin warehouses.
+    private fun attachRoutes(
+        routes: List<RouteRaw>,
+        warehouseMap: Map<String, Warehouse>
+    ) {
         routes.forEach { route ->
             warehouseMap[route.originHub]?.addRoute(
                 Route(
-                    id= route.id,
+                    id = route.id,
                     distanceKm = route.distanceKm,
-                    typicalDelayMin= route.typicalDelayMin,
-                    originHub= warehouseMap[route.originHub]!!,
-                    destinationHub= warehouseMap[route.destinationHub]!!
+                    typicalDelayMin = route.typicalDelayMin,
+                    originHub = warehouseMap[route.originHub]!!,
+                    destinationHub = warehouseMap[route.destinationHub]!!
                 )
             )
         }
+    }
+
+    fun buildGraph(
+        warehouses: List<WarehouseRaw>,
+        packages: List<PackageRaw>,
+        routes: List<RouteRaw>,
+        vehicles: List<VehicleRaw>
+    ): List<Warehouse> {
+        val warehouseMap = buildWarehouses(warehouses)
+
+        attachPackages(packages, warehouseMap)
+        attachVehicles(vehicles, warehouseMap)
+        attachRoutes(routes, warehouseMap)
 
         return warehouseMap.values.toList()
     }

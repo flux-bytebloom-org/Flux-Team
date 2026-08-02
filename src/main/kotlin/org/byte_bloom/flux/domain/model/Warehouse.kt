@@ -1,6 +1,5 @@
 package org.byte_bloom.flux.domain.model
 
-import org.byte_bloom.flux.data.dataholders.PackageRaw
 import org.byte_bloom.flux.domain.operations.sorting.sortCargoByWeightDescending
 
 data class Warehouse(
