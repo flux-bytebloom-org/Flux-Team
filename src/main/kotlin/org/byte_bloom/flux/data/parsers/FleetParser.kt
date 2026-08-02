@@ -1,6 +1,6 @@
 package org.byte_bloom.flux.data.parsers
 
-import org.byte_bloom.flux.domain.model.Vehicle
+import org.byte_bloom.flux.data.dataholders.VehicleRaw
 import org.byte_bloom.flux.utils.logWarning
 
 private const val VEHICLE_COLUMN_COUNT = 4
@@ -11,9 +11,9 @@ private const val CAPACITY_INDEX = 2
 private const val COST_INDEX = 3
 
 
-fun parseFleet(lines: List<String>): List<Vehicle> {
+fun parseFleet(lines: List<String>): List<VehicleRaw> {
 
-    val fleet = mutableListOf<Vehicle>()
+    val fleet = mutableListOf<VehicleRaw>()
 
     for (line in lines) {
         val vehicle = parseVehicleLine(line)
@@ -26,7 +26,7 @@ fun parseFleet(lines: List<String>): List<Vehicle> {
 }
 
 
-private fun parseVehicleLine(rawLine: String): Vehicle? {
+private fun parseVehicleLine(rawLine: String): VehicleRaw? {
 
     val columns = splitColumns(rawLine)
 
@@ -69,7 +69,7 @@ private fun hasRequiredVehicleData(
 private fun createVehicle(
     columns: List<String>,
     rawLine: String
-): Vehicle {
+): VehicleRaw {
 
     val vehicleId = columns[VEHICLE_ID_INDEX]
     val hubId = columns[HUB_ID_INDEX]
@@ -86,7 +86,7 @@ private fun createVehicle(
         rawLine
     )
 
-    return Vehicle(
+    return VehicleRaw(
         vehicleId,
         hubId,
         capacity,

@@ -1,6 +1,6 @@
-package org.byte_bloom.flux.domain.model
+package org.byte_bloom.flux.data.dataholders
 
-data class Package(
+data class PackageRaw(
     val packageId: String,
     val weight: Double?,
     val originHubId: String,

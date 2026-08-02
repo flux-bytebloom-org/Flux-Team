@@ -1,8 +1,8 @@
-package org.byte_bloom.flux.domain.model
+package org.byte_bloom.flux.data.dataholders
 
 import org.byte_bloom.flux.domain.operations.sorting.sortCargoByWeightDescending
 
-class Warehouse(
+class WarehouseRaw(
     val warehouseId: String,
     val name: String,
     val regionalZone: String,
@@ -10,34 +10,34 @@ class Warehouse(
     val longitude: Double
 ) {
 
-    private val cargoQueue = mutableListOf<Package>()
-    private val outgoingRoutes = mutableListOf<Route>()
-    private val stationedVehicles = mutableListOf<Vehicle>()
+    private val cargoQueue = mutableListOf<PackageRaw>()
+    private val outgoingRoutes = mutableListOf<RouteRaw>()
+    private val stationedVehicles = mutableListOf<VehicleRaw>()
 
 
-    fun addPackage(packageItem: Package) {
+    fun addPackage(packageItem: PackageRaw) {
         cargoQueue.add(packageItem)
     }
 
-    fun getCargoQueue(): List<Package> {
+    fun getCargoQueue(): List<PackageRaw> {
         return cargoQueue.toList()
     }
 
 
-    fun addRoute(route: Route) {
+    fun addRoute(route: RouteRaw) {
         outgoingRoutes.add(route)
     }
 
-    fun getOutgoingRoutes(): List<Route> {
+    fun getOutgoingRoutes(): List<RouteRaw> {
         return outgoingRoutes.toList()
     }
 
 
-    fun addVehicle(vehicle: Vehicle) {
+    fun addVehicle(vehicle: VehicleRaw) {
         stationedVehicles.add(vehicle)
     }
 
-    fun getStationedVehicles(): List<Vehicle> {
+    fun getStationedVehicles(): List<VehicleRaw> {
         return stationedVehicles.toList()
     }
     

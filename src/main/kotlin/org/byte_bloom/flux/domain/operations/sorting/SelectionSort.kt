@@ -1,10 +1,10 @@
 package org.byte_bloom.flux.domain.operations.sorting
 
-import org.byte_bloom.flux.domain.model.Package
-import org.byte_bloom.flux.domain.model.Priority
+import org.byte_bloom.flux.data.dataholders.PackageRaw
+import org.byte_bloom.flux.data.dataholders.Priority
 
 
-fun sortByPriorityAndWeightDescending(packages: List<Package>): List<Package> {
+fun sortByPriorityAndWeightDescending(packages: List<PackageRaw>): List<PackageRaw> {
 
     val sortedPackages = packages.toMutableList()
 
@@ -14,7 +14,7 @@ fun sortByPriorityAndWeightDescending(packages: List<Package>): List<Package> {
 }
 
 
-private fun performSelectionSort(packages: MutableList<Package>) {
+private fun performSelectionSort(packages: MutableList<PackageRaw>) {
 
     val firstPackageIndex = SortConstants.FIRST_PACKAGE_INDEX
     val lastPackageIndex = packages.size + SortConstants.LAST_INDEX_OFFSET
@@ -38,7 +38,7 @@ private fun performSelectionSort(packages: MutableList<Package>) {
 
 
 private fun findHighestPackageIndex(
-    packages: List<Package>,
+    packages: List<PackageRaw>,
     startIndex: Int
 ): Int {
 
@@ -63,7 +63,7 @@ private fun findHighestPackageIndex(
 
 
 private fun movePackageToPosition(
-    packages: MutableList<Package>,
+    packages: MutableList<PackageRaw>,
     fromIndex: Int,
     toIndex: Int
 ) {
@@ -79,8 +79,8 @@ private fun movePackageToPosition(
 
 
 private fun hasHigherPriorityThenWeight(
-    first: Package,
-    second: Package
+    first: PackageRaw,
+    second: PackageRaw
 ): Boolean {
 
     val firstRank = getPriorityRank(first.priority)
