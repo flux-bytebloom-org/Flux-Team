@@ -44,6 +44,7 @@ class DomainGraphBuilder {
             warehouseMap[vehicle.currentHub]?.addVehicle(vehicle)
         }
 
+
         // Configure network topography by linking origin hubs to their allowed
         // outgoing routes, enabling pathfinding algorithms to traverse the graph.
         routes.forEach { route ->
