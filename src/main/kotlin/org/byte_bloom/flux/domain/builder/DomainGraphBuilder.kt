@@ -35,7 +35,7 @@ class DomainGraphBuilder {
         // Distribute packages to their respective destination hubs to ensure
         // the warehouse model correctly reflects current inventory demands.
         packages.forEach { pkg ->
-            warehouseMap[pkg.destinationHubId]?.addPackage(pkg)
+           // warehouseMap[pkg.destinationHubId]?.addPackage(pkg)
         }
 
         // Attach vehicles to their current location to maintain an accurate
