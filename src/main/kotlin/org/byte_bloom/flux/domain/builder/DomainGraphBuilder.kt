@@ -21,7 +21,7 @@ class DomainGraphBuilder {
 
         // Indexing warehouses by ID to allow O(1) constant-time lookups,
         // avoiding nested loops which would degrade performance as data grows.
-        val warehouseMap = warehouses.associateBy { it.warehouseId }
+        val warehouseMap = warehouses.associateBy { it.id }
 
         /*
         for detket

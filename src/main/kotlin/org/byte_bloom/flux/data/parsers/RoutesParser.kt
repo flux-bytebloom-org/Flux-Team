@@ -94,7 +94,7 @@ private fun createRoute(
     )
 
     return RouteRaw(
-        routeId = routeId,
+        id = routeId,
         originHub = originHubId,
         destinationHub = destinationHubId,
         distanceKm = distance,

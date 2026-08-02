@@ -94,7 +94,7 @@ private fun createPackage(
     )
 
     return PackageRaw(
-        packageId = packageId,
+        id = packageId,
         weight = weight,
         originHubId = originHubId,
         destinationHubId = destinationHubId,
