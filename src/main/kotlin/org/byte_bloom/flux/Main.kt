@@ -10,7 +10,6 @@ import org.byte_bloom.flux.domain.operations.pricing.EcoStrategy
 import org.byte_bloom.flux.domain.operations.pricing.ExpressStrategy
 import org.byte_bloom.flux.domain.operations.pricing.RoutePricingEngine
 import org.byte_bloom.flux.data.dataholders.PackageRaw
-import org.byte_bloom.flux.data.dataholders.Priority
 import org.byte_bloom.flux.data.dataholders.RouteRaw
 import org.byte_bloom.flux.data.dataholders.VehicleRaw
 import org.byte_bloom.flux.data.dataholders.WarehouseRaw
@@ -30,7 +29,6 @@ fun main() {
     printTopPriorityPackages(packages)
 
     testPricingEngineMaria()
-    testWarehouseQuickSort()
 }
 
 private fun loadPackages(): List<PackageRaw> {
@@ -81,7 +79,7 @@ private fun printTopPriorityPackages(packages: List<PackageRaw>) {
 
 }
 private fun printPackageLine(pkg: PackageRaw) {
-    val id = pkg.packageId
+    val id = pkg.id
     val weight = pkg.weight
     val dest = pkg.destinationHubId
     val priority = pkg.priority
@@ -115,27 +113,4 @@ private fun testPricingEngineMaria() {
                 )
     )
 
-}
-
-
-private const val HEAVY_PACKAGE_WEIGHT = 50.0
-private const val MEDIUM_PACKAGE_WEIGHT = 10.5
-private const val LIGHT_PACKAGE_WEIGHT = 2.0
-private const val LATITUDE = 31.5
-private const val LONGITUDE = 34.5
-private fun testWarehouseQuickSort() {
-    println("\n--- Testing Warehouse Cargo QuickSort ---")
-
-    val warehouse = WarehouseRaw("WH-1", "Gaza Hub", "Zone-1", LATITUDE, LONGITUDE)
-    val packagesToAdd = listOf(
-        PackageRaw("PKG-1", LIGHT_PACKAGE_WEIGHT, "H1", "H2", Priority.LOW),
-        PackageRaw("PKG-2", MEDIUM_PACKAGE_WEIGHT, "H1", "H2", Priority.URGENT),
-        PackageRaw("PKG-3", null, "H1", "H2", Priority.LOW),
-        PackageRaw("PKG-4", HEAVY_PACKAGE_WEIGHT, "H1", "H2", Priority.STANDARD)
-    )
-    packagesToAdd.forEach { warehouse.addPackage(it) }
-
-    println("Before sorting: ${warehouse.getCargoQueue().map { it.weight }}")
-    warehouse.sortCargoQueue()
-    println("After sorting:  ${warehouse.getCargoQueue().map { it.weight }}")
 }

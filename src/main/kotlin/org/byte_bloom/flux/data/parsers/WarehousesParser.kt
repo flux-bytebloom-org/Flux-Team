@@ -73,7 +73,7 @@ private fun createWarehouse(
     val warehouseRegionalZone = columns[WAREHOUSE_REGIONAL_ZONE_INDEX]
 
     return WarehouseRaw(
-        warehouseId = warehouseId,
+        id = warehouseId,
         name = warehouseName,
         regionalZone = warehouseRegionalZone,
         latitude = columns[WAREHOUSE_LATITUDE_INDEX].toDoubleOrNull() ?: 0.0,

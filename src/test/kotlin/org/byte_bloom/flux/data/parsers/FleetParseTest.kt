@@ -13,7 +13,7 @@ class FleetParseTest {
         val result = parseFleet(lines)
 
         assertEquals(1, result.size)
-        assertEquals("V1", result[0].vehicleId)
+        assertEquals("V1", result[0].id)
         assertEquals("H1", result[0].currentHubId)
         assertEquals(100.0, result[0].maxCapacityKg)
         assertEquals(50.0, result[0].costPerKm)
@@ -78,8 +78,8 @@ class FleetParseTest {
         val result = parseFleet(lines)
 
         assertEquals(2, result.size)
-        assertEquals("V1", result[0].vehicleId)
-        assertEquals("V4", result[1].vehicleId)
+        assertEquals("V1", result[0].id)
+        assertEquals("V4", result[1].id)
     }
 
     @Test
