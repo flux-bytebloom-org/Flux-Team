@@ -10,7 +10,7 @@ import org.byte_bloom.flux.domain.model.Priority as DomainPriority
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
-import org.byte_bloom.flux.ui.uiUtils.logWarning
+import org.byte_bloom.flux.ui.utils.logWarning
 
 class DomainGraphBuilder {
 

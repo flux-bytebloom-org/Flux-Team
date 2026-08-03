@@ -11,7 +11,7 @@ import org.byte_bloom.flux.data.loaders.loadWarehouses
 import org.byte_bloom.flux.domain.builder.DomainGraphBuilder
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.logic.sorting.sortByPriorityAndWeightDescending
-import org.byte_bloom.flux.ui.uiUtils.printWarehouseGraph
+import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 
