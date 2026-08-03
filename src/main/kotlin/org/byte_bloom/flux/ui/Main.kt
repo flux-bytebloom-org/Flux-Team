@@ -1,4 +1,4 @@
-package org.byte_bloom.flux
+package org.byte_bloom.flux.ui
 
 import org.byte_bloom.flux.data.dataholders.PackageRaw
 import org.byte_bloom.flux.data.dataholders.RouteRaw
@@ -10,8 +10,8 @@ import org.byte_bloom.flux.data.loaders.loadRoutes
 import org.byte_bloom.flux.data.loaders.loadWarehouses
 import org.byte_bloom.flux.domain.builder.DomainGraphBuilder
 import org.byte_bloom.flux.domain.model.Warehouse
-import org.byte_bloom.flux.domain.operations.sorting.sortByPriorityAndWeightDescending
-import org.byte_bloom.flux.utils.printWarehouseGraph
+import org.byte_bloom.flux.domain.logic.sorting.sortByPriorityAndWeightDescending
+import org.byte_bloom.flux.ui.uiUtils.printWarehouseGraph
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 

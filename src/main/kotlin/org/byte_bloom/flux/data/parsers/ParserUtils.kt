@@ -1,8 +1,5 @@
 package org.byte_bloom.flux.data.parsers
 
-import org.byte_bloom.flux.utils.logWarning
-
-
 fun splitColumns(line: String): List<String> {
     return line
         .trimEnd(',')
@@ -54,3 +51,8 @@ fun cleanLines(
         .map { it.trim() }
         .filter { it.isNotEmpty() }
 }
+
+fun logWarning(message: String) {
+    println("WARNING: $message")
+}
+

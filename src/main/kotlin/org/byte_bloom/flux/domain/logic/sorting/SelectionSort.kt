@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.operations.sorting
+package org.byte_bloom.flux.domain.logic.sorting
 
 import org.byte_bloom.flux.data.dataholders.PackageRaw
 import org.byte_bloom.flux.data.dataholders.Priority

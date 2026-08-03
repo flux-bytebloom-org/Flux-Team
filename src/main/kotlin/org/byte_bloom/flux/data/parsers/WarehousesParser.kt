@@ -2,7 +2,6 @@ package org.byte_bloom.flux.data.parsers
 
 
 import org.byte_bloom.flux.data.dataholders.WarehouseRaw
-import org.byte_bloom.flux.utils.logWarning
 
 private const val WAREHOUSE_COLUMN_COUNT = 5
 

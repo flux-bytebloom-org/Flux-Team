@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.operations.pricing
+package org.byte_bloom.flux.domain.logic.pricing
 
 private const val FRAGILE_COST_MULTIPLIER = 1.2
 private const val FRAGILE_PRIORITY_MULTIPLIER = 1.5

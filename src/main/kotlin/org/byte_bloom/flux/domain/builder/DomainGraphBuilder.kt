@@ -4,18 +4,14 @@ import org.byte_bloom.flux.data.dataholders.PackageRaw
 import org.byte_bloom.flux.data.dataholders.RouteRaw
 import org.byte_bloom.flux.data.dataholders.VehicleRaw
 import org.byte_bloom.flux.data.dataholders.WarehouseRaw
+import org.byte_bloom.flux.data.dataholders.Priority
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
-import org.byte_bloom.flux.utils.logWarning
+import org.byte_bloom.flux.ui.uiUtils.logWarning
 
-/**
- * Responsible for constructing the internal state of the logistics network.
- *
- * The builder converts raw data into domain objects and connects them
- * through their warehouse relationships.
- */
+
 class DomainGraphBuilder {
 
     fun buildGraph(
@@ -71,7 +67,11 @@ class DomainGraphBuilder {
                         weight = raw.weight,
                         originHub = origin,
                         destinationHub = warehouse,
-                        priority = raw.priority
+                        priority = when (raw.priority) {
+                            Priority.LOW -> Priority.LOW
+                            Priority.STANDARD -> Priority.STANDARD
+                            Priority.URGENT -> Priority.URGENT
+                        }
                     )
                 )
             }

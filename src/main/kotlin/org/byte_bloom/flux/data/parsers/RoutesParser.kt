@@ -1,7 +1,6 @@
 package org.byte_bloom.flux.data.parsers
 
 import org.byte_bloom.flux.data.dataholders.RouteRaw
-import org.byte_bloom.flux.utils.logWarning
 
 private const val ROUTE_COLUMN_COUNT = 5
 

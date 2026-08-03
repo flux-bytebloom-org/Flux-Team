@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.operations.pricing
+package org.byte_bloom.flux.domain.logic.pricing
 
 private const val ECO_COST_PER_KM_PER_KG = 0.5
 private const val ECO_PRIORITY_MULTIPLIER = 1.0
