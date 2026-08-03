@@ -1,6 +1,5 @@
 package org.byte_bloom.flux.domain.model
 
-import org.byte_bloom.flux.data.dataholders.Priority
 
 data class Package(
     val id: String,

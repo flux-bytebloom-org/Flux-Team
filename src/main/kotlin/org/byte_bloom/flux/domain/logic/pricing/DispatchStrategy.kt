@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.operations.pricing
+package org.byte_bloom.flux.domain.logic.pricing
 
 interface DispatchStrategy {
 

@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.utils
+package org.byte_bloom.flux.ui.utils
 
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Route

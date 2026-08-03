@@ -1,6 +1,6 @@
 package org.byte_bloom.flux.domain.model
 
-import org.byte_bloom.flux.domain.operations.sorting.sortCargoByWeightDescending
+import org.byte_bloom.flux.domain.logic.sorting.sortCargoByWeightDescending
 
 data class Warehouse(
     val id: String,

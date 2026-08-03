@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.utils
+package org.byte_bloom.flux.ui.utils
 
 
 fun logWarning(message: String) {
