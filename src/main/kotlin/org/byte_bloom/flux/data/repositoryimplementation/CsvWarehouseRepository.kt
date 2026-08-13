@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.data.repositoryImplementation
+package org.byte_bloom.flux.data.repositoryimplementation
 
 import org.byte_bloom.flux.data.dataholders.WarehouseRaw
 import org.byte_bloom.flux.data.parsers.cleanLines
@@ -16,3 +16,4 @@ class CsvWarehouseRepository(
         return parseWarehouses(cleanedLines)
     }
 }
+

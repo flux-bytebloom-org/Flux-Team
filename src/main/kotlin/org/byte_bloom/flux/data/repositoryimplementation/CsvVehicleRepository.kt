@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.data.repositoryImplementation
+package org.byte_bloom.flux.data.repositoryimplementation
 import org.byte_bloom.flux.data.dataholders.VehicleRaw
 import org.byte_bloom.flux.data.parsers.cleanLines
 import org.byte_bloom.flux.data.parsers.parseFleet
