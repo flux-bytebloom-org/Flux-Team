@@ -10,16 +10,25 @@ import org.byte_bloom.flux.domain.model.Priority as DomainPriority
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
+import org.byte_bloom.flux.domain.repository.PackageRepository
+import org.byte_bloom.flux.domain.repository.RouteRepository
+import org.byte_bloom.flux.domain.repository.VehicleRepository
+import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.ui.utils.logWarning
 
-class DomainGraphBuilder {
+class DomainGraphBuilder(
+    private val warehouseRepository: WarehouseRepository,
+    private val packageRepository: PackageRepository,
+    private val routeRepository: RouteRepository,
+    private val vehicleRepository: VehicleRepository
+) {
 
-    fun buildGraph(
-        warehouses: List<WarehouseRaw>,
-        packages: List<PackageRaw>,
-        routes: List<RouteRaw>,
-        vehicles: List<VehicleRaw>
-    ): List<Warehouse> {
+    fun buildGraph(): List<Warehouse> {
+        val warehouses = warehouseRepository.getAll()
+        val packages = packageRepository.getAll()
+        val routes = routeRepository.getAll()
+        val vehicles = vehicleRepository.getAll()
+
         val warehouseMap = buildWarehouses(warehouses)
 
         attachPackages(packages, warehouseMap)
