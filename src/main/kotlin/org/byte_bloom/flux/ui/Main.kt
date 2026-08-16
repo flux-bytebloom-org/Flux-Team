@@ -9,12 +9,19 @@ import org.byte_bloom.flux.data.repositoryimplementation.CsvRouteRepository
 import org.byte_bloom.flux.data.repositoryimplementation.CsvVehicleRepository
 import org.byte_bloom.flux.data.repositoryimplementation.CsvWarehouseRepository
 import org.byte_bloom.flux.domain.builder.DomainGraphBuilder
-import org.byte_bloom.flux.domain.model.Warehouse
+import org.byte_bloom.flux.domain.logic.pricing.ColdChainDecorator
+import org.byte_bloom.flux.domain.logic.pricing.ExpressInsuranceDecorator
+import org.byte_bloom.flux.domain.logic.pricing.FragileHandlingDecorator
+import org.byte_bloom.flux.domain.logic.pricing.PackageComponent
+import org.byte_bloom.flux.domain.logic.routing.BreadthFirstRouter
+import org.byte_bloom.flux.domain.logic.routing.DijkstraRouter
 import org.byte_bloom.flux.domain.logic.sorting.sortByPriorityAndWeightDescending
+import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
+private const val SAMPLE_BASE_TRANSIT_RATE = 100.0
 
 private const val WAREHOUSES_CSV_PATH = "src/main/resources/warehouses.csv"
 private const val PACKAGES_CSV_PATH = "src/main/resources/packages.csv"
@@ -50,6 +57,12 @@ fun main() {
     testBidirectionalIdentity(warehousesGraph)
 
     testWarehouseQuickSort(warehousesGraph)
+
+    demonstrateLeastHopRouting(warehousesGraph)
+
+    demonstrateShortestDistanceRouting(warehousesGraph)
+
+    demonstratePackageDecorators(warehousesGraph)
 
     drowPackageAssignmentRing()
 
@@ -125,4 +138,72 @@ private fun testWarehouseQuickSort(warehouses: List<Warehouse>) {
     warehouse.sortCargoQueue()
 
     println("After sorting:  ${warehouse.getCargoQueue().map { it.id to it.weight }}")
+}
+
+private fun demonstrateLeastHopRouting(warehouses: List<Warehouse>) {
+    println("\n--- Testing Least-Hop BFS Routing ---")
+
+    if (warehouses.size < 2) {
+        println("Need at least 2 warehouses to demonstrate routing.")
+        return
+    }
+
+    val router = BreadthFirstRouter()
+    val start = warehouses.first()
+    val destination = warehouses.last()
+
+    val path = router.findLeastHopPath(start, destination)
+
+    if (path.isEmpty()) {
+        println("No path found between ${start.name} and ${destination.name}.")
+    } else {
+        println("Shortest path (${path.size - 1} hops): ${path.joinToString(" -> ") { it.name }}")
+    }
+}
+
+private fun demonstrateShortestDistanceRouting(warehouses: List<Warehouse>) {
+    println("\n--- Testing Optimal Transit Router (Dijkstra) ---")
+
+    if (warehouses.size < 2) {
+        println("Need at least 2 warehouses to demonstrate routing.")
+        return
+    }
+
+    val router = DijkstraRouter()
+    val start = warehouses.first()
+    val destination = warehouses.last()
+
+    val path = router.findShortestPath(start, destination)
+
+    if (path.isEmpty()) {
+        println("No path found between ${start.name} and ${destination.name}.")
+    } else {
+        val totalDistance = path.zipWithNext().sumOf { (from, to) ->
+            from.getOutgoingRoutes().first { it.destinationHub.id == to.id }.distanceKm
+        }
+        println("Shortest path by distance (${totalDistance}km): ${path.joinToString(" -> ") { it.name }}")
+    }
+}
+
+private fun demonstratePackageDecorators(warehouses: List<Warehouse>) {
+    println("\n--- Testing Package Decorators ---")
+
+    val samplePackage = warehouses
+        .firstOrNull { it.getCargoQueue().isNotEmpty() }
+        ?.getCargoQueue()
+        ?.firstOrNull()
+
+    if (samplePackage == null) {
+        println("No packages found to decorate.")
+        return
+    }
+
+    val fullyDecorated: PackageComponent = ExpressInsuranceDecorator(
+        ColdChainDecorator(
+            FragileHandlingDecorator(samplePackage)
+        )
+    )
+
+    val finalRate = fullyDecorated.calculateTransitRate(SAMPLE_BASE_TRANSIT_RATE)
+    println("Package ${samplePackage.id}: base rate $SAMPLE_BASE_TRANSIT_RATE -> final rate $finalRate")
 }
