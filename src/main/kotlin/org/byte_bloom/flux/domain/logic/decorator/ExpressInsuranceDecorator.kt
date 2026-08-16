@@ -13,4 +13,5 @@ class ExpressInsuranceDecorator(
 
     override fun getDescription(): String =
         "${wrappedPackage.getDescription()} + Express Insurance"
+
 }

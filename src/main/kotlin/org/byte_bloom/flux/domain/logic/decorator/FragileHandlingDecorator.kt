@@ -11,6 +11,7 @@ class ColdChainDecorator(
     override fun getCost(): Double =
         wrappedPackage.getCost() * COLD_CHAIN_MULTIPLIER
 
+
     override fun getDescription(): String =
         "${wrappedPackage.getDescription()} + Cold Chain"
 }
