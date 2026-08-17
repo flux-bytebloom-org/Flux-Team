@@ -1,16 +1,16 @@
 package org.byte_bloom.flux.domain.model
 
-private const val BASE_SHIPPING_COST = 0.0
+import org.byte_bloom.flux.domain.logic.pricing.PackageComponent
 
 data class Package(
-    override val id: String,
-    override val weight: Double?,
-    override val originHub: Warehouse,
-    override val destinationHub: Warehouse,
-    override val priority: Priority
+    val id: String,
+    val weight: Double?,
+    val originHub: Warehouse,
+    val destinationHub: Warehouse,
+    val priority: Priority
 ) : PackageComponent {
 
-    override fun getDescription(): String = "Package $id"
-
-    override fun getCost(): Double = BASE_SHIPPING_COST
+    override fun calculateTransitRate(baseRate: Double): Double {
+        return baseRate
+    }
 }
