@@ -1,93 +1,82 @@
 package org.byte_bloom.flux.domain.logic.tree
 
 import org.byte_bloom.flux.domain.model.Warehouse
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
 
 class WarehouseTreeTest {
 
-    @Test
-    fun `should trace local depot lineage to global hub`() {
+    fun shouldTraceLocalDepotLineageToGlobalHub() {
+        val globalNode = createWarehouseNode(GLOBAL_ID, "Global Hub", ZONE_GLOBAL)
+        val regionalNode = createWarehouseNode(REGIONAL_NORTH_ID, "Regional Center", ZONE_NORTH)
+        val localNode = createWarehouseNode(LOCAL_NORTH_ID, "Local Depot", ZONE_NORTH)
 
-        val global = WarehouseTreeNode(
+        globalNode.addChild(regionalNode)
+        regionalNode.addChild(localNode)
+
+        val tree = WarehouseTree(globalNode)
+        val lineage = tree.findLineage(LOCAL_NORTH_ID)
+
+        val expectedIds = listOf(LOCAL_NORTH_ID, REGIONAL_NORTH_ID, GLOBAL_ID)
+        val actualIds = lineage.map { it.warehouse.id }
+
+        assertThat(expectedIds == actualIds, "Local depot lineage mismatch")
+    }
+
+    fun shouldTraceLineageThroughMultipleRegionalCenters() {
+        val globalNode = createWarehouseNode(GLOBAL_ID, "Global Hub", ZONE_GLOBAL)
+        val regionalNorth = createWarehouseNode(REGIONAL_NORTH_ID, "North Regional", ZONE_NORTH)
+        val regionalSouth = createWarehouseNode(REGIONAL_SOUTH_ID, "South Regional", ZONE_SOUTH)
+        val localSouth = createWarehouseNode(LOCAL_SOUTH_ID, "South Local", ZONE_SOUTH)
+
+        globalNode.addChild(regionalNorth)
+        globalNode.addChild(regionalSouth)
+        regionalSouth.addChild(localSouth)
+
+        val tree = WarehouseTree(globalNode)
+        val lineage = tree.findLineage(LOCAL_SOUTH_ID)
+
+        val expectedIds = listOf(LOCAL_SOUTH_ID, REGIONAL_SOUTH_ID, GLOBAL_ID)
+        val actualIds = lineage.map { it.warehouse.id }
+
+        assertThat(expectedIds == actualIds, "Multi-regional lineage mismatch")
+    }
+
+    private fun createWarehouseNode(id: String, name: String, zone: String): WarehouseTreeNode {
+        return WarehouseTreeNode(
             Warehouse(
-                "G1",
-                "Global Hub",
-                "Global",
-                0.0,
-                0.0
+                id = id,
+                name = name,
+                regionalZone = zone,
+                latitude = DEFAULT_COORDINATE,
+                longitude = DEFAULT_COORDINATE
             )
         )
+    }
 
-        val regional = WarehouseTreeNode(
-            Warehouse(
-                "R1",
-                "Regional Center",
-                "North",
-                0.0,
-                0.0
-            )
-        )
+    private fun assertThat(condition: Boolean, message: String) {
+        if (!condition) {
+            throw AssertionError("Test Failed: $message")
+        }
+    }
 
-        val local = WarehouseTreeNode(
-            Warehouse(
-                "L1",
-                "Local Depot",
-                "North",
-                0.0,
-                0.0
-            )
-        )
-
-        global.addChild(regional)
-        regional.addChild(local)
-
-        val tree = WarehouseTree(global)
-
-        val lineage = tree.findLineage("L1")
-
-        assertEquals(
-            listOf("L1", "R1", "G1"),
-            lineage.map { it.warehouse.id }
-        )
+    companion object {
+        private const val GLOBAL_ID = "G1"
+        private const val REGIONAL_NORTH_ID = "R1"
+        private const val REGIONAL_SOUTH_ID = "R2"
+        private const val LOCAL_NORTH_ID = "L1"
+        private const val LOCAL_SOUTH_ID = "L2"
+        private const val ZONE_GLOBAL = "Global"
+        private const val ZONE_NORTH = "North"
+        private const val ZONE_SOUTH = "South"
+        private const val DEFAULT_COORDINATE = 0.0
     }
 }
 
-@Test
-fun `should trace lineage through multiple regional centers`() {
+fun main() {
+    val testRunner = WarehouseTreeTest()
+    println("Running WarehouseTreeTest...")
 
-    val global = WarehouseTreeNode(
-        Warehouse("G1", "Global Hub", "Global", 0.0, 0.0)
-    )
+    testRunner.shouldTraceLocalDepotLineageToGlobalHub()
+    testRunner.shouldTraceLineageThroughMultipleRegionalCenters()
 
-    val regionalNorth = WarehouseTreeNode(
-        Warehouse("R1", "North Regional", "North", 0.0, 0.0)
-    )
-
-    val regionalSouth = WarehouseTreeNode(
-        Warehouse("R2", "South Regional", "South", 0.0, 0.0)
-    )
-
-    val localNorth = WarehouseTreeNode(
-        Warehouse("L1", "North Local", "North", 0.0, 0.0)
-    )
-
-    val localSouth = WarehouseTreeNode(
-        Warehouse("L2", "South Local", "South", 0.0, 0.0)
-    )
-
-    global.addChild(regionalNorth)
-    global.addChild(regionalSouth)
-
-    regionalNorth.addChild(localNorth)
-    regionalSouth.addChild(localSouth)
-
-    val tree = WarehouseTree(global)
-
-    val lineage = tree.findLineage("L2")
-
-    assertEquals(
-        listOf("L2", "R2", "G1"),
-        lineage.map { it.warehouse.id }
-    )
+    println("All WarehouseTree tests passed successfully!")
 }

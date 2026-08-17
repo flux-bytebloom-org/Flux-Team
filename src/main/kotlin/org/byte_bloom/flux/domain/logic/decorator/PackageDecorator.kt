@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.logic.Decorator
+package org.byte_bloom.flux.domain.logic.decorator
 
 import org.byte_bloom.flux.domain.model.PackageComponent
 

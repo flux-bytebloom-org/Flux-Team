@@ -9,7 +9,7 @@ class WarehouseTreeNode(
     var parent: WarehouseTreeNode? = null
         private set
 
-    private val children = mutableListOf<WarehouseTreeNode>()
+    val children = mutableListOf<WarehouseTreeNode>()
 
     fun addChild(child: WarehouseTreeNode) {
         child.parent = this

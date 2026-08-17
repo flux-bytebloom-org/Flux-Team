@@ -1,49 +1,64 @@
 package org.byte_bloom.flux.domain.logic.routing
 
 import org.byte_bloom.flux.domain.model.Warehouse
-import java.util.ArrayDeque
 
 class BreadthFirstRouter {
 
-    fun findLeastHopPath(
-        start: Warehouse,
-        destination: Warehouse
-    ): List<Warehouse> {
+    fun findLeastHopPath(start: Warehouse, destination: Warehouse): List<Warehouse> {
+        if (start.id == destination.id) return listOf(start)
 
-        if (start.id == destination.id) {
-            return listOf(start)
-        }
+        val queue = ArrayDeque<Warehouse>()
+        queue.add(start)
 
-        val queue = ArrayDeque<List<Warehouse>>()
         val visited = mutableSetOf<String>()
-
-        queue.addLast(listOf(start))
         visited.add(start.id)
 
-        while (queue.isNotEmpty()) {
+        val parents = mutableMapOf<String, Warehouse>()
+        var destinationFound = false
 
-            val currentPath = queue.removeFirst()
-            val currentWarehouse = currentPath.last()
+        while (queue.isNotEmpty() && !destinationFound) {
+            val current = queue.removeFirst()
 
-            for (route in currentWarehouse.getOutgoingRoutes()) {
-
-                val nextWarehouse = route.destinationHub
-
-                if (nextWarehouse.id in visited) {
-                    continue
-                }
-
-                val newPath = currentPath + nextWarehouse
-
-                if (nextWarehouse.id == destination.id) {
-                    return newPath
-                }
-
-                visited.add(nextWarehouse.id)
-                queue.addLast(newPath)
+            if (current.id == destination.id) {
+                destinationFound = true
+            } else {
+                exploreNeighbors(current, visited, parents, queue)
             }
         }
 
-        return emptyList()
+        return if (destinationFound) buildPath(destination, parents) else emptyList()
+    }
+
+    private fun exploreNeighbors(
+        current: Warehouse,
+        visited: MutableSet<String>,
+        parents: MutableMap<String, Warehouse>,
+        queue: ArrayDeque<Warehouse>
+    ) {
+        val routes = current.getOutgoingRoutes()
+        for (route in routes) {
+            val neighbor = route.destinationHub
+            if (!visited.contains(neighbor.id)) {
+                visited.add(neighbor.id)
+                parents[neighbor.id] = current
+                queue.add(neighbor)
+            }
+        }
+    }
+
+    private fun buildPath(destination: Warehouse, parents: Map<String, Warehouse>): List<Warehouse> {
+        val path = mutableListOf<Warehouse>()
+        var current: Warehouse? = destination
+
+        while (current != null) {
+            path.add(START_INDEX, current)
+            current = parents[current.id]
+        }
+
+        return path
+    }
+
+    companion object {
+        private const val START_INDEX = 0
     }
 }

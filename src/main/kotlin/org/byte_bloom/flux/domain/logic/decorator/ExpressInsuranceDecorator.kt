@@ -1,7 +1,6 @@
-package org.byte_bloom.flux.domain.logic.Decorator
+package org.byte_bloom.flux.domain.logic.decorator
 
 import org.byte_bloom.flux.domain.model.PackageComponent
-import org.byte_bloom.flux.domain.logic.Decorator.PackageDecorator
 
 private const val EXPRESS_INSURANCE_PREMIUM = 25.0
 

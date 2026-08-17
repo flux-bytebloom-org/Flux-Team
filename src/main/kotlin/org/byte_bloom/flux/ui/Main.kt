@@ -9,9 +9,9 @@ import org.byte_bloom.flux.data.repositoryimplementation.CsvRouteRepository
 import org.byte_bloom.flux.data.repositoryimplementation.CsvVehicleRepository
 import org.byte_bloom.flux.data.repositoryimplementation.CsvWarehouseRepository
 import org.byte_bloom.flux.domain.builder.DomainGraphBuilder
-import org.byte_bloom.flux.domain.logic.Decorator.ColdChainDecorator
-import org.byte_bloom.flux.domain.logic.Decorator.ExpressInsuranceDecorator
-import org.byte_bloom.flux.domain.logic.Decorator.FragileHandlingDecorator
+import org.byte_bloom.flux.domain.logic.decorator.ColdChainDecorator
+import org.byte_bloom.flux.domain.logic.decorator.ExpressInsuranceDecorator
+import org.byte_bloom.flux.domain.logic.decorator.FragileHandlingDecorator
 import org.byte_bloom.flux.domain.model.PackageComponent
 import org.byte_bloom.flux.domain.logic.routing.BreadthFirstRouter
 import org.byte_bloom.flux.domain.logic.routing.DijkstraRouter

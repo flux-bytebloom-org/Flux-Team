@@ -5,57 +5,26 @@ import org.byte_bloom.flux.domain.model.Warehouse
 class DijkstraRouter {
 
     fun findShortestPath(start: Warehouse, destination: Warehouse): List<Warehouse> {
-        if (start.id == destination.id) {
-            return listOf(start)
-        }
+        if (start.id == destination.id) return listOf(start)
 
-        val distances = mutableMapOf(start.id to 0.0)
+        val distances = mutableMapOf<String, Double>()
+        distances[start.id] = INITIAL_DISTANCE
+
         val parents = mutableMapOf<String, Warehouse>()
         val visited = mutableSetOf<String>()
-        val discoveredWarehouses = mutableMapOf(start.id to start)
+        val discovered = mutableMapOf<String, Warehouse>()
+        discovered[start.id] = start
 
-        while (true) {
-            val current = findClosestUnvisitedWarehouse(
-                discoveredWarehouses.values,
-                distances,
-                visited
-            ) ?: break
+        var current = findMinDistanceNode(discovered, distances, visited)
 
-            if (current.id == destination.id) {
-                return buildPath(destination, parents)
-            }
-
+        while (current != null && current.id != destination.id) {
             visited.add(current.id)
-            relaxNeighbors(current, distances, parents, visited, discoveredWarehouses)
+            relaxNeighbors(current, distances, parents, visited, discovered)
+            current = findMinDistanceNode(discovered, distances, visited)
         }
 
-        return emptyList()
-    }
-
-    /**
-     * Manually scans every undiscovered-but-not-yet-visited warehouse and
-     * returns the one with the smallest known distance so far. This is the
-     * handWritten replacement for what a PriorityQueue's poll() would do.
-     */
-    private fun findClosestUnvisitedWarehouse(
-        warehouses: Collection<Warehouse>,
-        distances: Map<String, Double>,
-        visited: Set<String>
-    ): Warehouse? {
-        var closest: Warehouse? = null
-        var closestDistance = Double.MAX_VALUE
-
-        warehouses.forEach { warehouse ->
-            if (warehouse.id !in visited) {
-                val distance = distances[warehouse.id] ?: Double.MAX_VALUE
-                if (distance < closestDistance) {
-                    closestDistance = distance
-                    closest = warehouse
-                }
-            }
-        }
-
-        return closest
+        val isReached = current != null && current.id == destination.id
+        return if (isReached) buildPath(destination, parents) else emptyList()
     }
 
     private fun relaxNeighbors(
@@ -63,29 +32,63 @@ class DijkstraRouter {
         distances: MutableMap<String, Double>,
         parents: MutableMap<String, Warehouse>,
         visited: Set<String>,
-        discoveredWarehouses: MutableMap<String, Warehouse>
+        discovered: MutableMap<String, Warehouse>
     ) {
-        current.getOutgoingRoutes().forEach { route ->
+        val currentDist = distances[current.id] ?: return
+        val routes = current.getOutgoingRoutes()
+
+        for (route in routes) {
             val neighbor = route.destinationHub
-            if (neighbor.id in visited) return@forEach
 
-            discoveredWarehouses[neighbor.id] = neighbor
+            if (!visited.contains(neighbor.id)) {
+                discovered[neighbor.id] = neighbor
+                val newDist = currentDist + route.distanceKm
+                val existingDist = distances[neighbor.id] ?: Double.MAX_VALUE
 
-            val newDistance = distances.getValue(current.id) + route.distanceKm
-            val knownDistance = distances[neighbor.id] ?: Double.MAX_VALUE
-
-            if (newDistance < knownDistance) {
-                distances[neighbor.id] = newDistance
-                parents[neighbor.id] = current
+                if (newDist < existingDist) {
+                    distances[neighbor.id] = newDist
+                    parents[neighbor.id] = current
+                }
             }
         }
     }
 
-    private fun buildPath(
-        destination: Warehouse,
-        parents: Map<String, Warehouse>
-    ): List<Warehouse> {
-        val parent = parents[destination.id] ?: return listOf(destination)
-        return buildPath(parent, parents) + destination
+    private fun findMinDistanceNode(
+        discovered: Map<String, Warehouse>,
+        distances: Map<String, Double>,
+        visited: Set<String>
+    ): Warehouse? {
+        var minNode: Warehouse? = null
+        var minDistance = Double.MAX_VALUE
+
+        val warehouses = discovered.values
+        for (node in warehouses) {
+            if (!visited.contains(node.id)) {
+                val dist = distances[node.id] ?: Double.MAX_VALUE
+                if (dist < minDistance) {
+                    minDistance = dist
+                    minNode = node
+                }
+            }
+        }
+
+        return minNode
+    }
+
+    private fun buildPath(destination: Warehouse, parents: Map<String, Warehouse>): List<Warehouse> {
+        val path = mutableListOf<Warehouse>()
+        var current: Warehouse? = destination
+
+        while (current != null) {
+            path.add(START_INDEX, current)
+            current = parents[current.id]
+        }
+
+        return path
+    }
+
+    companion object {
+        private const val START_INDEX = 0
+        private const val INITIAL_DISTANCE = 0.0
     }
 }

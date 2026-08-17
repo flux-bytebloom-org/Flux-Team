@@ -23,27 +23,11 @@ class WarehouseTree(
         return lineage
     }
 
-    private fun findNode(
-        current: WarehouseTreeNode,
-        warehouseId: String
-    ): WarehouseTreeNode? {
+    fun findNode(node: WarehouseTreeNode, targetId: String): WarehouseTreeNode? {
+        if (node.warehouse.id == targetId) return node
 
-        if (current.warehouse.id == warehouseId) {
-            return current
+        return node.children.firstNotNullOfOrNull { child ->
+            findNode(child, targetId)
         }
-
-        for (child in current.getChildren()) {
-
-            val result = findNode(
-                child,
-                warehouseId
-            )
-
-            if (result != null) {
-                return result
-            }
-        }
-
-        return null
     }
 }
