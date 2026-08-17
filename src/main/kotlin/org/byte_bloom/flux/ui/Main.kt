@@ -4,35 +4,54 @@ import org.byte_bloom.flux.data.dataholders.PackageRaw
 import org.byte_bloom.flux.data.dataholders.RouteRaw
 import org.byte_bloom.flux.data.dataholders.VehicleRaw
 import org.byte_bloom.flux.data.dataholders.WarehouseRaw
-import org.byte_bloom.flux.data.loaders.loadFleet
-import org.byte_bloom.flux.data.loaders.loadPackages
-import org.byte_bloom.flux.data.loaders.loadRoutes
-import org.byte_bloom.flux.data.loaders.loadWarehouses
+import org.byte_bloom.flux.data.repositoryimplementation.CsvPackageRepository
+import org.byte_bloom.flux.data.repositoryimplementation.CsvRouteRepository
+import org.byte_bloom.flux.data.repositoryimplementation.CsvVehicleRepository
+import org.byte_bloom.flux.data.repositoryimplementation.CsvWarehouseRepository
 import org.byte_bloom.flux.domain.builder.DomainGraphBuilder
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.logic.sorting.sortByPriorityAndWeightDescending
+import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 
+private const val WAREHOUSES_CSV_PATH = "src/main/resources/warehouses.csv"
+private const val PACKAGES_CSV_PATH = "src/main/resources/packages.csv"
+private const val ROUTES_CSV_PATH = "src/main/resources/routes.csv"
+private const val FLEET_CSV_PATH = "src/main/resources/fleet.csv"
+
 
 fun main() {
 
+    val warehouseRepository = CsvWarehouseRepository(WAREHOUSES_CSV_PATH)
+    val packageRepository = CsvPackageRepository(PACKAGES_CSV_PATH)
+    val routeRepository = CsvRouteRepository(ROUTES_CSV_PATH)
+    val vehicleRepository = CsvVehicleRepository(FLEET_CSV_PATH)
 
-    val packages = loadPackages()
-    val warehouses = loadWarehouses()
-    val routes = loadRoutes()
-    val fleet = loadFleet()
+    val packages = packageRepository.getAll()
+    val warehouses = warehouseRepository.getAll()
+    val routes = routeRepository.getAll()
+    val fleet = vehicleRepository.getAll()
+
     printParsingSummary(packages, warehouses, routes, fleet)
     printTopPriorityPackages(packages)
 
 
-    val warehousesGraph = DomainGraphBuilder().buildGraph(warehouses, packages, routes, fleet)
+    val domainGraphBuilder = DomainGraphBuilder(
+        warehouseRepository = warehouseRepository,
+        packageRepository = packageRepository,
+        routeRepository = routeRepository,
+        vehicleRepository = vehicleRepository
+    )
+    val warehousesGraph = domainGraphBuilder.buildGraph()
     printWarehouseGraph(warehousesGraph)
 
     testBidirectionalIdentity(warehousesGraph)
 
     testWarehouseQuickSort(warehousesGraph)
+
+    drowPackageAssignmentRing()
 
 }
 
@@ -107,4 +126,3 @@ private fun testWarehouseQuickSort(warehouses: List<Warehouse>) {
 
     println("After sorting:  ${warehouse.getCargoQueue().map { it.id to it.weight }}")
 }
-
