@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.logic.pricing
+package org.byte_bloom.flux.domain.model
 
 interface PackageComponent {
 

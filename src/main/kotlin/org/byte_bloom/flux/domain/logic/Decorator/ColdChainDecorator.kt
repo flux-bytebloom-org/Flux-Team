@@ -1,4 +1,7 @@
-package org.byte_bloom.flux.domain.logic.pricing
+package org.byte_bloom.flux.domain.logic.Decorator
+
+import org.byte_bloom.flux.domain.model.PackageComponent
+import org.byte_bloom.flux.domain.logic.Decorator.PackageDecorator
 
 private const val COLD_CHAIN_MULTIPLIER = 1.25
 

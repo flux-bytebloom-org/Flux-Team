@@ -1,4 +1,6 @@
-package org.byte_bloom.flux.domain.logic.pricing
+package org.byte_bloom.flux.domain.logic.Decorator
+
+import org.byte_bloom.flux.domain.model.PackageComponent
 
 abstract class PackageDecorator(
     protected val packageComponent: PackageComponent

@@ -2,102 +2,64 @@ package org.byte_bloom.flux.domain.logic.routing
 
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Warehouse
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
 
 class DijkstraRouterTest {
 
-    @Test
-    fun `finds the lowest total distance path`() {
-        val a = createWarehouse("A")
-        val b = createWarehouse("B")
-        val c = createWarehouse("C")
-        val d = createWarehouse("D")
+    fun testFindsLowestTotalDistancePath() {
+        val (a, b, c, d) = createWarehouses("A", "B", "C", "D")
 
-        // Path A -> B -> D = 100 + 100 = 200
-        a.addRoute(createRoute("R1", a, b, distanceKm = 100.0))
-        b.addRoute(createRoute("R2", b, d, distanceKm = 100.0))
+        a.addRoute(createRoute("R1", a, b, 100.0))
+        b.addRoute(createRoute("R2", b, d, 100.0))
+        a.addRoute(createRoute("R3", a, c, 10.0))
+        c.addRoute(createRoute("R4", c, d, 10.0))
 
-        // Path A -> C -> D = 10 + 10 = 20 (shorter total distance, but same 2 hops)
-        a.addRoute(createRoute("R3", a, c, distanceKm = 10.0))
-        c.addRoute(createRoute("R4", c, d, distanceKm = 10.0))
-
-        val path = DijkstraRouter().findShortestPath(a, d)
-
-        assertEquals(listOf("A", "C", "D"), path.map { it.id })
+        assertPath(a, d, listOf("A", "C", "D"))
     }
 
-    @Test
-    fun `chooses the shorter-distance path even when it has more hops than BFS would pick`() {
-        val a = createWarehouse("A")
-        val b = createWarehouse("B")
-        val c = createWarehouse("C")
-        val e = createWarehouse("E")
-        val d = createWarehouse("D")
+    fun testChoosesShorterDistancePathOverBFS() {
+        val (a, b, c, e, d) = createWarehouses("A", "B", "C", "E", "D")
 
-        // BFS would pick this: A -> B -> D (2 hops, but distance = 200)
-        a.addRoute(createRoute("R1", a, b, distanceKm = 100.0))
-        b.addRoute(createRoute("R2", b, d, distanceKm = 100.0))
+        a.addRoute(createRoute("R1", a, b, 100.0))
+        b.addRoute(createRoute("R2", b, d, 100.0))
+        a.addRoute(createRoute("R3", a, c, 10.0))
+        c.addRoute(createRoute("R4", c, e, 10.0))
+        e.addRoute(createRoute("R5", e, d, 10.0))
 
-        // Dijkstra should pick this instead: A -> C -> E -> D (3 hops, but distance = 30)
-        a.addRoute(createRoute("R3", a, c, distanceKm = 10.0))
-        c.addRoute(createRoute("R4", c, e, distanceKm = 10.0))
-        e.addRoute(createRoute("R5", e, d, distanceKm = 10.0))
-
-        val bfsPath = BreadthFirstRouter().findLeastHopPath(a, d)
-        val dijkstraPath = DijkstraRouter().findShortestPath(a, d)
-
-        assertEquals(listOf("A", "B", "D"), bfsPath.map { it.id })
-        assertEquals(listOf("A", "C", "E", "D"), dijkstraPath.map { it.id })
+        assertBfsPath(a, d, listOf("A", "B", "D"))
+        assertPath(a, d, listOf("A", "C", "E", "D"))
     }
 
-    @Test
-    fun `returns empty path when destination is unreachable`() {
-        val a = createWarehouse("A")
-        val isolated = createWarehouse("Z")
-
-        val path = DijkstraRouter().findShortestPath(a, isolated)
-
-        assertEquals(emptyList<Warehouse>(), path)
+    fun testReturnsEmptyPathWhenUnreachable() {
+        val (a, isolated) = createWarehouses("A", "Z")
+        assertPath(a, isolated, emptyList())
     }
 
-    @Test
-    fun `does not loop forever when the graph contains a cycle`() {
-        val a = createWarehouse("A")
-        val b = createWarehouse("B")
-        val c = createWarehouse("C")
+    fun testDoesNotLoopForeverWithCycle() {
+        val (a, b, c) = createWarehouses("A", "B", "C")
 
-        a.addRoute(createRoute("R1", a, b, distanceKm = 5.0))
-        b.addRoute(createRoute("R2", b, a, distanceKm = 5.0)) // cycle back to A
-        b.addRoute(createRoute("R3", b, c, distanceKm = 5.0))
+        a.addRoute(createRoute("R1", a, b, 5.0))
+        b.addRoute(createRoute("R2", b, a, 5.0))
+        b.addRoute(createRoute("R3", b, c, 5.0))
 
-        val path = DijkstraRouter().findShortestPath(a, c)
-
-        assertEquals(listOf("A", "B", "C"), path.map { it.id })
+        assertPath(a, c, listOf("A", "B", "C"))
     }
 
-    private fun createWarehouse(id: String): Warehouse {
-        return Warehouse(
-            id = id,
-            name = "Warehouse $id",
-            regionalZone = "Test Zone",
-            latitude = 0.0,
-            longitude = 0.0
-        )
+
+    private fun assertPath(from: Warehouse, to: Warehouse, expectedIds: List<String>) {
+        val actualPath = DijkstraRouter().findShortestPath(from, to).map { it.id }
+        check(actualPath == expectedIds) { "Dijkstra Failed! Expected $expectedIds but got $actualPath" }
     }
 
-    private fun createRoute(
-        id: String,
-        origin: Warehouse,
-        destination: Warehouse,
-        distanceKm: Double
-    ): Route {
-        return Route(
-            id = id,
-            originHub = origin,
-            destinationHub = destination,
-            distanceKm = distanceKm,
-            typicalDelayMin = 0.0
-        )
+    private fun assertBfsPath(from: Warehouse, to: Warehouse, expectedIds: List<String>) {
+        val actualPath = BreadthFirstRouter().findLeastHopPath(from, to).map { it.id }
+        check(actualPath == expectedIds) { "BFS Failed! Expected $expectedIds but got $actualPath" }
+    }
+
+    private fun createWarehouses(vararg ids: String): List<Warehouse> {
+        return ids.map { Warehouse(id = it, name = "Warehouse $it", regionalZone = "Test Zone", latitude = 0.0, longitude = 0.0) }
+    }
+
+    private fun createRoute(id: String, origin: Warehouse, dest: Warehouse, distanceKm: Double): Route {
+        return Route(id = id, originHub = origin, destinationHub = dest, distanceKm = distanceKm, typicalDelayMin = 0.0)
     }
 }
