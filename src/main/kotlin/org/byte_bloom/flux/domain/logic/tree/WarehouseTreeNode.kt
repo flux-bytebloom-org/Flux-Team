@@ -16,7 +16,4 @@ class WarehouseTreeNode(
         children.add(child)
     }
 
-    fun getChildren(): List<WarehouseTreeNode> {
-        return children.toList()
-    }
 }
