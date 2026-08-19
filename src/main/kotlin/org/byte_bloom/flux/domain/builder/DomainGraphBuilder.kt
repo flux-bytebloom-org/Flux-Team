@@ -1,10 +1,5 @@
 package org.byte_bloom.flux.domain.builder
 
-import org.byte_bloom.flux.data.dataholders.Priority
-import org.byte_bloom.flux.data.dataholders.WarehouseRaw
-import org.byte_bloom.flux.data.dataholders.RouteRaw
-import org.byte_bloom.flux.data.dataholders.PackageRaw
-import org.byte_bloom.flux.data.dataholders.VehicleRaw
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
@@ -14,7 +9,6 @@ import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.byte_bloom.flux.domain.repository.VehicleRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.ui.utils.logWarning
-import org.byte_bloom.flux.domain.model.Priority as DomainPriority
 
 class DomainGraphBuilder(
     val warehouseRepository: WarehouseRepository,
@@ -39,64 +33,53 @@ class DomainGraphBuilder(
     }
 
     private fun buildWarehouses(
-        warehouseRaws: List<WarehouseRaw>
+        warehouses: List<Warehouse>
     ): Map<String, Warehouse> {
-        return warehouseRaws.associateBy(
-            { it.id },
-            valueTransform = { raw ->
-                Warehouse(
-                    id = raw.id,
-                    name = raw.name,
-                    regionalZone = raw.regionalZone,
-                    latitude = raw.latitude,
-                    longitude = raw.longitude
-                )
-            }
-        )
+        return warehouses.associateBy { it.id }
     }
 
     private fun attachPackages(
-        packages: List<PackageRaw>,
+        packages: List<Package>,
         warehouseMap: Map<String, Warehouse>
     ) {
-        packages.forEach { raw ->
-            val origin = warehouseMap[raw.originHubId]
-            val destination = warehouseMap[raw.destinationHubId]
+        packages.forEach { pkg ->
+            val origin = warehouseMap[pkg.originHub.id]
+            val destination = warehouseMap[pkg.destinationHub.id]
 
             if (origin == null || destination == null) {
-                logWarning("Package ${raw.id} references unknown warehouse, skipping")
+                logWarning("Package ${pkg.id} references unknown warehouse, skipping")
                 return@forEach
             }
 
             destination.addPackage(
                 Package(
-                    id = raw.id,
-                    weight = raw.weight,
+                    id = pkg.id,
+                    weight = pkg.weight,
                     originHub = origin,
                     destinationHub = destination,
-                    priority = mapPriority(raw.priority)
+                    priority = pkg.priority
                 )
             )
         }
     }
 
     private fun attachVehicles(
-        vehicles: List<VehicleRaw>,
+        vehicles: List<Vehicle>,
         warehouseMap: Map<String, Warehouse>
     ) {
-        vehicles.forEach { raw ->
-            val warehouse = warehouseMap[raw.currentHubId]
+        vehicles.forEach { vehicle ->
+            val warehouse = warehouseMap[vehicle.currentHub.id]
 
             if (warehouse == null) {
-                logWarning("Vehicle ${raw.id} references unknown hub, skipping")
+                logWarning("Vehicle ${vehicle.id} references unknown hub, skipping")
                 return@forEach
             }
 
             warehouse.addVehicle(
                 Vehicle(
-                    id = raw.id,
-                    maxCapacityKg = raw.maxCapacityKg,
-                    costPerKm = raw.costPerKm,
+                    id = vehicle.id,
+                    maxCapacityKg = vehicle.maxCapacityKg,
+                    costPerKm = vehicle.costPerKm,
                     currentHub = warehouse
                 )
             )
@@ -104,35 +87,27 @@ class DomainGraphBuilder(
     }
 
     private fun attachRoutes(
-        routes: List<RouteRaw>,
+        routes: List<Route>,
         warehouseMap: Map<String, Warehouse>
     ) {
-        routes.forEach { raw ->
-            val origin = warehouseMap[raw.originHubId]
-            val destination = warehouseMap[raw.destinationHubId]
+        routes.forEach { route ->
+            val origin = warehouseMap[route.originHub.id]
+            val destination = warehouseMap[route.destinationHub.id]
 
             if (origin == null || destination == null) {
-                logWarning("Route ${raw.id} references unknown warehouse, skipping")
+                logWarning("Route ${route.id} references unknown warehouse, skipping")
                 return@forEach
             }
 
             origin.addRoute(
                 Route(
-                    id = raw.id,
-                    distanceKm = raw.distanceKm,
-                    typicalDelayMin = raw.typicalDelayMin,
+                    id = route.id,
+                    distanceKm = route.distanceKm,
+                    typicalDelayMin = route.typicalDelayMin,
                     originHub = origin,
                     destinationHub = destination
                 )
             )
-        }
-    }
-
-    private fun mapPriority(raw: Priority): DomainPriority {
-        return when (raw) {
-            Priority.LOW -> DomainPriority.LOW
-            Priority.STANDARD -> DomainPriority.STANDARD
-            Priority.URGENT -> DomainPriority.URGENT
         }
     }
 }
