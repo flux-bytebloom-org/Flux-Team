@@ -1,10 +1,4 @@
-<<<<<<<< HEAD:src/main/kotlin/org/byte_bloom/flux/domain/logic/decorator/FragileHandlingDecorator.kt
-package org.byte_bloom.flux.domain.logic.decorator
-
-import org.byte_bloom.flux.domain.model.PackageComponent
-========
 package org.byte_bloom.flux.domain.logic.pricing.decorator
->>>>>>>> origin/develop:src/main/kotlin/org/byte_bloom/flux/domain/logic/pricing/decorator/FragileHandlingDecorator.kt
 
 private const val FRAGILE_PROTECTIVE_FEE = 50.0
 
