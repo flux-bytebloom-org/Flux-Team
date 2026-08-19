@@ -4,7 +4,6 @@ import org.byte_bloom.flux.data.dataholders.PackageRaw
 import org.byte_bloom.flux.data.dataholders.Priority
 
 private const val PACKAGE_COLUMN_COUNT = 5
-
 private const val PACKAGE_ID_INDEX = 0
 private const val PACKAGE_WEIGHT_INDEX = 1
 private const val PACKAGE_ORIGIN_INDEX = 2

@@ -3,7 +3,6 @@ package org.byte_bloom.flux.data.parsers
 import org.byte_bloom.flux.data.dataholders.VehicleRaw
 
 private const val VEHICLE_COLUMN_COUNT = 4
-
 private const val VEHICLE_ID_INDEX = 0
 private const val HUB_ID_INDEX = 1
 private const val CAPACITY_INDEX = 2
