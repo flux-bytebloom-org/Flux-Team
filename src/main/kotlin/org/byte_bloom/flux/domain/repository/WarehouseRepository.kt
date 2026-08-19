@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.domain.repository
 
-import org.byte_bloom.flux.data.dataholders.WarehouseRaw
+import org.byte_bloom.flux.domain.model.Warehouse
 
 interface WarehouseRepository {
-    fun getAll(): List<WarehouseRaw>
+    fun getAll(): List<Warehouse>
 }
