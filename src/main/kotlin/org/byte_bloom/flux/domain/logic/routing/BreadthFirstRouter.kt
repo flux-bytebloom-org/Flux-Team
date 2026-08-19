@@ -20,19 +20,36 @@ class BreadthFirstRouter {
         queue.addLast(listOf(start))
         visited.add(start.id)
 
-        while (queue.isNotEmpty()) {
+        var foundPath: List<Warehouse>? = null
 
+        while (queue.isNotEmpty() && foundPath == null) {
             val currentPath = queue.removeFirst()
             val currentWarehouse = currentPath.last()
 
-            for (route in currentWarehouse.getOutgoingRoutes()) {
+            foundPath = processRoutes(
+                currentWarehouse,
+                destination,
+                currentPath,
+                visited,
+                queue
+            )
+        }
 
-                val nextWarehouse = route.destinationHub
+        return foundPath ?: emptyList()
+    }
 
-                if (nextWarehouse.id in visited) {
-                    continue
-                }
+    private fun processRoutes(
+        currentWarehouse: Warehouse,
+        destination: Warehouse,
+        currentPath: List<Warehouse>,
+        visited: MutableSet<String>,
+        queue: ArrayDeque<List<Warehouse>>
+    ): List<Warehouse>? {
 
+        for (route in currentWarehouse.getOutgoingRoutes()) {
+            val nextWarehouse = route.destinationHub
+
+            if (nextWarehouse.id !in visited) {
                 val newPath = currentPath + nextWarehouse
 
                 if (nextWarehouse.id == destination.id) {
@@ -44,6 +61,7 @@ class BreadthFirstRouter {
             }
         }
 
-        return emptyList()
+        return null
     }
+
 }
