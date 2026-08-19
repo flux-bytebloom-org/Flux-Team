@@ -1,10 +1,14 @@
-package org.byte_bloom.flux.domain.logic.pricing
+package org.byte_bloom.flux.domain.logic.pricing.decorator
 
 private const val COLD_CHAIN_MULTIPLIER = 1.25
 
 class ColdChainDecorator(
     packageComponent: PackageComponent
 ) : PackageDecorator(packageComponent) {
+
+    override fun getDescription(): String {
+        return "${packageComponent.getDescription()} + Cold Chain"
+    }
 
     override fun calculateTransitRate(baseRate: Double): Double {
         return super.calculateTransitRate(baseRate) *

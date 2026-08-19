@@ -1,5 +1,9 @@
 package org.byte_bloom.flux.domain.logic.pricing
 
+import org.byte_bloom.flux.domain.logic.pricing.decorator.ColdChainDecorator
+import org.byte_bloom.flux.domain.logic.pricing.decorator.ExpressInsuranceDecorator
+import org.byte_bloom.flux.domain.logic.pricing.decorator.FragileHandlingDecorator
+import org.byte_bloom.flux.domain.logic.pricing.decorator.PackageComponent
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.Warehouse
