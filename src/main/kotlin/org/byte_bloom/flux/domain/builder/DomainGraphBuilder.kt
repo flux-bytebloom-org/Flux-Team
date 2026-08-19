@@ -17,10 +17,10 @@ import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.ui.utils.logWarning
 
 class DomainGraphBuilder(
-    private val warehouseRepository: WarehouseRepository,
-    private val packageRepository: PackageRepository,
-    private val routeRepository: RouteRepository,
-    private val vehicleRepository: VehicleRepository
+    val warehouseRepository: WarehouseRepository,
+    val packageRepository: PackageRepository,
+    val routeRepository: RouteRepository,
+    val vehicleRepository: VehicleRepository
 ) {
 
     fun buildGraph(): List<Warehouse> {
