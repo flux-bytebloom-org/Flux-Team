@@ -1,12 +1,7 @@
 package org.byte_bloom.flux.domain.builder
 
-import org.byte_bloom.flux.data.dataholders.PackageRaw
-import org.byte_bloom.flux.data.dataholders.Priority
-import org.byte_bloom.flux.data.dataholders.RouteRaw
-import org.byte_bloom.flux.data.dataholders.VehicleRaw
-import org.byte_bloom.flux.data.dataholders.WarehouseRaw
+import org.byte_bloom.flux.data.dataholders.*
 import org.byte_bloom.flux.domain.model.Package
-import org.byte_bloom.flux.domain.model.Priority as DomainPriority
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
@@ -15,6 +10,7 @@ import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.byte_bloom.flux.domain.repository.VehicleRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.ui.utils.logWarning
+import org.byte_bloom.flux.domain.model.Priority as DomainPriority
 
 class DomainGraphBuilder(
     val warehouseRepository: WarehouseRepository,
