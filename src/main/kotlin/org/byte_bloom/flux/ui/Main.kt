@@ -9,12 +9,20 @@ import org.byte_bloom.flux.data.repositoryimplementation.CsvRouteRepository
 import org.byte_bloom.flux.data.repositoryimplementation.CsvVehicleRepository
 import org.byte_bloom.flux.data.repositoryimplementation.CsvWarehouseRepository
 import org.byte_bloom.flux.domain.builder.DomainGraphBuilder
+import org.byte_bloom.flux.domain.logic.pricing.decorator.ColdChainDecorator
+import org.byte_bloom.flux.domain.logic.pricing.decorator.ExpressInsuranceDecorator
+import org.byte_bloom.flux.domain.logic.pricing.decorator.FragileHandlingDecorator
+import org.byte_bloom.flux.domain.logic.routing.BreadthFirstRouter
+import org.byte_bloom.flux.domain.logic.routing.DijkstraRouter
+import org.byte_bloom.flux.domain.logic.routing.testRoutingComparison
 import org.byte_bloom.flux.domain.logic.sorting.sortByPriorityAndWeightDescending
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
+private const val DEFAULT_BASE_RATE = 100.0
+
 
 private const val WAREHOUSES_CSV_PATH = "src/main/resources/warehouses.csv"
 private const val PACKAGES_CSV_PATH = "src/main/resources/packages.csv"
@@ -52,6 +60,12 @@ fun main() {
     testWarehouseQuickSort(warehousesGraph)
 
     drowPackageAssignmentRing()
+
+    val bfsRouter = BreadthFirstRouter()
+    val dijkstraRouter = DijkstraRouter()
+
+    testRoutingComparison(warehousesGraph, bfsRouter, dijkstraRouter)
+    testDecoratorStacking(warehousesGraph)
 
 }
 
@@ -125,4 +139,31 @@ private fun testWarehouseQuickSort(warehouses: List<Warehouse>) {
     warehouse.sortCargoQueue()
 
     println("After sorting:  ${warehouse.getCargoQueue().map { it.id to it.weight }}")
+}
+
+
+
+private fun testDecoratorStacking(warehouses: List<Warehouse>) {
+    println("\n--- Testing Decorator Stacking ---")
+
+    val pkg = warehouses.firstOrNull { it.getCargoQueue().isNotEmpty() }
+        ?.getCargoQueue()?.firstOrNull()
+
+    if (pkg == null) {
+        println("No package found to test decorators.")
+        return
+    }
+
+    val baseRate = DEFAULT_BASE_RATE
+
+    println("Base: ${pkg.getDescription()} → ${pkg.calculateTransitRate(baseRate)}")
+
+    val fragile = FragileHandlingDecorator(pkg)
+    println("+ Fragile: ${fragile.getDescription()} → ${fragile.calculateTransitRate(baseRate)}")
+
+    val fragileAndCold = ColdChainDecorator(fragile)
+    println("+ ColdChain: ${fragileAndCold.getDescription()} → ${fragileAndCold.calculateTransitRate(baseRate)}")
+
+    val fullyStacked = ExpressInsuranceDecorator(fragileAndCold)
+    println("+ ExpressInsurance: ${fullyStacked.getDescription()} → ${fullyStacked.calculateTransitRate(baseRate)}")
 }
