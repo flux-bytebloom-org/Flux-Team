@@ -14,6 +14,7 @@ import org.byte_bloom.flux.domain.logic.pricing.decorator.ExpressInsuranceDecora
 import org.byte_bloom.flux.domain.logic.pricing.decorator.FragileHandlingDecorator
 import org.byte_bloom.flux.domain.logic.routing.BreadthFirstRouter
 import org.byte_bloom.flux.domain.logic.routing.DijkstraRouter
+import org.byte_bloom.flux.domain.logic.routing.testRoutingComparison
 import org.byte_bloom.flux.domain.logic.sorting.sortByPriorityAndWeightDescending
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
@@ -138,25 +139,6 @@ private fun testWarehouseQuickSort(warehouses: List<Warehouse>) {
     println("After sorting:  ${warehouse.getCargoQueue().map { it.id to it.weight }}")
 }
 
-private fun testRoutingComparison(
-    warehouses: List<Warehouse>,
-    bfsRouter: BreadthFirstRouter,
-    dijkstraRouter: DijkstraRouter
-) {
-    val start = warehouses.first()
-    val destination = warehouses.last()
-
-    println("\n--- Routing Comparison: BFS vs Dijkstra ---")
-
-    val bfsPath = bfsRouter.findLeastHopPath(start, destination)
-    println("BFS (least hops): ${bfsPath.map { it.id }} — ${bfsPath.size - 1} hops")
-
-    val dijkstraPath = dijkstraRouter.findShortestPath(start, destination)
-    val totalDistance = dijkstraPath.zipWithNext().sumOf { (a, b) ->
-        a.getOutgoingRoutes().first { it.destinationHub.id == b.id }.distanceKm
-    }
-    println("Dijkstra (shortest distance): ${dijkstraPath.map { it.id }} — ${totalDistance}km")
-}
 
 
 private fun testDecoratorStacking(warehouses: List<Warehouse>) {
