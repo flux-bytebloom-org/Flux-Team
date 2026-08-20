@@ -14,6 +14,7 @@ class CsvPackageRepository(
     override fun getAll(): List<Package> {
         val lines = readCsv(filePath)
         val cleanedLines = cleanLines(lines)
-        return parsePackages(cleanedLines).map { it.toDomain() }
+        return parsePackages(cleanedLines).map {
+            it.toDomain()}
     }
 }
