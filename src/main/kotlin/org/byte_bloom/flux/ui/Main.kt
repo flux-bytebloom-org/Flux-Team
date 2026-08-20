@@ -9,6 +9,9 @@ import org.byte_bloom.flux.data.repositoryimplementation.CsvRouteRepository
 import org.byte_bloom.flux.data.repositoryimplementation.CsvVehicleRepository
 import org.byte_bloom.flux.data.repositoryimplementation.CsvWarehouseRepository
 import org.byte_bloom.flux.domain.builder.DomainGraphBuilder
+import org.byte_bloom.flux.domain.logic.pricing.decorator.ColdChainDecorator
+import org.byte_bloom.flux.domain.logic.pricing.decorator.ExpressInsuranceDecorator
+import org.byte_bloom.flux.domain.logic.pricing.decorator.FragileHandlingDecorator
 import org.byte_bloom.flux.domain.logic.routing.BreadthFirstRouter
 import org.byte_bloom.flux.domain.logic.routing.DijkstraRouter
 import org.byte_bloom.flux.domain.logic.sorting.sortByPriorityAndWeightDescending
@@ -150,4 +153,27 @@ private fun testRoutingComparison(
 }
 
 
+private fun testDecoratorStacking(warehouses: List<Warehouse>) {
+    println("\n--- Testing Decorator Stacking ---")
 
+    val pkg = warehouses.firstOrNull { it.getCargoQueue().isNotEmpty() }
+        ?.getCargoQueue()?.firstOrNull()
+
+    if (pkg == null) {
+        println("No package found to test decorators.")
+        return
+    }
+
+    val baseRate = 100.0
+
+    println("Base: ${pkg.getDescription()} → ${pkg.calculateTransitRate(baseRate)}")
+
+    val fragile = FragileHandlingDecorator(pkg)
+    println("+ Fragile: ${fragile.getDescription()} → ${fragile.calculateTransitRate(baseRate)}")
+
+    val fragileAndCold = ColdChainDecorator(fragile)
+    println("+ ColdChain: ${fragileAndCold.getDescription()} → ${fragileAndCold.calculateTransitRate(baseRate)}")
+
+    val fullyStacked = ExpressInsuranceDecorator(fragileAndCold)
+    println("+ ExpressInsurance: ${fullyStacked.getDescription()} → ${fullyStacked.calculateTransitRate(baseRate)}")
+}
