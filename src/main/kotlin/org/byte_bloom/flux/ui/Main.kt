@@ -58,6 +58,12 @@ fun main() {
 
     drowPackageAssignmentRing()
 
+    val bfsRouter = BreadthFirstRouter()
+    val dijkstraRouter = DijkstraRouter()
+
+    testRoutingComparison(warehousesGraph, bfsRouter, dijkstraRouter)
+    testDecoratorStacking(warehousesGraph)
+
 }
 
 
