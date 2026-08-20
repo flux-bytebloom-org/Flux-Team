@@ -2,6 +2,19 @@ package org.byte_bloom.flux.domain.logic.routing
 
 import org.byte_bloom.flux.domain.model.Warehouse
 
+/**
+ * Why BFS fails to find the shortest-distance path:
+ *
+ * BFS treats every edge (Route) as having equal weight, so it finds the
+ * path with the fewest transfer hops — not the path with the smallest
+ * cumulative distance. Dijkstra's algorithm accounts for the actual
+ * distanceKm on each edge, so it correctly finds the minimum-distance
+ * path regardless of how many hops it takes.
+ *
+ * See testRoutingComparison() in Main.kt for a live example using
+ * real warehouse data where the two algorithms disagree.
+ */
+
 class DijkstraRouter {
 
     fun findShortestPath(start: Warehouse, destination: Warehouse): List<Warehouse> {
