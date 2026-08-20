@@ -21,6 +21,8 @@ import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
+private const val DEFAULT_BASE_RATE = 100.0
+
 
 private const val WAREHOUSES_CSV_PATH = "src/main/resources/warehouses.csv"
 private const val PACKAGES_CSV_PATH = "src/main/resources/packages.csv"
@@ -152,7 +154,7 @@ private fun testDecoratorStacking(warehouses: List<Warehouse>) {
         return
     }
 
-    val baseRate = 100.0
+    val baseRate = DEFAULT_BASE_RATE
 
     println("Base: ${pkg.getDescription()} → ${pkg.calculateTransitRate(baseRate)}")
 
