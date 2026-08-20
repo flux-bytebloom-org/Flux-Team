@@ -1,9 +1,5 @@
 package org.byte_bloom.flux.ui
 
-import org.byte_bloom.flux.data.dataholders.PackageRaw
-import org.byte_bloom.flux.data.dataholders.RouteRaw
-import org.byte_bloom.flux.data.dataholders.VehicleRaw
-import org.byte_bloom.flux.data.dataholders.WarehouseRaw
 import org.byte_bloom.flux.data.repositoryimplementation.CsvPackageRepository
 import org.byte_bloom.flux.data.repositoryimplementation.CsvRouteRepository
 import org.byte_bloom.flux.data.repositoryimplementation.CsvVehicleRepository
@@ -16,6 +12,9 @@ import org.byte_bloom.flux.domain.logic.routing.BreadthFirstRouter
 import org.byte_bloom.flux.domain.logic.routing.DijkstraRouter
 import org.byte_bloom.flux.domain.logic.routing.testRoutingComparison
 import org.byte_bloom.flux.domain.logic.sorting.sortByPriorityAndWeightDescending
+import org.byte_bloom.flux.domain.model.Package
+import org.byte_bloom.flux.domain.model.Route
+import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
@@ -28,7 +27,6 @@ private const val WAREHOUSES_CSV_PATH = "src/main/resources/warehouses.csv"
 private const val PACKAGES_CSV_PATH = "src/main/resources/packages.csv"
 private const val ROUTES_CSV_PATH = "src/main/resources/routes.csv"
 private const val FLEET_CSV_PATH = "src/main/resources/fleet.csv"
-
 
 fun main() {
 
@@ -44,7 +42,6 @@ fun main() {
 
     printParsingSummary(packages, warehouses, routes, fleet)
     printTopPriorityPackages(packages)
-
 
     val domainGraphBuilder = DomainGraphBuilder(
         warehouseRepository = warehouseRepository,
@@ -69,12 +66,11 @@ fun main() {
 
 }
 
-
 private fun printParsingSummary(
-    packages: List<PackageRaw>,
-    warehouses: List<WarehouseRaw>,
-    routes: List<RouteRaw>,
-    fleet: List<VehicleRaw>
+    packages: List<Package>,
+    warehouses: List<Warehouse>,
+    routes: List<Route>,
+    fleet: List<Vehicle>
 ) {
     println("--- Parsing Summary ---")
     println("Packages parsed successfully: ${packages.size}")
@@ -83,7 +79,7 @@ private fun printParsingSummary(
     println("Fleet parsed successfully: ${fleet.size}")
 }
 
-private fun printTopPriorityPackages(packages: List<PackageRaw>) {
+private fun printTopPriorityPackages(packages: List<Package>) {
     val sortedPackages = sortByPriorityAndWeightDescending(packages)
 
     println("\n--- Top 3 Urgent & Heaviest Packages ---")
@@ -94,14 +90,13 @@ private fun printTopPriorityPackages(packages: List<PackageRaw>) {
 
 }
 
-private fun printPackageLine(pkg: PackageRaw) {
+private fun printPackageLine(pkg: Package) {
     val id = pkg.id
     val weight = pkg.weight
-    val dest = pkg.destinationHubId
+    val destination = pkg.destinationHub.id
     val priority = pkg.priority
-    println("ID: $id, Weight: $weight, Dest: $dest, Priority: $priority")
+    println("ID: $id, Weight: $weight, Destination: $destination, Priority: $priority")
 }
-
 
 private fun testBidirectionalIdentity(warehouses: List<Warehouse>) {
     println("\n--- Testing Bidirectional Reference Identity ---")

@@ -1,26 +1,19 @@
 package org.byte_bloom.flux.domain.logic.sorting
 
-import org.byte_bloom.flux.data.dataholders.PackageRaw
-import org.byte_bloom.flux.data.dataholders.Priority
+import org.byte_bloom.flux.domain.model.Package
+import org.byte_bloom.flux.domain.model.Priority
 
-
-fun sortByPriorityAndWeightDescending(packages: List<PackageRaw>): List<PackageRaw> {
-
-    val sortedPackages = packages.toMutableList()
-
-    performSelectionSort(sortedPackages)
-
-    return sortedPackages
+fun sortByPriorityAndWeightDescending(packages: List<Package>): List<Package> {
+    val mutablePackages = packages.toMutableList()
+    performSelectionSort(mutablePackages)
+    return mutablePackages
 }
 
-
-private fun performSelectionSort(packages: MutableList<PackageRaw>) {
-
+private fun performSelectionSort(packages: MutableList<Package>) {
     val firstPackageIndex = SortConstants.FIRST_PACKAGE_INDEX
     val lastPackageIndex = packages.size + SortConstants.LAST_INDEX_OFFSET
 
     for (currentIndex in firstPackageIndex until lastPackageIndex) {
-
         val highestIndex = findHighestPackageIndex(
             packages,
             currentIndex
@@ -36,19 +29,16 @@ private fun performSelectionSort(packages: MutableList<PackageRaw>) {
     }
 }
 
-
 private fun findHighestPackageIndex(
-    packages: List<PackageRaw>,
+    packages: List<Package>,
     startIndex: Int
 ): Int {
-
     var highestIndex = startIndex
 
     val firstComparisonIndex = startIndex + SortConstants.NEXT_INDEX_OFFSET
     val lastPackageIndex = packages.size + SortConstants.LAST_INDEX_OFFSET
 
     for (index in firstComparisonIndex..lastPackageIndex) {
-
         if (hasHigherPriorityThenWeight(
                 packages[index],
                 packages[highestIndex]
@@ -61,13 +51,11 @@ private fun findHighestPackageIndex(
     return highestIndex
 }
 
-
 private fun movePackageToPosition(
-    packages: MutableList<PackageRaw>,
+    packages: MutableList<Package>,
     fromIndex: Int,
     toIndex: Int
 ) {
-
     val packageToMove = packages[fromIndex]
 
     for (index in fromIndex downTo toIndex + SortConstants.NEXT_INDEX_OFFSET) {
@@ -77,12 +65,10 @@ private fun movePackageToPosition(
     packages[toIndex] = packageToMove
 }
 
-
 private fun hasHigherPriorityThenWeight(
-    first: PackageRaw,
-    second: PackageRaw
+    first: Package,
+    second: Package
 ): Boolean {
-
     val firstRank = getPriorityRank(first.priority)
     val secondRank = getPriorityRank(second.priority)
 
@@ -96,9 +82,7 @@ private fun hasHigherPriorityThenWeight(
     }
 }
 
-
 private fun getPriorityRank(priority: Priority): Int {
-
     return when (priority) {
         Priority.URGENT -> SortConstants.URGENT_PRIORITY_RANK
         Priority.STANDARD -> SortConstants.STANDARD_PRIORITY_RANK
