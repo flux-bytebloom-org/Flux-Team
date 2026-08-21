@@ -12,22 +12,22 @@ fun printWarehouseGraph(warehouses: List<Warehouse>) {
     warehouses.forEach { warehouse ->
         println("${warehouse.name} (${warehouse.id})")
 
-        /*printBranch(
+        printBranch(
             label = "cargoQueue",
             items = warehouse.getCargoQueue().map(::formatPackage),
             isLast = false
-        )*/
+        )
         printBranch(
             label = "outgoingRoutes",
             items = warehouse.getOutgoingRoutes().map(::formatRoute),
             isLast = false
         )
-        /*
+
         printBranch(
             label = "stationedVehicles",
             items = warehouse.getStationedVehicles().map(::formatVehicle),
             isLast = true
-        )*/
+        )
 
         println()
     }

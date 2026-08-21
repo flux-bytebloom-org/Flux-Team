@@ -46,31 +46,18 @@ fun main() {
     printParsingSummary(packages, warehouses, routes, fleet)
     printTopPriorityPackages(packages)
 
-    val domainGraphBuilder = DomainGraphBuilder(
-        warehouseRepository = warehouseRepository,
-        packageRepository = packageRepository,
-        routeRepository = routeRepository,
-        vehicleRepository = vehicleRepository
-    )
+    val domainGraphBuilder = DomainGraphBuilder(warehouseRepository = warehouseRepository,
+        packageRepository = packageRepository,routeRepository = routeRepository,vehicleRepository = vehicleRepository)
     val warehousesGraph = domainGraphBuilder.buildGraph()
     printWarehouseGraph(warehousesGraph)
-
     testBidirectionalIdentity(warehousesGraph)
-
     testWarehouseQuickSort(warehousesGraph)
-
     drowPackageAssignmentRing()
 
     val bfsRouter = BreadthFirstRouter()
     val dijkstraRouter = DijkstraRouter()
-
-
-
     testRoutingComparison(warehousesGraph, bfsRouter, dijkstraRouter)
-    // testDecoratorStacking(warehousesGraph)
-
-    //############temp#############
-    //val bidirectionalRouter = FakeBidirectionalRouter()   // 🔧 مؤقت، بيتبدل لاحقًا
+    testDecoratorStacking(warehousesGraph)
 
     val allRoutes = warehousesGraph.flatMap { it.getOutgoingRoutes() }
     val bidirectionalRouter = BidirectionalBfsRouter(allRoutes)
