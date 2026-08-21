@@ -14,6 +14,8 @@ import org.byte_bloom.flux.domain.logic.pricing.decorator.ExpressInsuranceDecora
 import org.byte_bloom.flux.domain.logic.pricing.decorator.FragileHandlingDecorator
 import org.byte_bloom.flux.domain.logic.routing.BreadthFirstRouter
 import org.byte_bloom.flux.domain.logic.routing.DijkstraRouter
+import org.byte_bloom.flux.domain.logic.routing.FakeBidirectionalRouter
+import org.byte_bloom.flux.domain.logic.routing.benchmarkRouters
 import org.byte_bloom.flux.domain.logic.routing.testRoutingComparison
 import org.byte_bloom.flux.domain.logic.sorting.sortByPriorityAndWeightDescending
 import org.byte_bloom.flux.domain.model.Warehouse
@@ -64,8 +66,14 @@ fun main() {
     val bfsRouter = BreadthFirstRouter()
     val dijkstraRouter = DijkstraRouter()
 
+
+
     testRoutingComparison(warehousesGraph, bfsRouter, dijkstraRouter)
-    testDecoratorStacking(warehousesGraph)
+    // testDecoratorStacking(warehousesGraph)
+
+    //############temp#############
+    val bidirectionalRouter = FakeBidirectionalRouter()   // 🔧 مؤقت، بيتبدل لاحقًا
+    benchmarkRouters(warehousesGraph, bfsRouter, bidirectionalRouter)
 
 }
 
