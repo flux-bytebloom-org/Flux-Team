@@ -2,7 +2,6 @@ package org.byte_bloom.flux.domain.logic.routing
 
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Warehouse
-import java.util.ArrayDeque
 
 private const val SINGLE_NODE_PATH_SIZE = 1
 private const val INITIAL_NODES_EXPLORED = 0
@@ -29,7 +28,7 @@ class BidirectionalBfsRouter(
         var resultPath: List<Warehouse> = emptyList()
         var pathFound = false
 
-        while (state.forwardQueue.isNotEmpty() && state.backwardQueue.isNotEmpty() && !pathFound) {
+        while ((state.forwardQueue.isNotEmpty() || state.backwardQueue.isNotEmpty()) && !pathFound) {
             val (forwardIntersection, forwardNodes) = stepForward(state)
             totalNodesExplored += forwardNodes
             if (forwardIntersection != null) {
@@ -52,7 +51,7 @@ class BidirectionalBfsRouter(
         return expandFrontier(
             queue = state.forwardQueue,
             directionState = DirectionState(state.forwardVisited, state.backwardVisited, state.forwardParents)
-        ) { warehouse -> warehouse.outgoingRoutes.map { it.destinationHub } }
+        ) { warehouse -> warehouse.getOutgoingRoutes().map { it.destinationHub } }   // 🔧 getOutgoingRoutes()
     }
 
     private fun stepBackward(state: SearchState): StepResult {
@@ -67,7 +66,7 @@ class BidirectionalBfsRouter(
         directionState: DirectionState,
         getNextNodes: (Warehouse) -> List<Warehouse>
     ): StepResult {
-        val current = queue.poll() ?: return StepResult(null, INITIAL_NODES_EXPLORED)
+        val current = queue.removeFirstOrNull() ?: return StepResult(null, INITIAL_NODES_EXPLORED)
         val neighbors = getNextNodes(current)
         val intersection = processNeighbors(neighbors, current, directionState, queue)
         return StepResult(intersection, EXPLORED_NODE_INCREMENT)

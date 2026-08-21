@@ -9,10 +9,10 @@ class BreadthFirstRouter {
     fun findLeastHopPath(
         start: Warehouse,
         destination: Warehouse
-    ): BidirectionalRoutingResult  {
+    ): RoutingSearchResult {
 
         if (start.id == destination.id) {
-            return BidirectionalRoutingResult(listOf(start), SINGLE_NODE_COUNT)
+            return RoutingSearchResult(listOf(start), SINGLE_NODE_COUNT)
         }
 
         val queue = ArrayDeque<List<Warehouse>>()
@@ -36,7 +36,7 @@ class BreadthFirstRouter {
             )
         }
 
-        return BidirectionalRoutingResult(
+        return RoutingSearchResult(
             path = foundPath ?: emptyList(),
             nodesExplored = visited.size
         )

@@ -8,6 +8,7 @@ import org.byte_bloom.flux.domain.builder.DomainGraphBuilder
 import org.byte_bloom.flux.domain.logic.pricing.decorator.ColdChainDecorator
 import org.byte_bloom.flux.domain.logic.pricing.decorator.ExpressInsuranceDecorator
 import org.byte_bloom.flux.domain.logic.pricing.decorator.FragileHandlingDecorator
+import org.byte_bloom.flux.domain.logic.routing.BidirectionalBfsRouter
 import org.byte_bloom.flux.domain.logic.routing.BreadthFirstRouter
 import org.byte_bloom.flux.domain.logic.routing.DijkstraRouter
 import org.byte_bloom.flux.domain.logic.routing.FakeBidirectionalRouter
@@ -69,7 +70,10 @@ fun main() {
     // testDecoratorStacking(warehousesGraph)
 
     //############temp#############
-    val bidirectionalRouter = FakeBidirectionalRouter()   // 🔧 مؤقت، بيتبدل لاحقًا
+    //val bidirectionalRouter = FakeBidirectionalRouter()   // 🔧 مؤقت، بيتبدل لاحقًا
+
+    val allRoutes = warehousesGraph.flatMap { it.getOutgoingRoutes() }
+    val bidirectionalRouter = BidirectionalBfsRouter(allRoutes)
     benchmarkRouters(warehousesGraph, bfsRouter, bidirectionalRouter)
 
 }

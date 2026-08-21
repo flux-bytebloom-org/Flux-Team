@@ -9,23 +9,31 @@ private const val PERCENT_MULTIPLIER = 100.0
 fun benchmarkRouters(
     warehouses: List<Warehouse>,
     bfsRouter: BreadthFirstRouter,
-    bidirectionalRouter: FakeBidirectionalRouter   // 🔧 لاحقًا: نبدّلها بـ BidirectionalBfsRouter
+    bidirectionalRouter: BidirectionalBfsRouter   // 🔧 لاحقًا: نبدّلها بـ BidirectionalBfsRouter
 ) {
+
     val (start, destination) = findLongDistancePair(warehouses, bfsRouter)
     println("\n\nfarthest pair of warehouses: ${start.id} → ${destination.id}")
-   // val start = warehouses.first()
-    //val destination = warehouses.last()
+
+
+
 
     println("\n--- Benchmark: Standard BFS vs Bidirectional BFS ---")
     println("Route: ${start.id} → ${destination.id}")
 
     val bfsResult = bfsRouter.findLeastHopPath(start, destination)
+    val bidirectionalResult = bidirectionalRouter.findPath(start, destination)
+
+    if (bfsResult.path.isEmpty() || bidirectionalResult.path.isEmpty()) {
+        println("⚠️ No path found between ${start.id} and ${destination.id} — skipping benchmark.")
+        return
+    }
+
     println(
         "Standard BFS:      ${bfsResult.path.size - 1} hops, " +
                 "${bfsResult.nodesExplored} warehouses explored"
     )
 
-    val bidirectionalResult = bidirectionalRouter.findPath(start, destination)
     println(
         "Bidirectional BFS: ${bidirectionalResult.path.size - 1} hops, " +
                 "${bidirectionalResult.nodesExplored} warehouses explored"
@@ -35,8 +43,8 @@ fun benchmarkRouters(
 }
 
 private fun printBenchmarkVerdict(
-    bfsResult: BidirectionalRoutingResult,
-    bidirectionalResult: BidirectionalRoutingResult
+    bfsResult: RoutingSearchResult,
+    bidirectionalResult: RoutingSearchResult
 ) {
     val reduction = bfsResult.nodesExplored - bidirectionalResult.nodesExplored
 

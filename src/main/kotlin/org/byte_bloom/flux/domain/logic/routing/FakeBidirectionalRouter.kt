@@ -9,9 +9,9 @@ private const val FAKE_NODES_EXPLORED = 40
  * once it's ready (same method signature, so swapping is a one-line change).
  */
 class FakeBidirectionalRouter {
-    fun findPath(start: Warehouse, destination: Warehouse): BidirectionalRoutingResult {
+    fun findPath(start: Warehouse, destination: Warehouse): RoutingSearchResult {
         // بيانات وهمية ثابتة، بس عشان نجرب شكل الطباعة والربط
-        return BidirectionalRoutingResult(
+        return RoutingSearchResult(
             path = listOf(start, destination),
             nodesExplored = FAKE_NODES_EXPLORED
         )
