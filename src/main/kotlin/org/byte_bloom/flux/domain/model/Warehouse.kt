@@ -11,7 +11,7 @@ data class Warehouse(
 ) {
 
     private val cargoQueue = mutableListOf<Package>()
-    private val outgoingRoutes = mutableListOf<Route>()
+    val outgoingRoutes = mutableListOf<Route>()
     private val stationedVehicles = mutableListOf<Vehicle>()
 
 
