@@ -2,13 +2,19 @@ package org.byte_bloom.flux.domain.logic.routing
 
 import org.byte_bloom.flux.domain.model.Warehouse
 
+private const val NO_REDUCTION = 0
+private const val PERCENT_MULTIPLIER = 100.0
+
+
 fun benchmarkRouters(
     warehouses: List<Warehouse>,
     bfsRouter: BreadthFirstRouter,
     bidirectionalRouter: FakeBidirectionalRouter   // 🔧 لاحقًا: نبدّلها بـ BidirectionalBfsRouter
 ) {
-    val start = warehouses.first()
-    val destination = warehouses.last()
+    val (start, destination) = findLongDistancePair(warehouses, bfsRouter)
+    println("\n\nfarthest pair of warehouses: ${start.id} → ${destination.id}")
+   // val start = warehouses.first()
+    //val destination = warehouses.last()
 
     println("\n--- Benchmark: Standard BFS vs Bidirectional BFS ---")
     println("Route: ${start.id} → ${destination.id}")
@@ -45,5 +51,3 @@ private fun printBenchmarkVerdict(
     }
 }
 
-private const val NO_REDUCTION = 0
-private const val PERCENT_MULTIPLIER = 100.0
