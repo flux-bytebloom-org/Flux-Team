@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.domain.repository
 
-import org.byte_bloom.flux.data.dataholders.PackageRaw
+import org.byte_bloom.flux.domain.model.Package
 
 interface PackageRepository {
-    fun getAll(): List<PackageRaw>
+    fun getAll(): List<Package>
 }
