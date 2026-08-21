@@ -8,10 +8,11 @@ data class Warehouse(
     val regionalZone: String,
     val latitude: Double,
     val longitude: Double
+
 ) {
 
     private val cargoQueue = mutableListOf<Package>()
-    val outgoingRoutes = mutableListOf<Route>()
+    private val outgoingRoutes = mutableListOf<Route>()
     private val stationedVehicles = mutableListOf<Vehicle>()
 
 
@@ -28,8 +29,8 @@ data class Warehouse(
         outgoingRoutes.add(route)
     }
 
-    fun fetchOutgoingRoutes(): List<Route> {
-        return outgoingRoutes
+    fun getOutgoingRoutes(): List<Route> {
+        return outgoingRoutes.toList()
     }
 
 
