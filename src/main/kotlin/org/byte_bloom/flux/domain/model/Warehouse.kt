@@ -28,8 +28,8 @@ data class Warehouse(
         outgoingRoutes.add(route)
     }
 
-    fun getOutgoingRoutes(): List<Route> {
-        return outgoingRoutes.toList()
+    fun fetchOutgoingRoutes(): List<Route> {
+        return outgoingRoutes
     }
 
 
