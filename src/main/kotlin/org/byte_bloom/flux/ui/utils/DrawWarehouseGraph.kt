@@ -22,6 +22,7 @@ fun printWarehouseGraph(warehouses: List<Warehouse>) {
             items = warehouse.getOutgoingRoutes().map(::formatRoute),
             isLast = false
         )
+
         printBranch(
             label = "stationedVehicles",
             items = warehouse.getStationedVehicles().map(::formatVehicle),

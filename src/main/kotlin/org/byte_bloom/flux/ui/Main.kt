@@ -8,8 +8,11 @@ import org.byte_bloom.flux.domain.builder.DomainGraphBuilder
 import org.byte_bloom.flux.domain.logic.pricing.decorator.ColdChainDecorator
 import org.byte_bloom.flux.domain.logic.pricing.decorator.ExpressInsuranceDecorator
 import org.byte_bloom.flux.domain.logic.pricing.decorator.FragileHandlingDecorator
+import org.byte_bloom.flux.domain.logic.routing.BidirectionalBfsRouter
 import org.byte_bloom.flux.domain.logic.routing.BreadthFirstRouter
 import org.byte_bloom.flux.domain.logic.routing.DijkstraRouter
+import org.byte_bloom.flux.domain.logic.routing.FakeBidirectionalRouter
+import org.byte_bloom.flux.domain.logic.routing.benchmarkRouters
 import org.byte_bloom.flux.domain.logic.routing.testRoutingComparison
 import org.byte_bloom.flux.domain.logic.sorting.sortByPriorityAndWeightDescending
 import org.byte_bloom.flux.domain.model.Package
@@ -43,26 +46,22 @@ fun main() {
     printParsingSummary(packages, warehouses, routes, fleet)
     printTopPriorityPackages(packages)
 
-    val domainGraphBuilder = DomainGraphBuilder(
-        warehouseRepository = warehouseRepository,
-        packageRepository = packageRepository,
-        routeRepository = routeRepository,
-        vehicleRepository = vehicleRepository
-    )
+    val domainGraphBuilder = DomainGraphBuilder(warehouseRepository = warehouseRepository,
+        packageRepository = packageRepository,routeRepository = routeRepository,vehicleRepository = vehicleRepository)
     val warehousesGraph = domainGraphBuilder.buildGraph()
     printWarehouseGraph(warehousesGraph)
-
     testBidirectionalIdentity(warehousesGraph)
-
     testWarehouseQuickSort(warehousesGraph)
-
     drowPackageAssignmentRing()
 
     val bfsRouter = BreadthFirstRouter()
     val dijkstraRouter = DijkstraRouter()
-
     testRoutingComparison(warehousesGraph, bfsRouter, dijkstraRouter)
     testDecoratorStacking(warehousesGraph)
+
+    val allRoutes = warehousesGraph.flatMap { it.getOutgoingRoutes() }
+    val bidirectionalRouter = BidirectionalBfsRouter(allRoutes)
+    benchmarkRouters(warehousesGraph, bfsRouter, bidirectionalRouter)
 
 }
 

@@ -1,9 +1,9 @@
 package org.byte_bloom.flux.data.mapper
 
+import org.byte_bloom.flux.data.dataholders.RouteRaw
+import org.byte_bloom.flux.data.dataholders.VehicleRaw
 import org.byte_bloom.flux.data.dataholders.Priority
 import org.byte_bloom.flux.data.dataholders.PackageRaw
-import org.byte_bloom.flux.data.dataholders.VehicleRaw
-import org.byte_bloom.flux.data.dataholders.RouteRaw
 import org.byte_bloom.flux.data.dataholders.WarehouseRaw
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Route

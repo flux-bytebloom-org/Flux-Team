@@ -1,17 +1,18 @@
 package org.byte_bloom.flux.domain.logic.routing
 
 import org.byte_bloom.flux.domain.model.Warehouse
-import java.util.ArrayDeque
+
+private const val SINGLE_NODE_COUNT = 1
 
 class BreadthFirstRouter {
 
     fun findLeastHopPath(
         start: Warehouse,
         destination: Warehouse
-    ): List<Warehouse> {
+    ): RoutingSearchResult {
 
         if (start.id == destination.id) {
-            return listOf(start)
+            return RoutingSearchResult(listOf(start), SINGLE_NODE_COUNT)
         }
 
         val queue = ArrayDeque<List<Warehouse>>()
@@ -35,7 +36,10 @@ class BreadthFirstRouter {
             )
         }
 
-        return foundPath ?: emptyList()
+        return RoutingSearchResult(
+            path = foundPath ?: emptyList(),
+            nodesExplored = visited.size
+        )
     }
 
     private fun processRoutes(
@@ -53,6 +57,7 @@ class BreadthFirstRouter {
                 val newPath = currentPath + nextWarehouse
 
                 if (nextWarehouse.id == destination.id) {
+                    visited.add(nextWarehouse.id)
                     return newPath
                 }
 

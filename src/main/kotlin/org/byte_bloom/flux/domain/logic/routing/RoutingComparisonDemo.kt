@@ -12,7 +12,8 @@ fun testRoutingComparison(
 
     println("\n--- Routing Comparison: BFS vs Dijkstra ---")
 
-    val bfsPath = bfsRouter.findLeastHopPath(start, destination)
+    val bfsResult = bfsRouter.findLeastHopPath(start, destination)
+    val bfsPath = bfsResult.path
     val bfsDistance = calculatePathDistance(bfsPath)
     println("BFS (least hops): ${bfsPath.map { it.id }} — ${bfsPath.size - 1} hops, $bfsDistance km")
 
