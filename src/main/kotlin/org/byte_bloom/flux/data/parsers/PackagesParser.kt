@@ -1,19 +1,18 @@
 package org.byte_bloom.flux.data.parsers
 
-import org.byte_bloom.flux.data.dataholders.Package
+import org.byte_bloom.flux.data.dataholders.PackageRaw
 import org.byte_bloom.flux.data.dataholders.Priority
-import org.byte_bloom.flux.utils.printWarningLogger
 
-private const val PACKAGE_COLUMN_COUNT = 4
-
+private const val PACKAGE_COLUMN_COUNT = 5
 private const val PACKAGE_ID_INDEX = 0
 private const val PACKAGE_WEIGHT_INDEX = 1
-private const val PACKAGE_DESTINATION_INDEX = 2
-private const val PACKAGE_PRIORITY_INDEX = 3
+private const val PACKAGE_ORIGIN_INDEX = 2
+private const val PACKAGE_DESTINATION_INDEX = 3
+private const val PACKAGE_PRIORITY_INDEX = 4
 
-fun parsePackages(lines: List<String>): List<Package> {
+fun parsePackages(lines: List<String>): List<PackageRaw> {
 
-    val packages = mutableListOf<Package>()
+    val packages = mutableListOf<PackageRaw>()
 
     for (line in lines) {
 
@@ -28,20 +27,23 @@ fun parsePackages(lines: List<String>): List<Package> {
 }
 
 private fun parsePackageLine(
-    line: String
-): Package? {
+    rawLine: String
+): PackageRaw? {
 
-    val columns = splitColumns(line)
+    val columns = splitColumns(rawLine)
 
-    if (!hasValidColumnCount(columns, PACKAGE_COLUMN_COUNT, line, "package")) {
+    if (!hasValidColumnCount(
+            columns,
+            expectedColumnCount = PACKAGE_COLUMN_COUNT,
+            rawLine,
+            rowType = "package"
+        ) ||
+        !hasRequiredPackageData(columns, rawLine)
+    ) {
         return null
     }
 
-    if (!hasRequiredPackageData(columns, line)) {
-        return null
-    }
-
-    return createPackage(columns, line)
+    return createPackage(columns, rawLine)
 }
 
 private fun hasRequiredPackageData(
@@ -50,11 +52,15 @@ private fun hasRequiredPackageData(
 ): Boolean {
 
     val packageId = columns[PACKAGE_ID_INDEX]
+    val originHubId = columns[PACKAGE_ORIGIN_INDEX]
     val destinationHubId = columns[PACKAGE_DESTINATION_INDEX]
 
-    if (packageId.isEmpty() || destinationHubId.isEmpty()) {
-
-        printWarningLogger(
+    if (
+        packageId.isEmpty() ||
+        originHubId.isEmpty() ||
+        destinationHubId.isEmpty()
+    ) {
+        logWarning(
             "Missing required package data: $line"
         )
 
@@ -67,7 +73,7 @@ private fun hasRequiredPackageData(
 private fun createPackage(
     columns: List<String>,
     line: String
-): Package {
+): PackageRaw {
 
     val packageId = columns[PACKAGE_ID_INDEX]
 
@@ -77,17 +83,20 @@ private fun createPackage(
         line
     )
 
+    val originHubId = columns[PACKAGE_ORIGIN_INDEX]
+
     val destinationHubId = columns[PACKAGE_DESTINATION_INDEX]
 
     val priority = parsePriority(
         columns[PACKAGE_PRIORITY_INDEX]
     )
 
-    return Package(
-        packageId,
-        weight,
-        destinationHubId,
-        priority
+    return PackageRaw(
+        id = packageId,
+        weight = weight,
+        originHubId = originHubId,
+        destinationHubId = destinationHubId,
+        priority = priority
     )
 }
 

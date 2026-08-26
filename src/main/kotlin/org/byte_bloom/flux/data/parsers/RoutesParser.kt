@@ -1,7 +1,6 @@
 package org.byte_bloom.flux.data.parsers
 
-import org.byte_bloom.flux.data.dataholders.Route
-import org.byte_bloom.flux.utils.printWarningLogger
+import org.byte_bloom.flux.data.dataholders.RouteRaw
 
 private const val ROUTE_COLUMN_COUNT = 5
 
@@ -11,9 +10,9 @@ private const val DESTINATION_HUB_ID_INDEX = 2
 private const val DISTANCE_INDEX = 3
 private const val TYPICAL_DELAY_INDEX = 4
 
-fun parseRoutes(lines: List<String>): List<Route> {
+fun parseRoutes(lines: List<String>): List<RouteRaw> {
 
-    val routes = mutableListOf<Route>()
+    val routes = mutableListOf<RouteRaw>()
 
     for (line in lines) {
 
@@ -28,20 +27,23 @@ fun parseRoutes(lines: List<String>): List<Route> {
 }
 
 private fun parseRouteLine(
-    line: String
-): Route? {
+    rawLine: String
+): RouteRaw? {
 
-    val columns = splitColumns(line)
+    val columns = splitColumns(rawLine)
 
-    if (!hasValidColumnCount(columns, ROUTE_COLUMN_COUNT, line, "route")) {
+    if (!hasValidColumnCount(
+            columns,
+            expectedColumnCount = ROUTE_COLUMN_COUNT,
+            rawLine,
+            rowType = "route"
+        ) ||
+        !hasRequiredRouteData(columns, rawLine)
+    ) {
         return null
     }
 
-    if (!hasRequiredRouteData(columns, line)) {
-        return null
-    }
-
-    return createRoute(columns, line)
+    return createRoute(columns, rawLine)
 }
 
 private fun hasRequiredRouteData(
@@ -59,7 +61,7 @@ private fun hasRequiredRouteData(
         destinationHubId.isEmpty()
     ) {
 
-        printWarningLogger(
+        logWarning(
             "Missing route data: $line"
         )
 
@@ -72,7 +74,7 @@ private fun hasRequiredRouteData(
 private fun createRoute(
     columns: List<String>,
     line: String
-): Route {
+): RouteRaw {
 
     val routeId = columns[ROUTE_ID_INDEX]
     val originHubId = columns[ORIGIN_HUB_ID_INDEX]
@@ -90,8 +92,8 @@ private fun createRoute(
         line
     )
 
-    return Route(
-        routeId = routeId,
+    return RouteRaw(
+        id = routeId,
         originHubId = originHubId,
         destinationHubId = destinationHubId,
         distanceKm = distance,

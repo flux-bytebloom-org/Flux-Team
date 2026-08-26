@@ -1,11 +1,10 @@
-# Git Workflow & Commit Conventions(sara alajjouri)
+# Git Workflow & Commit Conventions(Sara Alajjouri)
 
 ## 1. Branch Types & Naming Conventions
 
 ### 1.1 `main` (Production Branch)
 - Contains production-ready code.
 - Direct commits are strictly **forbidden**.
-- Protected branch: Requires approval from maintainers and passing CI/CD pipelines.
 
 ### 1.2 `develop` (Integration Branch)
 - Primary development branch containing the latest delivered features for the next release.
@@ -17,7 +16,7 @@
 - **Purpose:** Developing new functionality or user stories.
 - **Example:** `feature/user-authentication`, `feature/cart-payment-gateway`
 
-### 1.4 `fix/<short-description>` / `bugfix/<short-description>`
+### 1.4 `fix/<short-description>`
 - **Cut from:** `develop`
 - **Merges back into:** `develop`
 - **Purpose:** Resolving non-critical bugs found during development/QA.
@@ -46,7 +45,7 @@
 | Type | Usage | Example |
 |------|-------|---------|
 | `feature` | New feature | `feature/user-authentication` |
-| `fix` / `bugfix` | Non-critical bug fix | `fix/null-pointer-login` |
+| `fix` | Non-critical bug fix | `fix/null-pointer-login` |
 | `hotfix` | Emergency production fix | `hotfix/security-patch-v1.0.1` |
 | `refactor` | Code restructuring | `refactor/wallet-balance-logic` |
 | `chore` | Maintenance (dependencies, config) | `chore/update-gradle-version` |
@@ -114,7 +113,7 @@ feat(wallet): add currency conversion support
 test(wallet): add unit tests for conversion rates
 docs(wallet): document conversion API usage
 ```
-# Clean Code Standards (sameera sweedan)
+# Clean Code Standards (Sameera Sweedan)
 
 We define clean code as code that is easily understood by all team members.
 It should be readable and maintainable by any team member.
@@ -283,38 +282,38 @@ maintainable, and easy to extend.
 ## 4.1 Package Structure
 
 ```
-src/
- └── main/
-     ├── kotlin/
-     │    └── org.byte_bloom.flux/
-     │          ├── dataholders/
-     │          │      ├── Package.kt
-     │          │      ├── Priority.kt
-     │          │      ├── Route.kt
-     │          │      ├── Vehicle.kt
-     │          │      └── Warehouse.kt
-     │          │
-     │          ├── logic/
-     │          │      └── sorters/
-     │          │             └── SelectionSort.kt
-     │          │
-     │          ├── utils/
-     │          │      ├── parsers/
-     │          │      │      ├── CsvParser.kt
-     │          │      │      ├── FleetParser.kt
-     │          │      │      ├── PackageParser.kt
-     │          │      │      ├── ParserUtils.kt
-     │          │      │      ├── RouteParser.kt
-     │          │      │      └── WarehouseParser.kt
-     │          │      │
-     │          │      ├── readers/
-     │          │      │      └── CsvReader.kt
-     │          │      │
-     │          │      └── ParserLogger.kt
-     │          │
-     │          └── Main.kt
-     │
-     └── resources/
+src
+└── main
+    ├── kotlin
+    │   └── org.byte_bloom.flux
+    │       ├── data
+    │       │   ├── dataholders
+    │       │   │   ├── Package.kt
+    │       │   │   ├── Priority.kt
+    │       │   │   ├── Route.kt
+    │       │   │   ├── Vehicle.kt
+    │       │   │   └── Warehouse.kt
+    │       │   │
+    │       │   ├── parsers
+    │       │   │   ├── FleetParser.kt
+    │       │   │   ├── PackagesParser.kt
+    │       │   │   ├── ParserUtils.kt
+    │       │   │   ├── RoutesParser.kt
+    │       │   │   └── WarehousesParser.kt
+    │       │   │
+    │       │   └── readers
+    │       │       └── CsvReader.kt
+    │       │
+    │       ├── logic
+    │       │   └── sorters
+    │       │       └── SelectionSort.kt
+    │       │
+    │       ├── utils
+    │       │   └── Logger.kt
+    │       │
+    │       └── Main.kt
+    │
+    └── resources
 ```
 
 

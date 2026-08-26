@@ -1,19 +1,17 @@
 package org.byte_bloom.flux.data.parsers
 
-import org.byte_bloom.flux.data.dataholders.Vehicle
-import org.byte_bloom.flux.utils.printWarningLogger
+import org.byte_bloom.flux.data.dataholders.VehicleRaw
 
 private const val VEHICLE_COLUMN_COUNT = 4
-
 private const val VEHICLE_ID_INDEX = 0
 private const val HUB_ID_INDEX = 1
 private const val CAPACITY_INDEX = 2
 private const val COST_INDEX = 3
 
 
-fun parseFleet(lines: List<String>): List<Vehicle> {
+fun parseFleet(lines: List<String>): List<VehicleRaw> {
 
-    val fleet = mutableListOf<Vehicle>()
+    val fleet = mutableListOf<VehicleRaw>()
 
     for (line in lines) {
         val vehicle = parseVehicleLine(line)
@@ -26,27 +24,28 @@ fun parseFleet(lines: List<String>): List<Vehicle> {
 }
 
 
-private fun parseVehicleLine(line: String): Vehicle? {
+private fun parseVehicleLine(rawLine: String): VehicleRaw? {
 
-    val columns = splitColumns(line)
+    val columns = splitColumns(rawLine)
 
-    if (!hasValidColumnCount(columns, VEHICLE_COLUMN_COUNT ,line , "vehicle")) {
+    if (!hasValidColumnCount(
+            columns,
+            expectedColumnCount = VEHICLE_COLUMN_COUNT,
+            rawLine,
+            rowType = "vehicle"
+        ) ||
+        !hasRequiredVehicleData(columns, rawLine)
+    ) {
         return null
     }
 
-    if (!hasRequiredVehicleData(columns, line)) {
-        return null
-    }
-
-    return createVehicle(columns, line)
+    return createVehicle(columns, rawLine)
 }
-
-
 
 
 private fun hasRequiredVehicleData(
     columns: List<String>,
-    line: String
+    rawLine: String
 ): Boolean {
 
     val vehicleId = columns[VEHICLE_ID_INDEX]
@@ -54,8 +53,8 @@ private fun hasRequiredVehicleData(
 
     if (vehicleId.isEmpty() || hubId.isEmpty()) {
 
-        printWarningLogger(
-            "Missing fleet data: $line"
+        logWarning(
+            "Missing fleet data: $rawLine"
         )
 
         return false
@@ -67,8 +66,8 @@ private fun hasRequiredVehicleData(
 
 private fun createVehicle(
     columns: List<String>,
-    line: String
-): Vehicle {
+    rawLine: String
+): VehicleRaw {
 
     val vehicleId = columns[VEHICLE_ID_INDEX]
     val hubId = columns[HUB_ID_INDEX]
@@ -76,16 +75,16 @@ private fun createVehicle(
     val capacity = parseDoubleOrDefault(
         columns[CAPACITY_INDEX],
         "capacity",
-        line
+        rawLine
     )
 
     val cost = parseDoubleOrDefault(
         columns[COST_INDEX],
         "cost",
-        line
+        rawLine
     )
 
-    return Vehicle(
+    return VehicleRaw(
         vehicleId,
         hubId,
         capacity,

@@ -1,18 +1,18 @@
 package org.byte_bloom.flux.data.parsers
 
 
-import org.byte_bloom.flux.data.dataholders.Warehouse
-import org.byte_bloom.flux.utils.printWarningLogger
+import org.byte_bloom.flux.data.dataholders.WarehouseRaw
 
-private const val WAREHOUSE_COLUMN_COUNT = 3
+private const val WAREHOUSE_COLUMN_COUNT = 5
 
 private const val WAREHOUSE_ID_INDEX = 0
 private const val WAREHOUSE_NAME_INDEX = 1
 private const val WAREHOUSE_REGIONAL_ZONE_INDEX = 2
+private const val WAREHOUSE_LATITUDE_INDEX = 3
+private const val WAREHOUSE_LONGITUDE_INDEX = 4
 
-fun parseWarehouses(rawWarehouseLines: List<String>): List<Warehouse> {
-
-    val warehouses = mutableListOf<Warehouse>()
+fun parseWarehouses(rawWarehouseLines: List<String>): List<WarehouseRaw> {
+    val warehouses = mutableListOf<WarehouseRaw>()
 
     for (rawLine in rawWarehouseLines) {
 
@@ -26,15 +26,18 @@ fun parseWarehouses(rawWarehouseLines: List<String>): List<Warehouse> {
     return warehouses
 }
 
-private fun parseWarehouseLine(rawLine: String): Warehouse? {
+private fun parseWarehouseLine(rawLine: String): WarehouseRaw? {
 
     val columns = splitColumns(rawLine)
 
-    if (!hasValidColumnCount(columns, WAREHOUSE_COLUMN_COUNT, rawLine, "warehouse")) {
-        return null
-    }
-
-    if (!hasRequiredWarehouseData(columns, rawLine)) {
+    if (!hasValidColumnCount(
+            columns,
+            expectedColumnCount = WAREHOUSE_COLUMN_COUNT,
+            rawLine,
+            rowType = "warehouse"
+        ) ||
+        !hasRequiredWarehouseData(columns, rawLine)
+    ) {
         return null
     }
 
@@ -50,7 +53,7 @@ private fun hasRequiredWarehouseData(
 
     if (warehouseId.isEmpty()) {
 
-        printWarningLogger(
+        logWarning(
             "Missing warehouse id: $line"
         )
 
@@ -62,15 +65,17 @@ private fun hasRequiredWarehouseData(
 
 private fun createWarehouse(
     columns: List<String>
-): Warehouse {
+): WarehouseRaw {
 
     val warehouseId = columns[WAREHOUSE_ID_INDEX]
     val warehouseName = columns[WAREHOUSE_NAME_INDEX]
     val warehouseRegionalZone = columns[WAREHOUSE_REGIONAL_ZONE_INDEX]
 
-    return Warehouse(
-        warehouseId = warehouseId,
+    return WarehouseRaw(
+        id = warehouseId,
         name = warehouseName,
-        regionalZone = warehouseRegionalZone
+        regionalZone = warehouseRegionalZone,
+        latitude = columns[WAREHOUSE_LATITUDE_INDEX].toDoubleOrNull() ?: 0.0,
+        longitude = columns[WAREHOUSE_LONGITUDE_INDEX].toDoubleOrNull() ?: 0.0
     )
 }

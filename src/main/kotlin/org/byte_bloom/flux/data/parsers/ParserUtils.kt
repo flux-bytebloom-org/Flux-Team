@@ -1,8 +1,5 @@
 package org.byte_bloom.flux.data.parsers
 
-import org.byte_bloom.flux.utils.printWarningLogger
-
-
 fun splitColumns(line: String): List<String> {
     return line
         .trimEnd(',')
@@ -18,7 +15,7 @@ fun parseDoubleOrDefault(
 
     return value.toDoubleOrNull()
         ?: run {
-            printWarningLogger(
+            logWarning(
                 "Invalid $fieldName in line [$line], using -1.0"
             )
             -1.0
@@ -34,7 +31,7 @@ fun hasValidColumnCount(
 
     if (columns.size != expectedColumnCount) {
 
-        printWarningLogger(
+        logWarning(
             "Invalid $rowType row: $line"
 
         )
@@ -54,3 +51,8 @@ fun cleanLines(
         .map { it.trim() }
         .filter { it.isNotEmpty() }
 }
+
+fun logWarning(message: String) {
+    println("WARNING: $message")
+}
+
