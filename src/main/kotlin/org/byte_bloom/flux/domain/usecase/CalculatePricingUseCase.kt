@@ -12,3 +12,4 @@ class CalculatePricingUseCase(
         return pkg.calculateTransitRate(baseCost)
     }
 }
+

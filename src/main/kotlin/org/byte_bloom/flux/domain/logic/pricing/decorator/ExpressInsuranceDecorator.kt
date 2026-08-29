@@ -15,3 +15,4 @@ class ExpressInsuranceDecorator(
                 EXPRESS_INSURANCE_PREMIUM
     }
 }
+

@@ -38,6 +38,7 @@ class DomainGraphBuilder(
         return warehouses.associateBy { it.id }
     }
 
+
     private fun attachPackages(
         packages: List<Package>,
         warehouseMap: Map<String, Warehouse>

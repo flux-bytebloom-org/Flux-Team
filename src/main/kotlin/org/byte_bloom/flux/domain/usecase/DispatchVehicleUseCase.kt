@@ -19,3 +19,4 @@ class DispatchVehicleUseCase {
             .map { (pkg, _) -> pkg }
     }
 }
+

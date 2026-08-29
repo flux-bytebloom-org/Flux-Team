@@ -6,3 +6,4 @@ data class RoutingSearchResult(
     val path: List<Warehouse>,
     val nodesExplored: Int
 )
+

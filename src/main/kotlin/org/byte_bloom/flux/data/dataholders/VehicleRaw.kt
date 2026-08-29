@@ -6,3 +6,4 @@ data class VehicleRaw(
     val maxCapacityKg: Double,
     val costPerKm: Double
 )
+

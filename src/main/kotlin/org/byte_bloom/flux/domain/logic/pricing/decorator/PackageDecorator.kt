@@ -12,3 +12,4 @@ abstract class PackageDecorator(
         return packageComponent.calculateTransitRate(baseRate)
     }
 }
+

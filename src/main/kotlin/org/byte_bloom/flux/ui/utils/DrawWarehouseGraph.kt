@@ -57,3 +57,4 @@ private fun formatRoute(route: Route): String {
 private fun formatVehicle(vehicle: Vehicle): String {
     return "${vehicle.id} (cap: ${vehicle.maxCapacityKg}kg, cost/km: ${vehicle.costPerKm})"
 }
+

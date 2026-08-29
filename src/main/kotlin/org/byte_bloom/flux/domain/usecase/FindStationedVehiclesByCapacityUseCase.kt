@@ -10,3 +10,4 @@ class FindStationedVehiclesByCapacityUseCase {
             .filter { vehicle -> vehicle.maxCapacityKg >= requiredCapacityKg }
     }
 }
+

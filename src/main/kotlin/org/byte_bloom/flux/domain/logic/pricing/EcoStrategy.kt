@@ -19,3 +19,4 @@ class EcoStrategy : DispatchStrategy {
         return ECO_PRIORITY_MULTIPLIER
     }
 }
+

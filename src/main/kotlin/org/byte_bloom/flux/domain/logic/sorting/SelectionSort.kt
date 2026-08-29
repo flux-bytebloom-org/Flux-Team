@@ -100,3 +100,4 @@ private object SortConstants {
     const val PREVIOUS_INDEX_OFFSET = -1
     const val LAST_INDEX_OFFSET = -1
 }
+

@@ -7,3 +7,4 @@ data class WarehouseRaw(
     val latitude: Double,
     val longitude: Double
 )
+

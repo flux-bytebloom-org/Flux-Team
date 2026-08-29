@@ -28,3 +28,4 @@ private fun printAssignments(assignments: Map<Vehicle, List<Package>>) {
         println("  ${vehicle.id}: ${pkgs.map { it.id }}")
     }
 }
+

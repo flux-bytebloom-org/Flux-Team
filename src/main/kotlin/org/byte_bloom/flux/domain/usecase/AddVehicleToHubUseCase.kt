@@ -10,3 +10,4 @@ class AddVehicleToHubUseCase {
         hub.addVehicle(updatedVehicle)
     }
 }
+

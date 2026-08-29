@@ -10,3 +10,4 @@ class AssignPackageToCargoQueueUseCase {
         hub.sortCargoQueue()
     }
 }
+
