@@ -8,15 +8,16 @@ class DispatchVehicleUseCase {
 
     operator fun invoke(hub: Warehouse, vehicle: Vehicle): List<Package> {
         val packages = hub.getCargoQueue()
+        var currentWeight = 0.0
 
-        val cumulativeWeights = packages
-            .map { it.weight ?: 0.0 }
-            .runningFold(0.0) { sum, weight -> sum + weight }
-            .drop(1)
-
-        return packages.zip(cumulativeWeights)
-            .takeWhile { (_, totalWeight) -> totalWeight <= vehicle.maxCapacityKg }
-            .map { (pkg, _) -> pkg }
+        return packages.filter { pkg ->
+            val weight = pkg.weight ?: 0.0
+            if (currentWeight + weight <= vehicle.maxCapacityKg) {
+                currentWeight += weight
+                true
+            } else {
+                false
+            }
+        }
     }
 }
-
