@@ -19,6 +19,8 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
+import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
+import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 
@@ -56,7 +58,9 @@ fun main() {
 
     val bfsRouter = BreadthFirstRouter()
     val dijkstraRouter = DijkstraRouter()
-    testRoutingComparison(warehousesGraph, bfsRouter, dijkstraRouter)
+    val findOptimalPathUseCase = FindOptimalPathUseCase(dijkstraRouter)
+    val findFewestHopsRouteUseCase = FindFewestHopsRouteUseCase(bfsRouter)
+    testRoutingComparison(warehousesGraph, findFewestHopsRouteUseCase, findOptimalPathUseCase)
     testDecoratorStacking(warehousesGraph)
 
     val allRoutes = warehousesGraph.flatMap { it.getOutgoingRoutes() }
