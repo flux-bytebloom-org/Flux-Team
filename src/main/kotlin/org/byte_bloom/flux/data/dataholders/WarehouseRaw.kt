@@ -1,6 +1,6 @@
 package org.byte_bloom.flux.data.dataholders
 
-class WarehouseRaw(
+data class WarehouseRaw(
     val id: String,
     val name: String,
     val regionalZone: String,
