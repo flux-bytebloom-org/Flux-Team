@@ -1,23 +1,25 @@
 package org.byte_bloom.flux.domain.logic.routing
 
 import org.byte_bloom.flux.domain.model.Warehouse
+import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
+import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
 
 fun testRoutingComparison(
     warehouses: List<Warehouse>,
-    bfsRouter: BreadthFirstRouter,
-    dijkstraRouter: DijkstraRouter
+    findFewestHopsRouteUseCase: FindFewestHopsRouteUseCase,
+    findOptimalPathUseCase: FindOptimalPathUseCase
 ) {
     val start = warehouses.first()
     val destination = warehouses.last()
 
     println("\n--- Routing Comparison: BFS vs Dijkstra ---")
 
-    val bfsResult = bfsRouter.findLeastHopPath(start, destination)
+    val bfsResult = findFewestHopsRouteUseCase(start, destination)
     val bfsPath = bfsResult.path
     val bfsDistance = calculatePathDistance(bfsPath)
     println("BFS (least hops): ${bfsPath.map { it.id }} — ${bfsPath.size - 1} hops, $bfsDistance km")
 
-    val dijkstraPath = dijkstraRouter.findShortestPath(start, destination)
+    val dijkstraPath = findOptimalPathUseCase(start, destination)
     val dijkstraDistance = calculatePathDistance(dijkstraPath)
     println("Dijkstra (shortest distance): ${dijkstraPath.map { it.id }} — " +
             "${dijkstraPath.size - 1} hops, $dijkstraDistance km")
