@@ -5,16 +5,9 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 
-class AssignPackageToLowestCostStationedVehicleUseCase(
-    private val findStationedVehiclesByCapacityUseCase:
-    FindStationedVehiclesByCapacityUseCase
-) {
+class AssignPackageToLowestCostStationedVehicleUseCase(private val findStationedVehiclesByCapacityUseCase: FindStationedVehiclesByCapacityUseCase) {
 
-    operator fun invoke(
-        warehouse: Warehouse,
-        packageItem: Package,
-        distanceKm: Double
-    ): Vehicle? {
+    operator fun invoke(warehouse: Warehouse, packageItem: Package, distanceKm: Double): Vehicle? {
 
         val requiredWeight = packageItem.weight
             ?: throw InvalidPackageWeightException(
