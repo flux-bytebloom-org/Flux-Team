@@ -49,3 +49,4 @@ data class Warehouse(
         sortCargoByWeightDescending(cargoQueue)
     }
 }
+

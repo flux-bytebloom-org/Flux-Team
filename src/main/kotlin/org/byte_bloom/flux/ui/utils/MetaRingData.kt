@@ -98,3 +98,4 @@ object MetaRingData {
         return Package(id, weight, origin.currentHub, destination.currentHub, priority)
     }
 }
+

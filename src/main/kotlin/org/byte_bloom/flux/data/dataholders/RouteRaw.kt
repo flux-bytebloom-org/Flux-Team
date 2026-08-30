@@ -7,3 +7,4 @@ data class RouteRaw(
     val distanceKm: Double,
     val typicalDelayMin: Double
 )
+

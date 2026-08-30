@@ -105,3 +105,4 @@ class DijkstraRouter {
         private const val INITIAL_DISTANCE = 0.0
     }
 }
+

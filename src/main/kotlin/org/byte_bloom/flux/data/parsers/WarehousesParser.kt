@@ -79,3 +79,4 @@ private fun createWarehouse(
         longitude = columns[WAREHOUSE_LONGITUDE_INDEX].toDoubleOrNull() ?: 0.0
     )
 }
+

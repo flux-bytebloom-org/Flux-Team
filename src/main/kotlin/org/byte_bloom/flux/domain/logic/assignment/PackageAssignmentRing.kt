@@ -122,3 +122,4 @@ class PackageAssignmentRing(
         println("$status $message")
     }
 }
+

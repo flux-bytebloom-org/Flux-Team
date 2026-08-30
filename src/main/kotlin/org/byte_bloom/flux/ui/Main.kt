@@ -165,3 +165,4 @@ private fun testDecoratorStacking(warehouses: List<Warehouse>) {
     val fullyStacked = ExpressInsuranceDecorator(fragileAndCold)
     println("+ ExpressInsurance: ${fullyStacked.getDescription()} → ${fullyStacked.calculateTransitRate(baseRate)}")
 }
+

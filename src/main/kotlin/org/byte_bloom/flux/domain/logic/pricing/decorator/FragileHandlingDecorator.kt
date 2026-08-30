@@ -15,3 +15,4 @@ class FragileHandlingDecorator(
                 FRAGILE_PROTECTIVE_FEE
     }
 }
+

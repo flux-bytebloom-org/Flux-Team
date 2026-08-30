@@ -9,3 +9,5 @@ class FindOptimalPathUseCase(private val dijkstraRouter: DijkstraRouter){
         return dijkstraRouter.findShortestPath(start, destination)
     }
 }
+
+

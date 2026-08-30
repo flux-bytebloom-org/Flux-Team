@@ -10,3 +10,4 @@ interface DispatchStrategy {
 
     fun getPriorityMultiplier(): Double
 }
+

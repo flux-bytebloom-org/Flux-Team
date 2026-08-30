@@ -7,3 +7,4 @@ data class PackageRaw(
     val destinationHubId: String,
     val priority: Priority
 )
+

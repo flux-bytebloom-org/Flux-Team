@@ -20,3 +20,4 @@ class FragileStrategy : DispatchStrategy {
         return FRAGILE_PRIORITY_MULTIPLIER
     }
 }
+

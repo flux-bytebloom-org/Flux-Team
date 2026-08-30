@@ -91,3 +91,4 @@ private fun createVehicle(
         cost
     )
 }
+

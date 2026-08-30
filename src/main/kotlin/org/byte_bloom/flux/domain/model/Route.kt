@@ -7,3 +7,4 @@ data class Route(
     val distanceKm: Double,
     val typicalDelayMin: Double
 )
+

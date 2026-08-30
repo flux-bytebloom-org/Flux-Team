@@ -17,3 +17,4 @@ class CsvVehicleRepository(
         return parseFleet(cleanedLines).map { it.toDomain() }
     }
 }
+

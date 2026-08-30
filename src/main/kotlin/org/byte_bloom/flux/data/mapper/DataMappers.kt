@@ -46,3 +46,4 @@ fun Priority.toDomain(): DomainPriority = when (this) {
     Priority.STANDARD -> DomainPriority.STANDARD
     Priority.URGENT -> DomainPriority.URGENT
 }
+

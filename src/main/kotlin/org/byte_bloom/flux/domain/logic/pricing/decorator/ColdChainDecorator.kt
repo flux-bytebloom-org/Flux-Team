@@ -15,3 +15,4 @@ class ColdChainDecorator(
                 COLD_CHAIN_MULTIPLIER
     }
 }
+

@@ -17,3 +17,4 @@ class CsvWarehouseRepository(
         return parseWarehouses(cleanedLines).map { it.toDomain() }
     }
 }
+

@@ -6,3 +6,4 @@ interface PackageComponent {
 
     fun calculateTransitRate(baseRate: Double): Double
 }
+
