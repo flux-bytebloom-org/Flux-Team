@@ -24,6 +24,9 @@ data class Warehouse(
         return cargoQueue.toList()
     }
 
+    fun removePackage(packageItem: Package) {
+        cargoQueue.remove(packageItem)
+    }
 
     fun addRoute(route: Route) {
         outgoingRoutes.add(route)
@@ -45,6 +48,4 @@ data class Warehouse(
     fun sortCargoQueue() {
         sortCargoByWeightDescending(cargoQueue)
     }
-
-
 }
