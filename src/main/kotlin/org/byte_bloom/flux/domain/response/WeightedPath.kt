@@ -6,3 +6,4 @@ data class WeightedPath(
     val path: List<Warehouse>,
     val packageCount: Int
 )
+

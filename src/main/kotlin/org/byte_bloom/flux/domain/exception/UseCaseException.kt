@@ -8,3 +8,4 @@ sealed class UseCaseException(message: String) : Exception(message) {
     class WarehouseNotFound(warehouseId: String) :
         UseCaseException("${Messages.WAREHOUSE_NOT_FOUND} $warehouseId")
 }
+

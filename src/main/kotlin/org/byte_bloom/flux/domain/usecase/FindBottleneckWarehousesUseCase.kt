@@ -21,3 +21,4 @@ class FindBottleneckWarehousesUseCase {
             .map { it.first }
     }
 }
+
