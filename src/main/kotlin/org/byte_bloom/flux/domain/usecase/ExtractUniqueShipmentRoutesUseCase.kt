@@ -8,5 +8,5 @@ class ExtractUniqueShipmentRoutesUseCase {
             .groupBy { it.originHub.id to it.destinationHub.id }
             .mapValues { entry -> entry.value.size }
     }
-
 }
+

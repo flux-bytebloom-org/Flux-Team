@@ -19,5 +19,5 @@ class GenerateWeightedShipmentPathsUseCase (private val findOptimalPathUseCase: 
             if (path.isEmpty()) null else WeightedPath(path, packageCount)
         }
     }
-
 }
+
