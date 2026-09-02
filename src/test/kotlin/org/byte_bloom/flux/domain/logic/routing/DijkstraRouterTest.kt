@@ -45,7 +45,7 @@ class DijkstraRouterTest {
     }
 
     private fun assertPath(from: Warehouse, to: Warehouse, expected: List<String>) {
-        val actual = DijkstraRouter().findShortestPath(from, to).map { it.id }
+        val actual = DijkstraRouter().findShortestPath(from, to, RoutingCriterion.DISTANCE).map { it.id }
         check(actual == expected) { "Dijkstra Failed! Expected $expected but got $actual" }
     }
 
