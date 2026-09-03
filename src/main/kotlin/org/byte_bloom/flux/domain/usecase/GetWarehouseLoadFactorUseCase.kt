@@ -1,6 +1,6 @@
 package org.byte_bloom.flux.domain.usecase
 
-import org.byte_bloom.flux.domain.exception.NoStationedVehiclesException
+import org.byte_bloom.flux.domain.exception.UseCaseException
 import org.byte_bloom.flux.domain.model.Warehouse
 
 class GetWarehouseLoadFactorUseCase {
@@ -10,9 +10,7 @@ class GetWarehouseLoadFactorUseCase {
             .sumOf { it.maxCapacityKg }
 
         if (totalFleetCapacityKg <= 0.0) {
-            throw NoStationedVehiclesException(
-                "Warehouse ${warehouse.id} has no stationed vehicles to calculate a load factor against"
-            )
+                throw UseCaseException.NoStationedVehicles(warehouse.id)
         }
 
         val totalQueueWeightKg = warehouse.getCargoQueue()
