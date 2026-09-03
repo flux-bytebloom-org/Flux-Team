@@ -2,6 +2,7 @@ package org.byte_bloom.flux.domain.logic.routing
 
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Warehouse
+import kotlin.collections.map
 
 class DijkstraRouterTest {
 
@@ -50,7 +51,8 @@ class DijkstraRouterTest {
     }
 
     private fun assertBfsPath(from: Warehouse, to: Warehouse, expected: List<String>) {
-        val actual = BreadthFirstRouter().findLeastHopPath(from, to).map { it.id }
+        //val actual = BreadthFirstRouter().findLeastHopPath(from, to).map { it.id }
+        val actual = (BreadthFirstRouter().findLeastHopPath(start = from, destination = to)).path.map { it.id }
         check(actual == expected) { "BFS Failed! Expected $expected but got $actual" }
     }
 
