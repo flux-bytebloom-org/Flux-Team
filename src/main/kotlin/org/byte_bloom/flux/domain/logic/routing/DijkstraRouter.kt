@@ -46,7 +46,8 @@ class DijkstraRouter {
 
         while (current != null && current.id != destination.id) {
             visited.add(current.id)
-            relaxNeighbors(current, costs, parents, visited, discovered, criterion)
+            val state = DijkstraState(costs = costs,parents = parents,visited = visited,discovered = discovered)
+            relaxNeighbors(current,state, criterion)
             current = findMinDistanceNode(discovered, costs, visited)
         }
 
@@ -54,14 +55,23 @@ class DijkstraRouter {
         return if (isReached) buildPath(destination, parents) else emptyList()
     }
 
+    private data class DijkstraState(
+        val costs: MutableMap<String, Double> = mutableMapOf(),
+        val parents: MutableMap<String, Warehouse> = mutableMapOf(),
+        val visited: MutableSet<String> = mutableSetOf(),
+        val discovered: MutableMap<String, Warehouse> = mutableMapOf()
+    )
+
     private fun relaxNeighbors(
         current: Warehouse,
-        costs: MutableMap<String, Double>,
-        parents: MutableMap<String, Warehouse>,
-        visited: Set<String>,
-        discovered: MutableMap<String, Warehouse>,
+        state: DijkstraState,
         criterion: RoutingCriterion
     ) {
+        val costs = state.costs
+        val parents = state.parents
+        val visited = state.visited
+        val discovered = state.discovered
+
         val currentCost = costs[current.id] ?: return
         val routes = current.getOutgoingRoutes()
 
