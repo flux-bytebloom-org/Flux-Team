@@ -4,7 +4,7 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 
-class FindOptimalVehicleForPackageUseCase {
+class FindSmallestFitVehicleUseCase {
 
     operator fun invoke(hub: Warehouse, pkg: Package): Vehicle? {
         val packageWeight = pkg.weight ?: 0.0
