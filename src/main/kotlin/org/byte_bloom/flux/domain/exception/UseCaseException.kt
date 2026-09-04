@@ -17,11 +17,16 @@ sealed class UseCaseException(message: String) : Exception(message) {
     class PackageNotInQueue(packageId: String, warehouseId: String) :
         UseCaseException("${Messages.PACKAGE_NOT_IN_QUEUE} package=$packageId warehouse=$warehouseId")
 
+    class InvalidTransitLoad(reason: String) :
+        UseCaseException("${Messages.INVALID_TRANSIT_LOAD} $reason")
+}
+
     private object Messages {
         const val WAREHOUSE_NOT_FOUND = "Warehouse not found with id:"
         const val INVALID_PACKAGE_WEIGHT = "Invalid package weight:"
         const val INVALID_REQUIRED_WEIGHT = "Invalid required weight:"
         const val NO_STATIONED_VEHICLES = "No stationed vehicles at warehouse:"
         const val PACKAGE_NOT_IN_QUEUE = "Package not found in warehouse queue:"
+        const val INVALID_TRANSIT_LOAD = "Invalid transit load:"
     }
-}
+
