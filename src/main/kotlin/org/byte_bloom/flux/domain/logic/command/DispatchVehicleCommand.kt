@@ -11,22 +11,18 @@ class DispatchVehicleCommand(
     private val dispatchVehicleUseCase: DispatchVehicleUseCase = DispatchVehicleUseCase()
 ) : Command {
 
-    private val dispatchedPackages = mutableListOf<Package>()
+    //private val dispatchedPackages = mutableListOf<Package>()
+    private var queueBeforeDispatch: List<Package> = emptyList()
 
     override fun execute() {
+        queueBeforeDispatch = hub.getCargoQueue()
         val loadedPackages = dispatchVehicleUseCase(hub, vehicle)
-        dispatchedPackages.clear()
-        dispatchedPackages.addAll(loadedPackages)
-
-        loadedPackages.forEach { pkg ->
-            hub.removePackage(pkg)
-        }
+        loadedPackages.forEach(hub::removePackage)
     }
 
+
     override fun undo() {
-        dispatchedPackages.forEach { pkg ->
-            hub.addPackage(pkg)
-        }
-        dispatchedPackages.clear()
+        hub.getCargoQueue().forEach(hub::removePackage)
+        queueBeforeDispatch.forEach(hub::addPackage)
     }
 }

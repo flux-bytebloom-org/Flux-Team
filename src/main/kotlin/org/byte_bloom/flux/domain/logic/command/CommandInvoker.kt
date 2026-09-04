@@ -15,6 +15,19 @@ class CommandInvoker {
         return true
     }
 
+    fun undoAll(): Boolean {
+        if (history.isEmpty()) return false
+
+        tailrec fun undoRemaining() {
+            val command = history.removeLastOrNull() ?: return
+            command.undo()
+            undoRemaining()
+        }
+
+        undoRemaining()
+        return true
+    }
+
     fun clearHistory() {
         history.clear()
     }

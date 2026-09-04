@@ -23,6 +23,7 @@ import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
 import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
+import org.byte_bloom.flux.ui.utils.testCommandPattern
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 private const val DEFAULT_BASE_RATE = 100.0
@@ -66,7 +67,7 @@ fun main() {
     val allRoutes = warehousesGraph.flatMap { it.getOutgoingRoutes() }
     val bidirectionalRouter = BidirectionalBfsRouter(allRoutes)
     benchmarkRouters(warehousesGraph, bfsRouter, bidirectionalRouter)
-
+    testCommandPattern()
 }
 
 private fun printParsingSummary(
