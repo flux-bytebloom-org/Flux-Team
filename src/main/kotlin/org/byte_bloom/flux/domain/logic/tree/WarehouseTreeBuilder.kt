@@ -2,6 +2,8 @@ package org.byte_bloom.flux.domain.logic.tree
 
 import org.byte_bloom.flux.domain.model.Warehouse
 
+private const val REGIONAL_DEPOT_COUNT = 1
+
 fun buildWarehouseTree(warehouses: List<Warehouse>, globalHub: Warehouse): WarehouseTree {
 
     val root = WarehouseTreeNode(globalHub)
@@ -11,12 +13,11 @@ fun buildWarehouseTree(warehouses: List<Warehouse>, globalHub: Warehouse): Wareh
         .groupBy { it.regionalZone }
 
     warehousesByZone.forEach { (zone, warehousesInZone) ->
-        val regionalDepotNode = WarehouseTreeNode(
-            warehousesInZone.first().copy(name = "$zone Regional Depot")
-        )
+        val regionalWarehouse = warehousesInZone.first().copy(name = "$zone Regional Depot")
+        val regionalDepotNode = WarehouseTreeNode(regionalWarehouse)
         root.addChild(regionalDepotNode)
 
-        warehousesInZone.forEach { warehouse ->
+        warehousesInZone.drop(REGIONAL_DEPOT_COUNT).forEach { warehouse ->
             regionalDepotNode.addChild(WarehouseTreeNode(warehouse))
         }
     }
