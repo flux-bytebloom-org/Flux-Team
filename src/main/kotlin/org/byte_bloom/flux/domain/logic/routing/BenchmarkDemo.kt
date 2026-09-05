@@ -9,7 +9,7 @@ private const val PERCENT_MULTIPLIER = 100.0
 fun benchmarkRouters(
     warehouses: List<Warehouse>,
     bfsRouter: BreadthFirstRouter,
-    bidirectionalRouter: BidirectionalBfsRouter   // 🔧 لاحقًا: نبدّلها بـ BidirectionalBfsRouter
+    bidirectionalRouter: BidirectionalBfsRouter
 ) {
 
     val (start, destination) = findLongDistancePair(warehouses, bfsRouter)

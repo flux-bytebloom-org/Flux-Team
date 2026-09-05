@@ -26,7 +26,7 @@ fun runStandaloneUseCaseDemos(warehouses: List<Warehouse>) {
     testTraceHubLineage(warehouses)
 }
 
-// 1) AddVehicleToHubUseCase — بيستخدم مستودع حقيقي مضمون ما بيأثرش على باقي السيناريوهات
+// 1) AddVehicleToHubUseCase — uses a real warehouse, guaranteed not to affect other scenarios
 private fun testAddVehicleToHub(warehouses: List<Warehouse>) {
     println("\n[Standalone] AddVehicleToHubUseCase")
 
@@ -52,7 +52,7 @@ private fun testAddVehicleToHub(warehouses: List<Warehouse>) {
     println("$status Vehicle added to ${hub.id}: before=$beforeCount after=$afterCount")
 }
 
-// 2) AssignPackageToCargoQueueUseCase — بيتأكد إن الإضافة + الترتيب بيحصلوا صح
+// 2) AssignPackageToCargoQueueUseCase — verifies that addition + sorting happen correctly
 private fun testAssignPackageToCargoQueue(warehouses: List<Warehouse>) {
     println("\n[Standalone] AssignPackageToCargoQueueUseCase")
 
@@ -83,7 +83,7 @@ private fun testAssignPackageToCargoQueue(warehouses: List<Warehouse>) {
     println("$status Package added to ${hub.id}: before=$beforeCount after=$afterCount sorted=$isSorted")
 }
 
-// 3) FindOptimalVehicleForPackageUseCase — قرار "best-fit بالسعة"، مستقل عن Dispatch scenario
+// 3) FindOptimalVehicleForPackageUseCase — "best-fit by capacity" decision, independent of Dispatch scenario
 private fun testFindOptimalVehicleForPackage(warehouses: List<Warehouse>) {
     println("\n[Standalone] FindOptimalVehicleForPackageUseCase")
 
@@ -105,7 +105,7 @@ private fun testFindOptimalVehicleForPackage(warehouses: List<Warehouse>) {
     println("  best-fit vehicle -> ${bestFitVehicle?.id ?: "none"} (cap=${bestFitVehicle?.maxCapacityKg})")
 }
 
-// 4) FindFewestHopsRouteUseCase — BFS، منفصل تمامًا عن Dijkstra المستخدم في السيناريوهات
+// 4) FindFewestHopsRouteUseCase — BFS, completely separate from Dijkstra used in scenarios
 private fun testFindFewestHopsRoute(warehouses: List<Warehouse>) {
     println("\n[Standalone] FindFewestHopsRouteUseCase")
 
@@ -130,30 +130,31 @@ private fun testFindFewestHopsRoute(warehouses: List<Warehouse>) {
     }
 }
 
-// 5) TraceHubLineageUseCase — بيشتغل على WarehouseTree، مش على الـ graph العادي
+// 5) TraceHubLineageUseCase — works on WarehouseTree, not on the regular graph
 private fun testTraceHubLineage(warehouses: List<Warehouse>) {
     println("\n[Standalone] TraceHubLineageUseCase")
 
-    val globalHub = warehouses.firstOrNull() ?: run {
-        println("[SKIP] No warehouse available to act as global hub.")
-        return
+    val globalHub = warehouses.firstOrNull()
+    val leafWarehouse = warehouses.lastOrNull { it.id != globalHub?.id }
+
+    when {
+        globalHub == null -> {
+            println("[SKIP] No warehouse available to act as global hub.")
+        }
+        leafWarehouse == null -> {
+            println("[SKIP] No leaf warehouse found to trace.")
+        }
+        else -> {
+            val warehouseTree = buildWarehouseTree(warehouses, globalHub)
+            val traceHubLineageUseCase = TraceHubLineageUseCase()
+            val leafNode = warehouseTree.findNode(leafWarehouse.id)
+
+            if (leafNode == null) {
+                println("[FAIL] Could not find node for ${leafWarehouse.id} in the tree.")
+            } else {
+                val lineage = traceHubLineageUseCase(leafNode)
+                println("[PASS] Lineage of ${leafWarehouse.id}: ${lineage.map { it.id }}")
+            }
+        }
     }
-
-    val warehouseTree = buildWarehouseTree(warehouses, globalHub)
-    val traceHubLineageUseCase = TraceHubLineageUseCase()
-
-    val leafWarehouse = warehouses.lastOrNull { it.id != globalHub.id }
-    if (leafWarehouse == null) {
-        println("[SKIP] No leaf warehouse found to trace.")
-        return
-    }
-
-    val leafNode = warehouseTree.findNode(leafWarehouse.id)
-    if (leafNode == null) {
-        println("[FAIL] Could not find node for ${leafWarehouse.id} in the tree.")
-        return
-    }
-
-    val lineage = traceHubLineageUseCase(leafNode)
-    println("[PASS] Lineage of ${leafWarehouse.id}: ${lineage.map { it.id }}")
 }

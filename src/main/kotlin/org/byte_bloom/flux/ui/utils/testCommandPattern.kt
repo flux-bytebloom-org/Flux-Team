@@ -22,7 +22,7 @@ fun testCommandPattern() {
     println("\n--- Week 5 - subtask 5 - Testing Command Pattern Dispatch Panel ---")
 
     val hub = Warehouse("H1", "Main Hub", "ZoneA", DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
-    // سعة 30 عشان الـ dispatch يشيل P1+P2 بس ويسيب P3 — هيك منكشف خطأ الترتيب في الـ undo
+
     val vehicle = Vehicle("V1", hub, VEHICLE_CAPACITY_KG, VEHICLE_SPEED_KMH)
 
     val p1 = Package("P1", FIRST_PACKAGE_WEIGHT_KG, hub, hub, Priority.URGENT)
@@ -30,7 +30,6 @@ fun testCommandPattern() {
     val p3 = Package("P3", THIRD_PACKAGE_WEIGHT_KG, hub, hub, Priority.LOW)
     listOf(p1, p2, p3).forEach(hub::addPackage)
 
-    //val queueBeforeAnyCommand = hub.getCargoQueue()
     val invoker = CommandInvoker()
 
     val p4 = Package("P4", FOURTH_PACKAGE_WEIGHT_KG, hub, hub, Priority.STANDARD)

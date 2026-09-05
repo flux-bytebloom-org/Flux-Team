@@ -21,8 +21,6 @@ import org.byte_bloom.flux.domain.usecase.SplitAndRerouteShipmentsUseCase
 
 private const val DEFAULT_MIN_TRANSIT_LOAD = 1
 
-// عشان نتجنب تمرير 10 use cases كـ parameters بين الفنكشنز الفرعية،
-// بنجمعهم في كلاس بسيط داخلي، يتبنى مرة واحدة بس في بداية السيناريو.
 private class BottleneckUseCases {
     val extractUniqueShipmentRoutesUseCase = ExtractUniqueShipmentRoutesUseCase()
     val findOptimalPathUseCase = FindOptimalPathUseCase(DijkstraRouter())
@@ -40,22 +38,29 @@ fun runBottleneckCheckScenario(
     packages: List<Package>,
     minTransitLoad: Int = DEFAULT_MIN_TRANSIT_LOAD
 ): BottleneckCheckResult {
+
     println("\n=== Scenario: Bottleneck Check ===")
     val useCases = BottleneckUseCases()
     val warehousesById = warehouses.associateBy { it.id.uppercase() }
 
     val weightedPaths = computeWeightedPaths(packages, warehousesById, useCases)
-
     val topBottleneck = findTopBottleneck(weightedPaths, minTransitLoad, useCases)
-        ?: return BottleneckCheckResult(packages, null, 0, 0, emptyList())
 
-    val actualAlternatives = findActualAlternatives(weightedPaths, topBottleneck, warehouses, useCases)
-    if (actualAlternatives.isEmpty()) {
-        return BottleneckCheckResult(packages, topBottleneck.id, 0, 0, emptyList())
+    return when {
+        topBottleneck == null -> {
+            BottleneckCheckResult(packages, null, 0, 0, emptyList())
+        }
+        else -> {
+            val actualAlternatives = findActualAlternatives(weightedPaths, topBottleneck, warehouses, useCases)
+            if (actualAlternatives.isEmpty()) {
+                BottleneckCheckResult(packages, topBottleneck.id, 0, 0, emptyList())
+            } else {
+                executeRebalancing(packages, actualAlternatives, topBottleneck, warehousesById, useCases)
+            }
+        }
     }
-
-    return executeRebalancing(packages, actualAlternatives, topBottleneck, warehousesById, useCases)
 }
+
 
 private fun computeWeightedPaths(
     packages: List<Package>,
@@ -172,6 +177,12 @@ private fun pathDistance(path: List<Warehouse>): Double {
     }
 }
 
+
 private fun safeLoadFactor(warehouse: Warehouse, useCase: GetWarehouseLoadFactorUseCase): Double {
-    return try { useCase(warehouse) } catch (e: UseCaseException.NoStationedVehicles) { 0.0 }
+    return try {
+        useCase(warehouse)
+    } catch (e: UseCaseException.NoStationedVehicles) {
+        println("Info: Warehouse ${warehouse.id} has no vehicles: ${e.message}")
+        0.0
+    }
 }

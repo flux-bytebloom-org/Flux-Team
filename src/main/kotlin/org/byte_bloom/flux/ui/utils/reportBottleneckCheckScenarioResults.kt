@@ -22,7 +22,9 @@ fun printBottleneckReport(result: BottleneckCheckResult) {
             " (shorter by ${"%.1f".format(entry.oldDistanceKm - entry.newDistanceKm)} km)"
         }
 
-        println("${entry.originId} -> ${entry.destinationId}: ${entry.packagesRerouted} package(s) rerouted$distanceNote")
+        println(
+            "${entry.originId} -> ${entry.destinationId}: ${entry.packagesRerouted} package(s) rerouted$distanceNote"
+        )
         println("   old path: ${entry.oldPath.joinToString(" -> ")}  (${"%.1f".format(entry.oldDistanceKm)} km)")
         println("   new path: ${entry.newPath.joinToString(" -> ")}  (${"%.1f".format(entry.newDistanceKm)} km)\n")
     }

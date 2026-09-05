@@ -41,33 +41,18 @@ private const val FLEET_CSV_PATH = "src/main/resources/fleet.csv"
 
 fun main() {
 
-    val warehouseRepository = CsvWarehouseRepository(WAREHOUSES_CSV_PATH)
-    val packageRepository = CsvPackageRepository(PACKAGES_CSV_PATH)
-    val routeRepository = CsvRouteRepository(ROUTES_CSV_PATH)
-    val vehicleRepository = CsvVehicleRepository(FLEET_CSV_PATH)
+    val (warehousesGraph, packages) = initializeAndPrintGraph()
 
-    val packages = packageRepository.getAll()
-    val warehouses = warehouseRepository.getAll()
-    val routes = routeRepository.getAll()
-    val fleet = vehicleRepository.getAll()
-
-    printParsingSummary(packages, warehouses, routes, fleet)
-    printTopPriorityPackages(packages)
-
-    val domainGraphBuilder = DomainGraphBuilder(warehouseRepository = warehouseRepository,
-        packageRepository = packageRepository,routeRepository = routeRepository,vehicleRepository = vehicleRepository)
-    val warehousesGraph = domainGraphBuilder.buildGraph()
-    /*printWarehouseGraph(warehousesGraph)
     testBidirectionalIdentity(warehousesGraph)
     testWarehouseQuickSort(warehousesGraph)
-    drowPackageAssignmentRing()*/
+    drowPackageAssignmentRing()
 
     val bfsRouter = BreadthFirstRouter()
     val dijkstraRouter = DijkstraRouter()
     val findOptimalPathUseCase = FindOptimalPathUseCase(dijkstraRouter)
     val findFewestHopsRouteUseCase = FindFewestHopsRouteUseCase(bfsRouter)
-    /*testRoutingComparison(warehousesGraph, findFewestHopsRouteUseCase, findOptimalPathUseCase)
-    testDecoratorStacking(warehousesGraph)*/
+    testRoutingComparison(warehousesGraph, findFewestHopsRouteUseCase, findOptimalPathUseCase)
+    testDecoratorStacking(warehousesGraph)
 
     val allRoutes = warehousesGraph.flatMap { it.getOutgoingRoutes() }
     val bidirectionalRouter = BidirectionalBfsRouter(allRoutes)
@@ -175,3 +160,28 @@ private fun testDecoratorStacking(warehouses: List<Warehouse>) {
     println("+ ExpressInsurance: ${fullyStacked.getDescription()} → ${fullyStacked.calculateTransitRate(baseRate)}")
 }
 
+private fun initializeAndPrintGraph(): Pair<List<Warehouse>, List<Package>> {
+    val warehouseRepository = CsvWarehouseRepository(WAREHOUSES_CSV_PATH)
+    val packageRepository = CsvPackageRepository(PACKAGES_CSV_PATH)
+    val routeRepository = CsvRouteRepository(ROUTES_CSV_PATH)
+    val vehicleRepository = CsvVehicleRepository(FLEET_CSV_PATH)
+
+    val packages = packageRepository.getAll()
+    val warehouses = warehouseRepository.getAll()
+    val routes = routeRepository.getAll()
+    val fleet = vehicleRepository.getAll()
+
+    printParsingSummary(packages, warehouses, routes, fleet)
+    printTopPriorityPackages(packages)
+
+    val domainGraphBuilder = DomainGraphBuilder(
+        warehouseRepository = warehouseRepository,
+        packageRepository = packageRepository,
+        routeRepository = routeRepository,
+        vehicleRepository = vehicleRepository
+    )
+    val warehousesGraph = domainGraphBuilder.buildGraph()
+    printWarehouseGraph(warehousesGraph)
+
+    return Pair(warehousesGraph, packages)
+}

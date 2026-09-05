@@ -9,7 +9,7 @@ import org.byte_bloom.flux.domain.model.Package
 fun runAllScenarios(warehousesGraph: List<Warehouse>, packages: List<Package>) {
     val bottleneckResult = runBottleneckCheckScenario(warehousesGraph, packages)
     printBottleneckReport(bottleneckResult)
-    val settledPackages = bottleneckResult.finalPackages   // بدل ما نستخدم القيمة القديمة مباشرة
+    // val settledPackages = bottleneckResult.finalPackages
 
     val dispatchHub = warehousesGraph.firstOrNull { it.getCargoQueue().isNotEmpty() }
     val dispatchDestination = warehousesGraph.lastOrNull { it.id != dispatchHub?.id }
