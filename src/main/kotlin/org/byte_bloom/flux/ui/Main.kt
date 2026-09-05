@@ -21,7 +21,11 @@ import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
 import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
+import org.byte_bloom.flux.ui.scenarios.runBottleneckCheckScenario
+import org.byte_bloom.flux.ui.scenarios.runDispatchScenario
+import org.byte_bloom.flux.ui.scenarios.runStandaloneUseCaseDemos
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
+import org.byte_bloom.flux.ui.utils.printBottleneckReport
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 import org.byte_bloom.flux.ui.utils.testCommandPattern
 
@@ -52,22 +56,47 @@ fun main() {
     val domainGraphBuilder = DomainGraphBuilder(warehouseRepository = warehouseRepository,
         packageRepository = packageRepository,routeRepository = routeRepository,vehicleRepository = vehicleRepository)
     val warehousesGraph = domainGraphBuilder.buildGraph()
-    printWarehouseGraph(warehousesGraph)
+    /*printWarehouseGraph(warehousesGraph)
     testBidirectionalIdentity(warehousesGraph)
     testWarehouseQuickSort(warehousesGraph)
-    drowPackageAssignmentRing()
+    drowPackageAssignmentRing()*/
 
     val bfsRouter = BreadthFirstRouter()
     val dijkstraRouter = DijkstraRouter()
     val findOptimalPathUseCase = FindOptimalPathUseCase(dijkstraRouter)
     val findFewestHopsRouteUseCase = FindFewestHopsRouteUseCase(bfsRouter)
-    testRoutingComparison(warehousesGraph, findFewestHopsRouteUseCase, findOptimalPathUseCase)
-    testDecoratorStacking(warehousesGraph)
+    /*testRoutingComparison(warehousesGraph, findFewestHopsRouteUseCase, findOptimalPathUseCase)
+    testDecoratorStacking(warehousesGraph)*/
 
     val allRoutes = warehousesGraph.flatMap { it.getOutgoingRoutes() }
     val bidirectionalRouter = BidirectionalBfsRouter(allRoutes)
     benchmarkRouters(warehousesGraph, bfsRouter, bidirectionalRouter)
     testCommandPattern()
+
+
+    val bottleneckResult = runBottleneckCheckScenario(warehousesGraph, packages)
+    printBottleneckReport(bottleneckResult)
+
+    val settledPackages = bottleneckResult.finalPackages   // بدل ما نستخدم القيمة القديمة مباشرة
+
+    val dispatchHub = warehousesGraph.firstOrNull { it.getCargoQueue().isNotEmpty() }
+    val dispatchDestination = warehousesGraph.lastOrNull { it.id != dispatchHub?.id }
+    val dispatchPackage = dispatchHub?.getCargoQueue()?.firstOrNull()
+
+    if (dispatchHub != null && dispatchDestination != null && dispatchPackage != null) {
+        runDispatchScenario(
+            hub = dispatchHub,
+            destination = dispatchDestination,
+            pkg = dispatchPackage,
+            tripPackages = dispatchHub.getCargoQueue()
+        )
+    } else {
+        println("\n[SKIP] Dispatch scenario — not enough data (hub/destination/package) found.")
+    }
+
+    runStandaloneUseCaseDemos(warehousesGraph)
+
+
 }
 
 private fun printParsingSummary(
