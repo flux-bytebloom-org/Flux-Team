@@ -10,7 +10,6 @@ private const val FAKE_NODES_EXPLORED = 40
  */
 class FakeBidirectionalRouter {
     fun findPath(start: Warehouse, destination: Warehouse): RoutingSearchResult {
-        // بيانات وهمية ثابتة، بس عشان نجرب شكل الطباعة والربط
         return RoutingSearchResult(
             path = listOf(start, destination),
             nodesExplored = FAKE_NODES_EXPLORED

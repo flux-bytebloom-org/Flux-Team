@@ -65,7 +65,6 @@ private tailrec fun partitionIndexed(
     return partitionIndexed(list, startIndex, endIndex, currentIndex + INDEX_OFFSET, nextBoundary)
 }
 
-// 5. دالة المقارنة الجديدة: الأعلى وزنًا يسبق، وعند التعادل الأقدم موقعًا يسبق
 private fun comesBeforeOrEqual(a: IndexedPackage, b: IndexedPackage): Boolean {
     val weightA = a.pkg.weight ?: DEFAULT_WEIGHT_FOR_MISSING_VALUE
     val weightB = b.pkg.weight ?: DEFAULT_WEIGHT_FOR_MISSING_VALUE

@@ -35,7 +35,6 @@ class ShadowWarehouseGraphBuilder {
         )
     }
 
-    // الاستثناء الموثّق يعيش هنا الآن — بره طبقة الـ use cases بالكامل.
     private fun attachAdjustedRoute(
         route: Route,
         bottleneckWarehouse: Warehouse,

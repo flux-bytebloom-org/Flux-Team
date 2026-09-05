@@ -20,11 +20,13 @@ class SplitAndRerouteShipmentsUseCase(
         val origin = originalPath.path.first()
         val destination = originalPath.path.last()
 
-        val matchedPackages = allPackages.filter {
-            it.originHub.id == origin.id && it.destinationHub.id == destination.id
+        val matchedPackages = origin.getCargoQueue().filter {
+            it.destinationHub.id == destination.id
         }
 
-        val packagesToMoveCount = (matchedPackages.size * splitRatio).toInt()
+        val packagesToMoveCount = (matchedPackages.size * splitRatio)
+            .toInt()
+            .coerceIn(0, matchedPackages.size)
 
         if (packagesToMoveCount == 0) {
             return SplitRerouteResult(
@@ -37,15 +39,12 @@ class SplitAndRerouteShipmentsUseCase(
             .sortedBy { it.priority }
             .let { sorted -> sorted.take(packagesToMoveCount) to sorted.drop(packagesToMoveCount) }
 
-        // ملاحظة: الوجهة النهائية (destination) هي نفسها — إحنا بس بنبدّل
-        // "خطة المسار" اللي الطرد ماشي عليها، مش وجهته الحقيقية.
         val reroutedSubset = toReroute.map { packageItem ->
             reroutePackageUseCase(origin, packageItem, destination)
         }
 
-        val unaffectedPackages = allPackages.filterNot { packageItem ->
-            matchedPackages.any { it.id == packageItem.id }
-        }
+        val reroutedIds = toReroute.map { it.id }.toSet()
+        val unaffectedPackages = allPackages.filterNot { it.id in reroutedIds }
 
         val routePlanUpdates = toReroute.associate { it.id to newPath }
 

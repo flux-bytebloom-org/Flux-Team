@@ -21,8 +21,13 @@ import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
 import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
+import org.byte_bloom.flux.ui.scenarios.runBottleneckCheckScenario
+import org.byte_bloom.flux.ui.scenarios.runDispatchScenario
+import org.byte_bloom.flux.ui.scenarios.runStandaloneUseCaseDemos
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
+import org.byte_bloom.flux.ui.utils.printBottleneckReport
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
+import org.byte_bloom.flux.ui.utils.runAllScenarios
 import org.byte_bloom.flux.ui.utils.testCommandPattern
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
@@ -36,23 +41,8 @@ private const val FLEET_CSV_PATH = "src/main/resources/fleet.csv"
 
 fun main() {
 
-    val warehouseRepository = CsvWarehouseRepository(WAREHOUSES_CSV_PATH)
-    val packageRepository = CsvPackageRepository(PACKAGES_CSV_PATH)
-    val routeRepository = CsvRouteRepository(ROUTES_CSV_PATH)
-    val vehicleRepository = CsvVehicleRepository(FLEET_CSV_PATH)
+    val (warehousesGraph, packages) = initializeAndPrintGraph()
 
-    val packages = packageRepository.getAll()
-    val warehouses = warehouseRepository.getAll()
-    val routes = routeRepository.getAll()
-    val fleet = vehicleRepository.getAll()
-
-    printParsingSummary(packages, warehouses, routes, fleet)
-    printTopPriorityPackages(packages)
-
-    val domainGraphBuilder = DomainGraphBuilder(warehouseRepository = warehouseRepository,
-        packageRepository = packageRepository,routeRepository = routeRepository,vehicleRepository = vehicleRepository)
-    val warehousesGraph = domainGraphBuilder.buildGraph()
-    printWarehouseGraph(warehousesGraph)
     testBidirectionalIdentity(warehousesGraph)
     testWarehouseQuickSort(warehousesGraph)
     drowPackageAssignmentRing()
@@ -68,6 +58,9 @@ fun main() {
     val bidirectionalRouter = BidirectionalBfsRouter(allRoutes)
     benchmarkRouters(warehousesGraph, bfsRouter, bidirectionalRouter)
     testCommandPattern()
+
+    runAllScenarios(warehousesGraph, packages)
+
 }
 
 private fun printParsingSummary(
@@ -167,3 +160,28 @@ private fun testDecoratorStacking(warehouses: List<Warehouse>) {
     println("+ ExpressInsurance: ${fullyStacked.getDescription()} → ${fullyStacked.calculateTransitRate(baseRate)}")
 }
 
+private fun initializeAndPrintGraph(): Pair<List<Warehouse>, List<Package>> {
+    val warehouseRepository = CsvWarehouseRepository(WAREHOUSES_CSV_PATH)
+    val packageRepository = CsvPackageRepository(PACKAGES_CSV_PATH)
+    val routeRepository = CsvRouteRepository(ROUTES_CSV_PATH)
+    val vehicleRepository = CsvVehicleRepository(FLEET_CSV_PATH)
+
+    val packages = packageRepository.getAll()
+    val warehouses = warehouseRepository.getAll()
+    val routes = routeRepository.getAll()
+    val fleet = vehicleRepository.getAll()
+
+    printParsingSummary(packages, warehouses, routes, fleet)
+    printTopPriorityPackages(packages)
+
+    val domainGraphBuilder = DomainGraphBuilder(
+        warehouseRepository = warehouseRepository,
+        packageRepository = packageRepository,
+        routeRepository = routeRepository,
+        vehicleRepository = vehicleRepository
+    )
+    val warehousesGraph = domainGraphBuilder.buildGraph()
+    printWarehouseGraph(warehousesGraph)
+
+    return Pair(warehousesGraph, packages)
+}
