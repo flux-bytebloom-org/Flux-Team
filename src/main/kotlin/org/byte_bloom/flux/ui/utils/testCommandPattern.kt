@@ -17,45 +17,138 @@ private const val SECOND_PACKAGE_WEIGHT_KG = 20.0
 private const val THIRD_PACKAGE_WEIGHT_KG = 30.0
 private const val FOURTH_PACKAGE_WEIGHT_KG = 15.0
 
-
 fun testCommandPattern() {
-    println("\n--- Week 5 - subtask 5 - Testing Command Pattern Dispatch Panel ---")
+    println("\n--- Week 5 - Subtask 5 - Testing Command Pattern Dispatch Panel ---")
 
-    val hub = Warehouse("H1", "Main Hub", "ZoneA", DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
+    val hub = Warehouse(
+        "H1",
+        "Main Hub",
+        "ZoneA",
+        DEFAULT_LATITUDE,
+        DEFAULT_LONGITUDE
+    )
 
-    val vehicle = Vehicle("V1", hub, VEHICLE_CAPACITY_KG, VEHICLE_SPEED_KMH)
-
-    val p1 = Package("P1", FIRST_PACKAGE_WEIGHT_KG, hub, hub, Priority.URGENT)
-    val p2 = Package("P2", SECOND_PACKAGE_WEIGHT_KG, hub, hub, Priority.STANDARD)
-    val p3 = Package("P3", THIRD_PACKAGE_WEIGHT_KG, hub, hub, Priority.LOW)
-    listOf(p1, p2, p3).forEach(hub::addPackage)
+    val vehicle = Vehicle(
+        "V1",
+        hub,
+        VEHICLE_CAPACITY_KG,
+        VEHICLE_SPEED_KMH
+    )
 
     val invoker = CommandInvoker()
 
-    val p4 = Package("P4", FOURTH_PACKAGE_WEIGHT_KG, hub, hub, Priority.STANDARD)
-    invoker.executeCommand(AssignPackageToQueueCommand(hub, p4))
+    addInitialPackages(hub)
+
+    executeCommands(hub, vehicle, invoker)
+    testUndoRedo(hub, invoker)
+    testMultiStepTimeTravel(hub, invoker)
+}
+
+private fun addInitialPackages(hub: Warehouse) {
+    val p1 = Package(
+        "P1",
+        FIRST_PACKAGE_WEIGHT_KG,
+        hub,
+        hub,
+        Priority.URGENT
+    )
+
+    val p2 = Package(
+        "P2",
+        SECOND_PACKAGE_WEIGHT_KG,
+        hub,
+        hub,
+        Priority.STANDARD
+    )
+
+    val p3 = Package(
+        "P3",
+        THIRD_PACKAGE_WEIGHT_KG,
+        hub,
+        hub,
+        Priority.LOW
+    )
+
+    listOf(p1, p2, p3).forEach(hub::addPackage)
+}
+
+private fun executeCommands(
+    hub: Warehouse,
+    vehicle: Vehicle,
+    invoker: CommandInvoker
+) {
+    val p4 = Package(
+        "P4",
+        FOURTH_PACKAGE_WEIGHT_KG,
+        hub,
+        hub,
+        Priority.STANDARD
+    )
+
+    invoker.executeCommand(
+        AssignPackageToQueueCommand(hub, p4)
+    )
+
     println("After AssignPackage(P4): ${hub.getCargoQueue().map { it.id }}")
 
-    invoker.executeCommand(DispatchVehicleCommand(hub, vehicle))
-    println("After Dispatch(V1): ${hub.getCargoQueue().map { it.id }} (historySize=${invoker.historySize})")
+    invoker.executeCommand(
+        DispatchVehicleCommand(hub, vehicle)
+    )
 
+    println(
+        "After Dispatch(V1): ${hub.getCargoQueue().map { it.id }} " +
+                "(historySize=${invoker.historySize})"
+    )
+}
+
+private fun testUndoRedo(
+    hub: Warehouse,
+    invoker: CommandInvoker
+) {
     val undoDispatchResult = invoker.undo()
-    val afterUndoDispatch = hub.getCargoQueue()
-    println("Undo dispatch → $undoDispatchResult: ${afterUndoDispatch.map { it.id }}")
+
+    println(
+        "Undo dispatch → $undoDispatchResult: " +
+                "${hub.getCargoQueue().map { it.id }}"
+    )
 
     val undoAssignResult = invoker.undo()
-    val afterUndoAssign = hub.getCargoQueue()
-    println("Undo assign → $undoAssignResult: ${afterUndoAssign.map { it.id }}")
+
+    println(
+        "Undo assign → $undoAssignResult: " +
+                "${hub.getCargoQueue().map { it.id }}"
+    )
 
     val redoAssignResult = invoker.redo()
-    println("Redo assign → $redoAssignResult: ${hub.getCargoQueue().map { it.id }}")
+
+    println(
+        "Redo assign → $redoAssignResult: " +
+                "${hub.getCargoQueue().map { it.id }}"
+    )
 
     val redoDispatchResult = invoker.redo()
-    println("Redo dispatch → $redoDispatchResult: ${hub.getCargoQueue().map { it.id }}")
 
+    println(
+        "Redo dispatch → $redoDispatchResult: " +
+                "${hub.getCargoQueue().map { it.id }}"
+    )
+}
+
+private fun testMultiStepTimeTravel(
+    hub: Warehouse,
+    invoker: CommandInvoker
+) {
     println("\n--- Multi-step time travel ---")
+
     invoker.undoSteps(2)
-    println("After undoSteps(2): ${hub.getCargoQueue().map { it.id }}")
+
+    println(
+        "After undoSteps(2): ${hub.getCargoQueue().map { it.id }}"
+    )
+
     invoker.redoSteps(2)
-    println("After redoSteps(2): ${hub.getCargoQueue().map { it.id }}")
+
+    println(
+        "After redoSteps(2): ${hub.getCargoQueue().map { it.id }}"
+    )
 }
