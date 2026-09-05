@@ -18,9 +18,22 @@ import org.byte_bloom.flux.domain.usecase.GetWarehouseLoadFactorUseCase
 import org.byte_bloom.flux.domain.usecase.PenalizeBottleneckRoutesUseCase
 import org.byte_bloom.flux.domain.usecase.ReroutePackageUseCase
 import org.byte_bloom.flux.domain.usecase.SplitAndRerouteShipmentsUseCase
-import org.byte_bloom.flux.ui.utils.logWarning
 
 private const val DEFAULT_MIN_TRANSIT_LOAD = 1
+
+// عشان نتجنب تمرير 10 use cases كـ parameters بين الفنكشنز الفرعية،
+// بنجمعهم في كلاس بسيط داخلي، يتبنى مرة واحدة بس في بداية السيناريو.
+private class BottleneckUseCases {
+    val extractUniqueShipmentRoutesUseCase = ExtractUniqueShipmentRoutesUseCase()
+    val findOptimalPathUseCase = FindOptimalPathUseCase(DijkstraRouter())
+    val generateWeightedShipmentPathsUseCase = GenerateWeightedShipmentPathsUseCase(findOptimalPathUseCase)
+    val findBottleneckWarehousesUseCase = FindBottleneckWarehousesUseCase()
+    val penalizeBottleneckRoutesUseCase = PenalizeBottleneckRoutesUseCase(ShadowWarehouseGraphBuilder())
+    val filterActualAlternativePathsUseCase = FilterActualAlternativePathsUseCase()
+    val getWarehouseLoadFactorUseCase = GetWarehouseLoadFactorUseCase()
+    val calculateRebalanceRatioUseCase = CalculateRebalanceRatioUseCase()
+    val splitAndRerouteShipmentsUseCase = SplitAndRerouteShipmentsUseCase(ReroutePackageUseCase())
+}
 
 fun runBottleneckCheckScenario(
     warehouses: List<Warehouse>,
@@ -28,32 +41,47 @@ fun runBottleneckCheckScenario(
     minTransitLoad: Int = DEFAULT_MIN_TRANSIT_LOAD
 ): BottleneckCheckResult {
     println("\n=== Scenario: Bottleneck Check ===")
-
-    val extractUniqueShipmentRoutesUseCase = ExtractUniqueShipmentRoutesUseCase()
-    val dijkstraRouter = DijkstraRouter()
-    val findOptimalPathUseCase = FindOptimalPathUseCase(dijkstraRouter)
-    val generateWeightedShipmentPathsUseCase = GenerateWeightedShipmentPathsUseCase(findOptimalPathUseCase)
-    val findBottleneckWarehousesUseCase = FindBottleneckWarehousesUseCase()
-    val shadowWarehouseGraphBuilder = ShadowWarehouseGraphBuilder()
-    val penalizeBottleneckRoutesUseCase = PenalizeBottleneckRoutesUseCase(shadowWarehouseGraphBuilder)
-    val filterActualAlternativePathsUseCase = FilterActualAlternativePathsUseCase()
-    val getWarehouseLoadFactorUseCase = GetWarehouseLoadFactorUseCase()
-    val calculateRebalanceRatioUseCase = CalculateRebalanceRatioUseCase()
-    val reroutePackageUseCase = ReroutePackageUseCase()
-    val splitAndRerouteShipmentsUseCase = SplitAndRerouteShipmentsUseCase(reroutePackageUseCase)
-
+    val useCases = BottleneckUseCases()
     val warehousesById = warehouses.associateBy { it.id.uppercase() }
-    val uniqueRoutes = extractUniqueShipmentRoutesUseCase(packages)
 
-    val weightedPaths = generateWeightedShipmentPathsUseCase(uniqueRoutes, warehousesById)
+    val weightedPaths = computeWeightedPaths(packages, warehousesById, useCases)
 
-    val bottlenecks = findBottleneckWarehousesUseCase(weightedPaths, minTransitLoad)
-    if (bottlenecks.isEmpty()) {
-        return BottleneckCheckResult(packages, null, 0, 0, emptyList())
+    val topBottleneck = findTopBottleneck(weightedPaths, minTransitLoad, useCases)
+        ?: return BottleneckCheckResult(packages, null, 0, 0, emptyList())
+
+    val actualAlternatives = findActualAlternatives(weightedPaths, topBottleneck, warehouses, useCases)
+    if (actualAlternatives.isEmpty()) {
+        return BottleneckCheckResult(packages, topBottleneck.id, 0, 0, emptyList())
     }
 
-    val topBottleneck = bottlenecks.first().warehouse
-    val shadowWarehousesById = penalizeBottleneckRoutesUseCase(topBottleneck, warehouses)
+    return executeRebalancing(packages, actualAlternatives, topBottleneck, warehousesById, useCases)
+}
+
+private fun computeWeightedPaths(
+    packages: List<Package>,
+    warehousesById: Map<String, Warehouse>,
+    useCases: BottleneckUseCases
+): List<WeightedPath> {
+    val uniqueRoutes = useCases.extractUniqueShipmentRoutesUseCase(packages)
+    return useCases.generateWeightedShipmentPathsUseCase(uniqueRoutes, warehousesById)
+}
+
+private fun findTopBottleneck(
+    weightedPaths: List<WeightedPath>,
+    minTransitLoad: Int,
+    useCases: BottleneckUseCases
+): Warehouse? {
+    val bottlenecks = useCases.findBottleneckWarehousesUseCase(weightedPaths, minTransitLoad)
+    return bottlenecks.firstOrNull()?.warehouse
+}
+
+private fun findActualAlternatives(
+    weightedPaths: List<WeightedPath>,
+    topBottleneck: Warehouse,
+    warehouses: List<Warehouse>,
+    useCases: BottleneckUseCases
+): List<Pair<WeightedPath, List<Warehouse>>> {
+    val shadowWarehousesById = useCases.penalizeBottleneckRoutesUseCase(topBottleneck, warehouses)
 
     val alternativePaths = weightedPaths.associate { weightedPath ->
         val originId = weightedPath.path.first().id
@@ -61,57 +89,80 @@ fun runBottleneckCheckScenario(
         val shadowOrigin = shadowWarehousesById[originId]
         val shadowDestination = shadowWarehousesById[destinationId]
         val altPath = if (shadowOrigin != null && shadowDestination != null) {
-            findOptimalPathUseCase(shadowOrigin, shadowDestination)
+            useCases.findOptimalPathUseCase(shadowOrigin, shadowDestination)
         } else emptyList()
         (originId to destinationId) to altPath
     }
 
-    val actualAlternatives = filterActualAlternativePathsUseCase(weightedPaths, topBottleneck, alternativePaths)
-    if (actualAlternatives.isEmpty()) {
-        return BottleneckCheckResult(packages, topBottleneck.id, 0, 0, emptyList())
-    }
+    return useCases.filterActualAlternativePathsUseCase(weightedPaths, topBottleneck, alternativePaths)
+}
 
-    var currentPackages = packages
+private fun executeRebalancing(
+    originalPackages: List<Package>,
+    actualAlternatives: List<Pair<WeightedPath, List<Warehouse>>>,
+    topBottleneck: Warehouse,
+    warehousesById: Map<String, Warehouse>,
+    useCases: BottleneckUseCases
+): BottleneckCheckResult {
+    var currentPackages = originalPackages
     var currentRoutePlans: Map<String, List<Warehouse>> = emptyMap()
     val summaries = mutableListOf<RebalanceSummaryEntry>()
 
     actualAlternatives.forEach { (originalPath, newPath) ->
-        val bottleneckLoadFactor = safeLoadFactor(topBottleneck, getWarehouseLoadFactorUseCase)
-
-        val intermediateStops = newPath.drop(1).dropLast(1)
-            .mapNotNull { shadowStop -> warehousesById[shadowStop.id.uppercase()] }
-        val loadFactors = intermediateStops.map { safeLoadFactor(it, getWarehouseLoadFactorUseCase) }
-        val alternativeLoadFactor = if (loadFactors.isEmpty()) 0.0 else loadFactors.average()
-
-        val ratio = calculateRebalanceRatioUseCase(bottleneckLoadFactor, alternativeLoadFactor)
+        val ratio = computeRebalanceRatio(topBottleneck, newPath, warehousesById, useCases)
 
         val beforeCount = currentRoutePlans.size
-        val result = splitAndRerouteShipmentsUseCase(originalPath, newPath, ratio, currentPackages, currentRoutePlans)
+        val result = useCases.splitAndRerouteShipmentsUseCase(
+            originalPath, newPath, ratio, currentPackages, currentRoutePlans
+        )
         currentPackages = result.reroutedPackages
         currentRoutePlans = result.updatedRoutePlans
-        val movedThisRound = currentRoutePlans.size - beforeCount
 
+        val movedThisRound = currentRoutePlans.size - beforeCount
         if (movedThisRound > 0) {
-            summaries.add(
-                RebalanceSummaryEntry(
-                    originId = originalPath.path.first().id,
-                    destinationId = originalPath.path.last().id,
-                    packagesRerouted = movedThisRound,
-                    oldPath = originalPath.path.map { it.id },
-                    newPath = newPath.map { it.id },
-                    oldDistanceKm = pathDistance(originalPath.path),
-                    newDistanceKm = pathDistance(newPath)
-                )
-            )
+            summaries.add(buildSummaryEntry(originalPath, newPath, movedThisRound))
         }
     }
 
+    val totalConsidered = actualAlternatives.sumOf { it.first.packageCount }
     return BottleneckCheckResult(
         finalPackages = currentPackages,
         bottleneckWarehouseId = topBottleneck.id,
-        totalPackagesConsidered = weightedPaths.sumOf { it.packageCount },
+        totalPackagesConsidered = totalConsidered,
         totalPackagesRerouted = summaries.sumOf { it.packagesRerouted },
         rebalanceSummaries = summaries
+    )
+}
+
+private fun computeRebalanceRatio(
+    topBottleneck: Warehouse,
+    newPath: List<Warehouse>,
+    warehousesById: Map<String, Warehouse>,
+    useCases: BottleneckUseCases
+): Double {
+    val bottleneckLoadFactor = safeLoadFactor(topBottleneck, useCases.getWarehouseLoadFactorUseCase)
+
+    val intermediateStops = newPath.drop(1).dropLast(1)
+        .mapNotNull { shadowStop -> warehousesById[shadowStop.id.uppercase()] }
+    val loadFactors = intermediateStops.map { safeLoadFactor(it, useCases.getWarehouseLoadFactorUseCase) }
+    val alternativeLoadFactor = if (loadFactors.isEmpty()) 0.0 else loadFactors.average()
+
+    return useCases.calculateRebalanceRatioUseCase(bottleneckLoadFactor, alternativeLoadFactor)
+}
+
+private fun buildSummaryEntry(
+    originalPath: WeightedPath,
+    newPath: List<Warehouse>,
+    movedCount: Int
+): RebalanceSummaryEntry {
+    return RebalanceSummaryEntry(
+        originId = originalPath.path.first().id,
+        destinationId = originalPath.path.last().id,
+        packagesRerouted = movedCount,
+        oldPath = originalPath.path.map { it.id },
+        newPath = newPath.map { it.id },
+        oldDistanceKm = pathDistance(originalPath.path),
+        newDistanceKm = pathDistance(newPath)
     )
 }
 
@@ -124,5 +175,3 @@ private fun pathDistance(path: List<Warehouse>): Double {
 private fun safeLoadFactor(warehouse: Warehouse, useCase: GetWarehouseLoadFactorUseCase): Double {
     return try { useCase(warehouse) } catch (e: UseCaseException.NoStationedVehicles) { 0.0 }
 }
-
-

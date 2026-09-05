@@ -27,6 +27,7 @@ import org.byte_bloom.flux.ui.scenarios.runStandaloneUseCaseDemos
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printBottleneckReport
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
+import org.byte_bloom.flux.ui.utils.runAllScenarios
 import org.byte_bloom.flux.ui.utils.testCommandPattern
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
@@ -73,29 +74,7 @@ fun main() {
     benchmarkRouters(warehousesGraph, bfsRouter, bidirectionalRouter)
     testCommandPattern()
 
-
-    val bottleneckResult = runBottleneckCheckScenario(warehousesGraph, packages)
-    printBottleneckReport(bottleneckResult)
-
-    val settledPackages = bottleneckResult.finalPackages   // بدل ما نستخدم القيمة القديمة مباشرة
-
-    val dispatchHub = warehousesGraph.firstOrNull { it.getCargoQueue().isNotEmpty() }
-    val dispatchDestination = warehousesGraph.lastOrNull { it.id != dispatchHub?.id }
-    val dispatchPackage = dispatchHub?.getCargoQueue()?.firstOrNull()
-
-    if (dispatchHub != null && dispatchDestination != null && dispatchPackage != null) {
-        runDispatchScenario(
-            hub = dispatchHub,
-            destination = dispatchDestination,
-            pkg = dispatchPackage,
-            tripPackages = dispatchHub.getCargoQueue()
-        )
-    } else {
-        println("\n[SKIP] Dispatch scenario — not enough data (hub/destination/package) found.")
-    }
-
-    runStandaloneUseCaseDemos(warehousesGraph)
-
+    runAllScenarios(warehousesGraph, packages)
 
 }
 

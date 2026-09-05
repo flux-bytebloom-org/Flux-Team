@@ -22,6 +22,37 @@ fun runDispatchScenario(
 ) {
     println("\n=== Scenario: Dispatch & Pricing ===")
 
+    val dispatchUseCases = DispatchUseCases()
+
+    val isUrgent = dispatchUseCases.classifyTripUrgencyUseCase(tripPackages)
+    println("Trip urgency: $isUrgent (based on ${tripPackages.size} packages)")
+
+    val path = dispatchUseCases.decideRoutingWayUseCase(hub, destination, isUrgent)
+    if (path.isEmpty()) {
+        println("No path found from ${hub.id} to ${destination.id} — aborting dispatch.")
+        return
+    }
+    println("Chosen path: ${path.map { it.id }}")
+
+    val distanceKm = path.zipWithNext().sumOf { (a, b) ->
+        a.getOutgoingRoutes().first { it.destinationHub.id == b.id }.distanceKm
+    }
+
+    val price = dispatchUseCases.calculatePricingUseCase(pkg, distanceKm)
+    println("Calculated price for ${pkg.id}: $price (distance=$distanceKm km)")
+
+    val vehicle = dispatchUseCases.assignPackageToLowestCostStationedVehicleUseCase(hub, pkg, distanceKm)
+    if (vehicle == null) {
+        println("No eligible vehicle found at ${hub.id} for package ${pkg.id}.")
+        return
+    }
+    println("Assigned vehicle: ${vehicle.id} (cost/km=${vehicle.costPerKm})")
+
+    val loadedPackages = dispatchUseCases.dispatchVehicleUseCase(hub, vehicle)
+    println("Dispatched ${vehicle.id} with ${loadedPackages.size} packages: ${loadedPackages.map { it.id }}")
+}
+
+private class DispatchUseCases {
     val classifyTripUrgencyUseCase = ClassifyTripUrgencyUseCase()
     val dijkstraRouter = DijkstraRouter()
     val findFastestPathUseCase = FindFastestPathUseCase(dijkstraRouter)
@@ -36,36 +67,4 @@ fun runDispatchScenario(
         AssignPackageToLowestCostStationedVehicleUseCase(findStationedVehiclesByCapacityUseCase)
 
     val dispatchVehicleUseCase = DispatchVehicleUseCase()
-
-    // 1) تحديد إذا كانت الرحلة مستعجلة
-    val isUrgent = classifyTripUrgencyUseCase(tripPackages)
-    println("Trip urgency: $isUrgent (based on ${tripPackages.size} packages)")
-
-    // 2) اختيار طريقة التوجيه بناءً على الاستعجال
-    val path = decideRoutingWayUseCase(hub, destination, isUrgent)
-    if (path.isEmpty()) {
-        println("No path found from ${hub.id} to ${destination.id} — aborting dispatch.")
-        return
-    }
-    println("Chosen path: ${path.map { it.id }}")
-
-    val distanceKm = path.zipWithNext().sumOf { (a, b) ->
-        a.getOutgoingRoutes().first { it.destinationHub.id == b.id }.distanceKm
-    }
-
-    // 3) حساب السعر
-    val price = calculatePricingUseCase(pkg, distanceKm)
-    println("Calculated price for ${pkg.id}: $price (distance=$distanceKm km)")
-
-    // 4) تخصيص أرخص مركبة مؤهلة
-    val vehicle = assignPackageToLowestCostStationedVehicleUseCase(hub, pkg, distanceKm)
-    if (vehicle == null) {
-        println("No eligible vehicle found at ${hub.id} for package ${pkg.id}.")
-        return
-    }
-    println("Assigned vehicle: ${vehicle.id} (cost/km=${vehicle.costPerKm})")
-
-    // 5) الشحن الفعلي
-    val loadedPackages = dispatchVehicleUseCase(hub, vehicle)
-    println("Dispatched ${vehicle.id} with ${loadedPackages.size} packages: ${loadedPackages.map { it.id }}")
 }
