@@ -10,9 +10,13 @@ class AssignPackageToQueueCommand(
 
     override fun execute() {
         hub.addPackage(packageItem)
+        println("  hub=${hub.id} added=${packageItem.id} queue=${hub.getCargoQueue().map { it.id }}")
     }
 
     override fun undo() {
         hub.removePackage(packageItem)
+        println("  hub=${hub.id} removed=${packageItem.id} queue=${hub.getCargoQueue().map { it.id }}")
     }
+
+    override fun toString(): String = "AssignPackageToQueue(package=${packageItem.id}, hub=${hub.id})"
 }

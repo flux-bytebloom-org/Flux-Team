@@ -11,18 +11,31 @@ class DispatchVehicleCommand(
     private val dispatchVehicleUseCase: DispatchVehicleUseCase = DispatchVehicleUseCase()
 ) : Command {
 
-    //private val dispatchedPackages = mutableListOf<Package>()
     private var queueBeforeDispatch: List<Package> = emptyList()
+    private var dispatchedPackages: List<Package> = emptyList()
 
     override fun execute() {
         queueBeforeDispatch = hub.getCargoQueue()
-        val loadedPackages = dispatchVehicleUseCase(hub, vehicle)
-        loadedPackages.forEach(hub::removePackage)
+        dispatchedPackages = dispatchVehicleUseCase(hub, vehicle)
+        dispatchedPackages.forEach(hub::removePackage)
+        println(
+            "  hub=${hub.id} " +
+                    "vehicle=${vehicle.id} " +
+                    "loaded=${dispatchedPackages.map { it.id }} " +
+                    "remainingQueue=${hub.getCargoQueue().map { it.id }}")
     }
 
 
     override fun undo() {
         hub.getCargoQueue().forEach(hub::removePackage)
         queueBeforeDispatch.forEach(hub::addPackage)
+        println(
+            "  hub=${hub.id} " +
+                    "vehicle=${vehicle.id} " +
+                    "unloaded=${dispatchedPackages.map { it.id }} " +
+                    "restoredQueue=${hub.getCargoQueue().map { it.id }}")
     }
-}
+        override fun toString(): String =
+            "DispatchVehicle(vehicle=${vehicle.id}, hub=${hub.id}, packages=${dispatchedPackages.map { it.id }})"
+    }
+
