@@ -47,4 +47,15 @@ fun testCommandPattern() {
     val afterUndoAssign = hub.getCargoQueue()
     println("Undo assign → $undoAssignResult: ${afterUndoAssign.map { it.id }}")
 
+    val redoAssignResult = invoker.redo()
+    println("Redo assign → $redoAssignResult: ${hub.getCargoQueue().map { it.id }}")
+
+    val redoDispatchResult = invoker.redo()
+    println("Redo dispatch → $redoDispatchResult: ${hub.getCargoQueue().map { it.id }}")
+
+    println("\n--- Multi-step time travel ---")
+    invoker.undoSteps(2)
+    println("After undoSteps(2): ${hub.getCargoQueue().map { it.id }}")
+    invoker.redoSteps(2)
+    println("After redoSteps(2): ${hub.getCargoQueue().map { it.id }}")
 }
