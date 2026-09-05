@@ -52,7 +52,7 @@ class DomainGraphBuilder(
                 return@forEach
             }
 
-            destination.addPackage(
+            origin.addPackage(
                 Package(
                     id = pkg.id,
                     weight = pkg.weight,
