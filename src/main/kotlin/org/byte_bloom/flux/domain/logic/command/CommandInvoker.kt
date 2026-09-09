@@ -32,6 +32,18 @@ class CommandInvoker {
     }
 
 
+    fun undoSteps(count: Int): Int {
+        val actualSteps = minOf(count, undoStack.size)
+        repeat(actualSteps) { undo() }
+        return actualSteps
+    }
+
+    fun redoSteps(count: Int): Int {
+        val actualSteps = minOf(count, redoStack.size)
+        repeat(actualSteps) { redo() }
+        return actualSteps
+    }
+
     fun undoAll(): Boolean {
         if (undoStack.isEmpty()) return false
         undoRemaining()
