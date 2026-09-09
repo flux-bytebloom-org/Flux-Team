@@ -48,4 +48,9 @@ data class Warehouse(
     fun sortCargoQueue() {
         sortCargoByWeightDescending(cargoQueue)
     }
+
+    fun removeVehicle(vehicle: Vehicle) {
+        stationedVehicles.remove(vehicle)
+    }
 }
+

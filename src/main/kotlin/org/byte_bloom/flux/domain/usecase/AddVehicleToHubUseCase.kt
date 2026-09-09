@@ -5,9 +5,10 @@ import org.byte_bloom.flux.domain.model.Warehouse
 
 class AddVehicleToHubUseCase {
 
-    operator fun invoke(hub: Warehouse, vehicle: Vehicle) {
+    operator fun invoke(hub: Warehouse, vehicle: Vehicle): Vehicle {
         val updatedVehicle = vehicle.copy(currentHub = hub)
         hub.addVehicle(updatedVehicle)
+        return updatedVehicle
     }
 }
 
