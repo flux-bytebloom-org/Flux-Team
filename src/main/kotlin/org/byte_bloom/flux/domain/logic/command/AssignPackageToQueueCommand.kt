@@ -17,4 +17,7 @@ class AssignPackageToQueueCommand(
     override fun undo() {
         hub.removePackage(packageItem)
     }
+
+    override fun describe(): String =
+        "AssignPackageToQueue[pkg=${packageItem.id}, hub=${hub.id}, queueSizeNow=${hub.getCargoQueue().size}]"
 }

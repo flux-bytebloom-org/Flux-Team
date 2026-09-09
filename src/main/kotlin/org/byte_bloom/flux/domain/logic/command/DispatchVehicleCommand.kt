@@ -24,4 +24,7 @@ class DispatchVehicleCommand(
         result.loadedPackages.forEach { hub.addPackage(it) }
         hub.sortCargoQueue()
     }
+
+    override fun describe(): String =
+        "DispatchVehicle[vehicle=${vehicle.id}, hub=${hub.id}, packagesLoaded=${result.loadedPackages.size}, totalWeight=${result.totalWeight}]"
 }
