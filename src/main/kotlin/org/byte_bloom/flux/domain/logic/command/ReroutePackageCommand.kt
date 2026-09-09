@@ -29,5 +29,6 @@ class ReroutePackageCommand(
     }
 
     override fun describe(): String =
-        "ReroutePackage[pkg=${packageItem.id}, from=${originalDestination.id}, to=${newDestination.id}, hub=${originHub.id}]"
+        "ReroutePackage[pkg=${packageItem.id}, from=${originalDestination.id}," +
+                " to=${newDestination.id}, hub=${originHub.id}]"
 }

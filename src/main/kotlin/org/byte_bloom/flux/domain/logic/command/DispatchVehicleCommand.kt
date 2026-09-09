@@ -26,5 +26,6 @@ class DispatchVehicleCommand(
     }
 
     override fun describe(): String =
-        "DispatchVehicle[vehicle=${vehicle.id}, hub=${hub.id}, packagesLoaded=${result.loadedPackages.size}, totalWeight=${result.totalWeight}]"
+        "DispatchVehicle[vehicle=${vehicle.id}, hub=${hub.id}, " +
+                "packagesLoaded=${result.loadedPackages.size}, totalWeight=${result.totalWeight}]"
 }

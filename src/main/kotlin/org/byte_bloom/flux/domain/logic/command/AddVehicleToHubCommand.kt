@@ -28,5 +28,6 @@ class AddVehicleToHubCommand(
     }
 
     override fun describe(): String =
-        "AddVehicleToHub[vehicle=${vehicle.id}, from=${previousHub.id}, to=${hub.id}, hubFleetSizeNow=${hub.getStationedVehicles().size}]"
+        "AddVehicleToHub[vehicle=${vehicle.id}, from=${previousHub.id}, to=${hub.id}," +
+                " hubFleetSizeNow=${hub.getStationedVehicles().size}]"
 }
