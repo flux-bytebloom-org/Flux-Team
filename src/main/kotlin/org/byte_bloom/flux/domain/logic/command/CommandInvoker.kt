@@ -9,6 +9,7 @@ class CommandInvoker {
         command.execute()
         undoStack.addLast(command)
         redoStack.clear()
+        println("[EXECUTE] ${command.describe()}")
     }
 
     fun undo(): Boolean {
@@ -18,6 +19,7 @@ class CommandInvoker {
         }
         command.undo()
         redoStack.addLast(command)
+        println("[UNDO] ${command.describe()}")
         return true
     }
 
@@ -28,6 +30,7 @@ class CommandInvoker {
         }
         command.execute()
         undoStack.addLast(command)
+        println("[REDO] ${command.describe()}")
         return true
     }
 
@@ -53,6 +56,7 @@ class CommandInvoker {
         val command = undoStack.removeLastOrNull() ?: return
         command.undo()
         redoStack.addLast(command)
+        println("[UNDO] ${command.describe()}")
         undoRemaining()
     }
 
