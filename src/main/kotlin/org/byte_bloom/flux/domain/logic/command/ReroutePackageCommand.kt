@@ -11,21 +11,20 @@ class ReroutePackageCommand(
     private val reroutePackageUseCase: ReroutePackageUseCase
 ) : Command {
 
-    private val originalDestination: Warehouse = packageItem.destinationHub
-    private var reroutedPackage: Package? = null
+    private lateinit var originalDestination: Warehouse
+    private lateinit var reroutedPackage: Package
 
     override fun execute() {
+        originalDestination = packageItem.destinationHub
         reroutedPackage = reroutePackageUseCase(originHub, packageItem, newDestination)
     }
 
     override fun undo() {
-        val rerouted = reroutedPackage ?: return
-        originHub.removePackage(rerouted)
+        if (!::reroutedPackage.isInitialized) return
+        originHub.removePackage(reroutedPackage)
 
-        val restoredPackage = rerouted.copy(destinationHub = originalDestination)
+        val restoredPackage = reroutedPackage.copy(destinationHub = originalDestination)
         originHub.addPackage(restoredPackage)
         originHub.sortCargoQueue()
-
-        reroutedPackage = null
     }
 }

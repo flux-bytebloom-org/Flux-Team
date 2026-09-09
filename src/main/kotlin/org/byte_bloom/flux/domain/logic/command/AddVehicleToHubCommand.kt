@@ -10,23 +10,20 @@ class AddVehicleToHubCommand(
     private val addVehicleToHubUseCase: AddVehicleToHubUseCase
 ) : Command {
 
-    private val previousHub: Warehouse? = vehicle.currentHub
-    private var addedVehicle: Vehicle? = null
+    private lateinit var previousHub: Warehouse
+    private lateinit var addedVehicle: Vehicle
 
     override fun execute() {
-        val updated = vehicle.copy(currentHub = hub)
-        addedVehicle = updated
-        addVehicleToHubUseCase(hub, vehicle)
+        previousHub = vehicle.currentHub
+        previousHub.removeVehicle(vehicle)
+        addedVehicle = addVehicleToHubUseCase(hub, vehicle)
     }
 
     override fun undo() {
-        val currentAdded = addedVehicle ?: return
-        hub.removeVehicle(currentAdded)
-        previousHub?.let { prev ->
-            val restoredVehicle = currentAdded.copy(currentHub = prev)
-            prev.addVehicle(restoredVehicle)
-        }
+        if (!::addedVehicle.isInitialized) return
 
-        addedVehicle = null
+        hub.removeVehicle(addedVehicle)
+        val restoredVehicle = addedVehicle.copy(currentHub = previousHub)
+        previousHub.addVehicle(restoredVehicle)
     }
 }
