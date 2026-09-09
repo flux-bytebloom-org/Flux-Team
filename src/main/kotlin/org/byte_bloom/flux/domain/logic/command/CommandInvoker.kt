@@ -4,8 +4,10 @@ class CommandInvoker {
 
     private val undoStack = ArrayDeque<Command>()
     private val redoStack = ArrayDeque<Command>()
-    val undoStackSize = undoStack.size
-    val redoStackSize = redoStack.size
+    val undoStackSize: Int
+        get() = undoStack.size
+    val redoStackSize: Int
+        get() = redoStack.size
 
     fun executeCommand(command: Command) {
         command.execute()

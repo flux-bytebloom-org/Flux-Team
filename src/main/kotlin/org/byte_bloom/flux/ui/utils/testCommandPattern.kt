@@ -128,15 +128,14 @@ private fun assignThreePackagesToHubA(context: ScenarioContext) = with(context) 
 }
 
 private fun finalVerification(context: ScenarioContext) = with(context) {
-    val isHubAQueueEmpty = hubA.getCargoQueue().isEmpty()
-    val isHubAFleetCorrect = hubA.getStationedVehicles().map { it.id } == listOf("V1")
-    val isHubBFleetEmpty = hubB.getStationedVehicles().isEmpty()
+    val domainRestored =
+        hubA.getCargoQueue().isEmpty() &&
+                hubA.getStationedVehicles().map { it.id } == listOf("V1") &&
+                hubB.getStationedVehicles().isEmpty()
 
-    if (isHubAQueueEmpty && isHubAFleetCorrect && isHubBFleetEmpty) {
-        println("[PASS] Final verification successful: State matches the very beginning.")
-    } else {
-        println("[FAIL] Final verification failed: State does not match the very beginning.")
-    }
+    val status = if (domainRestored) "[PASS]" else "[FAIL]"
+    println("  $status Domain state matches the very beginning " +
+            "(note: redoStack still holds ${invoker.redoStackSize} commands available for redo)")
 }
 
 
