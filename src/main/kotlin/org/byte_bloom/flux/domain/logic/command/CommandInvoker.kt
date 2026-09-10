@@ -2,36 +2,70 @@ package org.byte_bloom.flux.domain.logic.command
 
 class CommandInvoker {
 
-    private val history = ArrayDeque<Command>()
+    private val undoStack = ArrayDeque<Command>()
+    private val redoStack = ArrayDeque<Command>()
+    val undoStackSize: Int
+        get() = undoStack.size
+    val redoStackSize: Int
+        get() = redoStack.size
 
     fun executeCommand(command: Command) {
         command.execute()
-        history.addLast(command)
+        undoStack.addLast(command)
+        redoStack.clear()
+        println("[EXECUTE] ${command.describe()}")
     }
 
     fun undo(): Boolean {
-        val lastCommand = history.removeLastOrNull() ?: return false
-        lastCommand.undo()
+        val command = undoStack.removeLastOrNull() ?: run {
+            println("[UNDO] Nothing to undo.")
+            return false
+        }
+        command.undo()
+        redoStack.addLast(command)
+        println("[UNDO] ${command.describe()}")
         return true
+    }
+
+    fun redo(): Boolean {
+        val command = redoStack.removeLastOrNull() ?: run {
+            println("[REDO] Nothing to redo.")
+            return false
+        }
+        command.execute()
+        undoStack.addLast(command)
+        println("[REDO] ${command.describe()}")
+        return true
+    }
+
+
+    fun undoSteps(count: Int): Int {
+        val actualSteps = minOf(count, undoStack.size)
+        repeat(actualSteps) { undo() }
+        return actualSteps
+    }
+
+    fun redoSteps(count: Int): Int {
+        val actualSteps = minOf(count, redoStack.size)
+        repeat(actualSteps) { redo() }
+        return actualSteps
     }
 
     fun undoAll(): Boolean {
-        if (history.isEmpty()) return false
-
-        tailrec fun undoRemaining() {
-            val command = history.removeLastOrNull() ?: return
-            command.undo()
-            undoRemaining()
-        }
-
+        if (undoStack.isEmpty()) return false
         undoRemaining()
         return true
     }
-
-    fun clearHistory() {
-        history.clear()
+    private fun undoRemaining() {
+        val command = undoStack.removeLastOrNull() ?: return
+        command.undo()
+        redoStack.addLast(command)
+        println("[UNDO] ${command.describe()}")
+        undoRemaining()
     }
 
-    val historySize: Int
-        get() = history.size
+    fun clearHistory() {
+        undoStack.clear()
+        redoStack.clear()
+    }
 }

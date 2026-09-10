@@ -1,9 +1,9 @@
 package org.byte_bloom.flux.domain.logic.command
 
-import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
+import org.byte_bloom.flux.domain.response.DispatchedVehicle
 
 class DispatchVehicleCommand(
     private val hub: Warehouse,
@@ -11,18 +11,21 @@ class DispatchVehicleCommand(
     private val dispatchVehicleUseCase: DispatchVehicleUseCase = DispatchVehicleUseCase()
 ) : Command {
 
-    //private val dispatchedPackages = mutableListOf<Package>()
-    private var queueBeforeDispatch: List<Package> = emptyList()
+    private lateinit var result: DispatchedVehicle
 
     override fun execute() {
-        queueBeforeDispatch = hub.getCargoQueue()
-        val loadedPackages = dispatchVehicleUseCase(hub, vehicle)
-        loadedPackages.forEach(hub::removePackage)
+        result = dispatchVehicleUseCase(hub, vehicle)
     }
 
 
     override fun undo() {
-        hub.getCargoQueue().forEach(hub::removePackage)
-        queueBeforeDispatch.forEach(hub::addPackage)
+        if (!::result.isInitialized) return
+
+        result.loadedPackages.forEach { hub.addPackage(it) }
+        hub.sortCargoQueue()
     }
+
+    override fun describe(): String =
+        "DispatchVehicle[vehicle=${vehicle.id}, hub=${hub.id}, " +
+                "packagesLoaded=${result.loadedPackages.size}, totalWeight=${result.totalWeight}]"
 }

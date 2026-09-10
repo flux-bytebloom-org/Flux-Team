@@ -48,7 +48,7 @@ fun runDispatchScenario(
     }
     println("Assigned vehicle: ${vehicle.id} (cost/km=${vehicle.costPerKm})")
 
-    val loadedPackages = dispatchUseCases.dispatchVehicleUseCase(hub, vehicle)
+    val loadedPackages = dispatchUseCases.dispatchVehicleUseCase(hub, vehicle).loadedPackages
     println("Dispatched ${vehicle.id} with ${loadedPackages.size} packages: ${loadedPackages.map { it.id }}")
 }
 

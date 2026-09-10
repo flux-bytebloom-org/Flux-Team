@@ -57,10 +57,10 @@ fun main() {
     val allRoutes = warehousesGraph.flatMap { it.getOutgoingRoutes() }
     val bidirectionalRouter = BidirectionalBfsRouter(allRoutes)
     benchmarkRouters(warehousesGraph, bfsRouter, bidirectionalRouter)
-    testCommandPattern()
 
     runAllScenarios(warehousesGraph, packages)
 
+    testCommandPattern()
 }
 
 private fun printParsingSummary(

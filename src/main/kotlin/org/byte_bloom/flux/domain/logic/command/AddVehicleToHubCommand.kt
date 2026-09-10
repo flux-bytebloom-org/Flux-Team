@@ -26,4 +26,8 @@ class AddVehicleToHubCommand(
         val restoredVehicle = addedVehicle.copy(currentHub = previousHub)
         previousHub.addVehicle(restoredVehicle)
     }
+
+    override fun describe(): String =
+        "AddVehicleToHub[vehicle=${vehicle.id}, from=${previousHub.id}, to=${hub.id}," +
+                " hubFleetSizeNow=${hub.getStationedVehicles().size}]"
 }

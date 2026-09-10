@@ -19,6 +19,7 @@ class ReroutePackageUseCase {
         val reroutedPackage = actualPackage.copy(destinationHub = newDestination)
         originHub.removePackage(actualPackage)
         originHub.addPackage(reroutedPackage)
+        originHub.sortCargoQueue()
 
         return reroutedPackage
     }
