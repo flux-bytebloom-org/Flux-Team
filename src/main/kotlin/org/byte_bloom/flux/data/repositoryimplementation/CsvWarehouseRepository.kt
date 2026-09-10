@@ -20,5 +20,10 @@ class CsvWarehouseRepository(
     }
 
     override fun getAll(): List<Warehouse> = warehouses
+
+    override fun updateWarehouseFleetListWithCurrentVehicle(hubId: String, vehicleId: String) {
+        // Implementation for updating warehouse's fleet list with current vehicle
+        println("[[temp]] Updating warehouse $hubId with vehicle $vehicleId in CSV repository (not implemented YET)")
+    }
 }
 

@@ -6,7 +6,6 @@ import org.byte_bloom.flux.data.parsers.parseFleet
 import org.byte_bloom.flux.data.readers.readCsv
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.repository.VehicleRepository
-import org.byte_bloom.flux.domain.repository.WarehouseRepository
 
 class CsvVehicleRepository(
     private val filePath: String,
@@ -26,5 +25,31 @@ class CsvVehicleRepository(
     }
 
     override fun getAll(): List<Vehicle> = vehicles
+
+    override fun updateVehicleCurrentHub(vehicleId: String, hubId: String): Vehicle {
+        println("[[temp]] Updating vehicle $vehicleId to hub $hubId in CSV repository (not implemented YET)")
+        val vehicle = getVehicleById(vehicleId)
+        return vehicle
+        //must return the updated vehicle,
+        // but since we are not actually updating it in the CSV,
+        // we just return the original vehicle for now.
+    }
+    private fun getVehicleById(vehicleId: String): Vehicle {
+        val vehicles = getAll()
+        val unknownWarehouse = Warehouse(
+            id = "xx",
+            name = "Unknown",
+            regionalZone = "Unknown",
+            latitude = 0.0,
+            longitude = 0.0
+        )
+        return vehicles.find { it.id == vehicleId }
+            ?: return Vehicle(
+                id = vehicleId,
+                currentHub = unknownWarehouse,
+                maxCapacityKg = 0.0,
+                costPerKm = 0.0
+            )
+    }
 }
 

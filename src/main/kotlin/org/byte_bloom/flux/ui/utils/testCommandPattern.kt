@@ -9,10 +9,13 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
+import org.byte_bloom.flux.domain.repository.VehicleRepository
+import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.usecase.AddVehicleToHubUseCase
 import org.byte_bloom.flux.domain.usecase.AssignPackageToCargoQueueUseCase
 import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
 import org.byte_bloom.flux.domain.usecase.ReroutePackageUseCase
+
 
 private const val DEFAULT_LATITUDE = 0.0
 private const val DEFAULT_LONGITUDE = 0.0
@@ -56,13 +59,13 @@ private data class ScenarioContext(
  *  8. Final check confirms the domain state is back to its original empty state,
  *     proving undo/redo stayed consistent through the whole journey.
  */
-fun testCommandPattern() {
+fun testCommandPattern( vehicleRepo: VehicleRepository,warehouseRepo: WarehouseRepository) {
     println("\n--- Week 5 - Subtask 5 & Bonus Task 2 - Testing Command Pattern Dispatch Panel ---")
-    val context = buildScenarioContext()
+    val context = buildScenarioContext( vehicleRepo, warehouseRepo)
     runCommandTestScenario(context)
 }
 
-private fun buildScenarioContext(): ScenarioContext {
+private fun buildScenarioContext(vehicleRepo: VehicleRepository, warehouseRepo: WarehouseRepository): ScenarioContext {
     val hubA = Warehouse("H1", "Main Hub", "ZoneA", DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
     val hubB = Warehouse("H2", "Second Hub", "ZoneB", DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
     val vehicle = Vehicle("V1", hubA, VEHICLE_CAPACITY_KG, VEHICLE_COST_PER_KM)
@@ -73,7 +76,7 @@ private fun buildScenarioContext(): ScenarioContext {
         vehicle = vehicle,
         invoker = CommandInvoker(),
         assignUseCase = AssignPackageToCargoQueueUseCase(),
-        addVehicleUseCase = AddVehicleToHubUseCase(),
+        addVehicleUseCase = AddVehicleToHubUseCase(vehicleRepo, warehouseRepo),
         rerouteUseCase = ReroutePackageUseCase(),
         dispatchUseCase = DispatchVehicleUseCase(),
         p1 = Package("P1", FIRST_PACKAGE_WEIGHT_KG, hubA, hubA, Priority.URGENT),
