@@ -23,7 +23,9 @@ fun runAllScenarios(warehousesGraph: List<Warehouse>, packages: List<Package>,ve
             hub = dispatchHub,
             destination = dispatchDestination,
             pkg = dispatchPackage,
-            tripPackages = dispatchHub.getCargoQueue()
+            tripPackages = dispatchHub.getCargoQueue(),
+            packageRepo = packageRepo,
+            warehouseRepo = warehouseRepo
         )
     } else {
         println("\n[SKIP] Dispatch scenario — not enough data (hub/destination/package) found.")

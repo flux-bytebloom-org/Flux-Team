@@ -7,5 +7,6 @@ interface WarehouseRepository {
     fun getAll(): List<Warehouse>
     fun updateWarehouseFleetListWithCurrentVehicle(hubId: String, vehicleId: String)
     fun updateWarehouseCargoQueue(hub : Warehouse,pkg : Package)
+    fun removePackageFromCargoQueue(hub: Warehouse, pkg: Package)
 }
 

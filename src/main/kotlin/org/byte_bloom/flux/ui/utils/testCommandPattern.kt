@@ -83,7 +83,7 @@ private fun buildScenarioContext(
         assignUseCase = AssignPackageToCargoQueueUseCase(warehouseRepo,packageRepo),
         addVehicleUseCase = AddVehicleToHubUseCase(vehicleRepo, warehouseRepo),
         rerouteUseCase = ReroutePackageUseCase(),
-        dispatchUseCase = DispatchVehicleUseCase(),
+        dispatchUseCase = DispatchVehicleUseCase(warehouseRepo,packageRepo),
         p1 = Package("P1", FIRST_PACKAGE_WEIGHT_KG, hubA, hubA, Priority.URGENT),
         p2 = Package("P2", SECOND_PACKAGE_WEIGHT_KG, hubA, hubA, Priority.STANDARD),
         p3 = Package("P3", THIRD_PACKAGE_WEIGHT_KG, hubA, hubA, Priority.LOW)

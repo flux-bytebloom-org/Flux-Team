@@ -38,4 +38,8 @@ class CsvPackageRepository(
         // but since we are not actually updating it in the CSV,
         // we just return the original package for now.
     }
+
+    override fun removePackageFromHub(pkg: Package, hub: Warehouse) {
+        println("[[temp]] Removing package ${pkg.id} from hub ${hub.id} in CSV repository (not implemented YET)")
+    }
 }

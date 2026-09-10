@@ -22,6 +22,7 @@ import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.usecase.AddVehicleToHubUseCase
 import org.byte_bloom.flux.domain.usecase.AssignPackageToCargoQueueUseCase
+import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
 import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
 import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
 import org.byte_bloom.flux.ui.scenarios.runBottleneckCheckScenario

@@ -8,7 +8,7 @@ import org.byte_bloom.flux.domain.response.DispatchedVehicle
 class DispatchVehicleCommand(
     private val hub: Warehouse,
     private val vehicle: Vehicle,
-    private val dispatchVehicleUseCase: DispatchVehicleUseCase = DispatchVehicleUseCase()
+    private val dispatchVehicleUseCase: DispatchVehicleUseCase
 ) : Command {
 
     private lateinit var result: DispatchedVehicle

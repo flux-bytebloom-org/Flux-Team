@@ -31,5 +31,9 @@ class CsvWarehouseRepository(
 
         println("[[temp]] Updating warehouse ${hub.id}'s cagro queue with package ${pkg.id} in CSV repository (not implemented YET)")
     }
+
+    override fun removePackageFromCargoQueue(hub: Warehouse, pkg: Package) {
+        println("[[temp]] Removing package ${pkg.id} from warehouse ${hub.id}'s cargo queue in CSV repository (not implemented YET)")
+    }
 }
 

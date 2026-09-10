@@ -6,5 +6,6 @@ import org.byte_bloom.flux.domain.model.Warehouse
 interface PackageRepository {
     fun getAll(): List<Package>
     fun updatePackageOriginHub(pkg: Package, hub: Warehouse): Package
+    fun removePackageFromHub(pkg: Package, hub: Warehouse)
 }
 
