@@ -10,7 +10,7 @@ import org.byte_bloom.flux.domain.repository.VehicleRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 
 fun runAllScenarios(warehousesGraph: List<Warehouse>, packages: List<Package>,vehicleRepo: VehicleRepository,warehouseRepo: WarehouseRepository,packageRepo: PackageRepository) {
-    val bottleneckResult = runBottleneckCheckScenario(warehousesGraph, packages)
+    val bottleneckResult = runBottleneckCheckScenario(warehousesGraph, packages,packageRepo)
     printBottleneckReport(bottleneckResult)
     // val settledPackages = bottleneckResult.finalPackages
 
