@@ -5,6 +5,8 @@ import org.byte_bloom.flux.data.parsers.cleanLines
 import org.byte_bloom.flux.data.parsers.parsePackages
 import org.byte_bloom.flux.data.readers.readCsv
 import org.byte_bloom.flux.domain.model.Package
+import org.byte_bloom.flux.domain.model.Priority
+import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 
@@ -26,4 +28,14 @@ class CsvPackageRepository(
     }
 
     override fun getAll(): List<Package> = packages
+
+
+    override fun updatePackageOriginHub(pkg: Package, hub: Warehouse): Package {
+        println("[[temp]] Updating package ${pkg.id} to hub ${hub.id} in CSV repository (not implemented YET)")
+        val updatedPackage = pkg.copy(originHub = hub)
+        return updatedPackage
+        //must return the updated package,
+        // but since we are not actually updating it in the CSV,
+        // we just return the original package for now.
+    }
 }

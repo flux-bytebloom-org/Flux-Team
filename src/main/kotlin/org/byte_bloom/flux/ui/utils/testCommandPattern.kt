@@ -9,6 +9,7 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
+import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.repository.VehicleRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.usecase.AddVehicleToHubUseCase
@@ -59,13 +60,17 @@ private data class ScenarioContext(
  *  8. Final check confirms the domain state is back to its original empty state,
  *     proving undo/redo stayed consistent through the whole journey.
  */
-fun testCommandPattern( vehicleRepo: VehicleRepository,warehouseRepo: WarehouseRepository) {
+fun testCommandPattern( vehicleRepo: VehicleRepository,warehouseRepo: WarehouseRepository,packageRepo: PackageRepository) {
     println("\n--- Week 5 - Subtask 5 & Bonus Task 2 - Testing Command Pattern Dispatch Panel ---")
-    val context = buildScenarioContext( vehicleRepo, warehouseRepo)
+    val context = buildScenarioContext( vehicleRepo, warehouseRepo,packageRepo)
     runCommandTestScenario(context)
 }
 
-private fun buildScenarioContext(vehicleRepo: VehicleRepository, warehouseRepo: WarehouseRepository): ScenarioContext {
+private fun buildScenarioContext(
+    vehicleRepo: VehicleRepository,
+    warehouseRepo: WarehouseRepository,
+    packageRepo: PackageRepository
+): ScenarioContext {
     val hubA = Warehouse("H1", "Main Hub", "ZoneA", DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
     val hubB = Warehouse("H2", "Second Hub", "ZoneB", DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
     val vehicle = Vehicle("V1", hubA, VEHICLE_CAPACITY_KG, VEHICLE_COST_PER_KM)
@@ -75,7 +80,7 @@ private fun buildScenarioContext(vehicleRepo: VehicleRepository, warehouseRepo: 
         hubB = hubB,
         vehicle = vehicle,
         invoker = CommandInvoker(),
-        assignUseCase = AssignPackageToCargoQueueUseCase(),
+        assignUseCase = AssignPackageToCargoQueueUseCase(warehouseRepo,packageRepo),
         addVehicleUseCase = AddVehicleToHubUseCase(vehicleRepo, warehouseRepo),
         rerouteUseCase = ReroutePackageUseCase(),
         dispatchUseCase = DispatchVehicleUseCase(),

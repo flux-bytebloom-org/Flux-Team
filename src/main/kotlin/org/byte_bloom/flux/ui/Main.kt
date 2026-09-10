@@ -16,10 +16,12 @@ import org.byte_bloom.flux.domain.logic.routing.benchmarkRouters
 import org.byte_bloom.flux.domain.logic.routing.testRoutingComparison
 import org.byte_bloom.flux.domain.logic.sorting.sortByPriorityAndWeightDescending
 import org.byte_bloom.flux.domain.model.Package
+import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.usecase.AddVehicleToHubUseCase
+import org.byte_bloom.flux.domain.usecase.AssignPackageToCargoQueueUseCase
 import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
 import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
 import org.byte_bloom.flux.ui.scenarios.runBottleneckCheckScenario
@@ -40,10 +42,10 @@ private const val PACKAGES_CSV_PATH = "src/main/resources/packages.csv"
 private const val ROUTES_CSV_PATH = "src/main/resources/routes.csv"
 private const val FLEET_CSV_PATH = "src/main/resources/fleet.csv"
 
+
 fun main() {
 
     val (warehousesGraph, packages) = initializeAndPrintGraph()
-
     testBidirectionalIdentity(warehousesGraph)
     testWarehouseQuickSort(warehousesGraph)
     drowPackageAssignmentRing()

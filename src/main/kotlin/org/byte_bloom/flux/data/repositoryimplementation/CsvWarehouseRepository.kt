@@ -4,6 +4,7 @@ import org.byte_bloom.flux.data.mapper.toDomain
 import org.byte_bloom.flux.data.parsers.cleanLines
 import org.byte_bloom.flux.data.parsers.parseWarehouses
 import org.byte_bloom.flux.data.readers.readCsv
+import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 
@@ -23,7 +24,12 @@ class CsvWarehouseRepository(
 
     override fun updateWarehouseFleetListWithCurrentVehicle(hubId: String, vehicleId: String) {
         // Implementation for updating warehouse's fleet list with current vehicle
-        println("[[temp]] Updating warehouse $hubId with vehicle $vehicleId in CSV repository (not implemented YET)")
+        println("[[temp]] Updating warehouse $hubId's fleet with vehicle $vehicleId in CSV repository (not implemented YET)")
+    }
+
+    override fun updateWarehouseCargoQueue(hub: Warehouse, pkg: Package) {
+
+        println("[[temp]] Updating warehouse ${hub.id}'s cagro queue with package ${pkg.id} in CSV repository (not implemented YET)")
     }
 }
 
