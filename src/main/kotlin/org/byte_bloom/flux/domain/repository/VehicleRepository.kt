@@ -6,7 +6,9 @@ import org.byte_bloom.flux.domain.model.Warehouse
 interface VehicleRepository {
     fun getAll(): List<Vehicle>
 
-    /** Updates the vehicle's hub AND registers it in that hub's fleet — two steps, one call. */
+    /** removes the vehicle from its old hub fleet
+     * AND Updates it's hub
+     * AND registers it in that hub's fleet — three steps, one call. */
     fun updateVehicleCurrentHub(vehicle: Vehicle, newHub: Warehouse): Vehicle
 }
 

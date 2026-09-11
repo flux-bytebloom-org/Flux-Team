@@ -28,12 +28,16 @@ class CsvVehicleRepository(
     override fun getAll(): List<Vehicle> = vehicles
 
     override fun updateVehicleCurrentHub(vehicle: Vehicle, newHub: Warehouse): Vehicle {
-        println("[[temp]] (1/2) Updating vehicle ${vehicle.id}'s hub -> ${newHub.id}")
-        println("[[temp]] (2/2) Registering vehicle ${vehicle.id} in hub ${newHub.id}'s fleet")
+        val oldHubId = vehicle.currentHub.id
+
+        println("[[temp]] (1/3) Removing vehicle ${vehicle.id} from hub $oldHubId's fleet")
+        println("[[temp]] (2/3) Updating vehicle ${vehicle.id}'s hub -> ${newHub.id}")
+        println("[[temp]] (3/3) Registering vehicle ${vehicle.id} in hub ${newHub.id}'s fleet")
 
         val newVehicle = vehicle.copy(currentHub = newHub ) // TODO(delete)
         return newVehicle
     }
+
 
     private fun getVehicleById(vehicleId: String): Vehicle {
         val vehicles = getAll()

@@ -15,17 +15,13 @@ class AddVehicleToHubCommand(
 
     override fun execute() {
         previousHub = vehicle.currentHub
-        previousHub.removeVehicle(vehicle)
         addedVehicle = addVehicleToHubUseCase(hub, vehicle)
     }
 
     override fun undo() {
         if (!::addedVehicle.isInitialized) return
 
-        hub.removeVehicle(addedVehicle)
-        val restoredVehicle = addedVehicle.copy(currentHub = previousHub)
-        previousHub.addVehicle(restoredVehicle)
-    }
+        addVehicleToHubUseCase(previousHub, addedVehicle)    }
 
     override fun describe(): String =
         "AddVehicleToHub[vehicle=${vehicle.id}, from=${previousHub.id}, to=${hub.id}," +
