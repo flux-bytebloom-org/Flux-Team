@@ -76,7 +76,7 @@ private fun testAssignPackageToCargoQueue(
         return
     }
 
-    val assignPackageToCargoQueueUseCase = AssignPackageToCargoQueueUseCase(warehouseRepository,packageRepo)
+    val assignPackageToCargoQueueUseCase = AssignPackageToCargoQueueUseCase(packageRepo)
     val beforeCount = hub.getCargoQueue().size
 
     val newPackage = Package(

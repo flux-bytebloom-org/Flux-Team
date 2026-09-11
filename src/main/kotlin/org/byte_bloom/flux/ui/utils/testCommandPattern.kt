@@ -80,7 +80,7 @@ private fun buildScenarioContext(
         hubB = hubB,
         vehicle = vehicle,
         invoker = CommandInvoker(),
-        assignUseCase = AssignPackageToCargoQueueUseCase(warehouseRepo,packageRepo),
+        assignUseCase = AssignPackageToCargoQueueUseCase(packageRepo),
         addVehicleUseCase = AddVehicleToHubUseCase(vehicleRepo),
         rerouteUseCase = ReroutePackageUseCase(packageRepo),
         dispatchUseCase = DispatchVehicleUseCase(warehouseRepo,packageRepo),

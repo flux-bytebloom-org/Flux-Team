@@ -5,7 +5,6 @@ import org.byte_bloom.flux.domain.model.Warehouse
 
 interface WarehouseRepository {
     fun getAll(): List<Warehouse>
-    fun updateWarehouseCargoQueue(hub : Warehouse,pkg : Package)
     fun removePackageFromCargoQueue(hub: Warehouse, pkg: Package)
 }
 

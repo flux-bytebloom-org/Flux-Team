@@ -31,12 +31,9 @@ class CsvPackageRepository(
 
 
     override fun updatePackageOriginHub(pkg: Package, hub: Warehouse): Package {
-        println("[[temp]] Updating package ${pkg.id} to hub ${hub.id} in CSV repository (not implemented YET)")
-        val updatedPackage = pkg.copy(originHub = hub)
-        return updatedPackage
-        //must return the updated package,
-        // but since we are not actually updating it in the CSV,
-        // we just return the original package for now.
+        println("[[temp]] (1/2) Updating package ${pkg.id}'s originHub -> ${hub.id}")
+        println("[[temp]] (2/2) Placing package ${pkg.id} in hub ${hub.id}'s cargo queue")
+        return pkg.copy(originHub = hub)
     }
 
     override fun removePackageFromHub(pkg: Package, hub: Warehouse) {
