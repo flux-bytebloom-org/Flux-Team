@@ -8,7 +8,7 @@ class AddVehicleToHubUseCase (
     val vehicleRepo: VehicleRepository
 ){
     operator fun invoke(hub: Warehouse, vehicle: Vehicle): Vehicle {
-        val updatedVehicle = vehicleRepo.updateVehicleCurrentHub(vehicle.id, hub.id)
+        val updatedVehicle = vehicleRepo.updateVehicleCurrentHub(vehicle, hub)
 
         /* old code
         val updatedVehicle = vehicle.copy(currentHub = hub)

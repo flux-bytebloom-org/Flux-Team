@@ -5,6 +5,7 @@ import org.byte_bloom.flux.data.parsers.cleanLines
 import org.byte_bloom.flux.data.parsers.parseFleet
 import org.byte_bloom.flux.data.readers.readCsv
 import org.byte_bloom.flux.domain.model.Vehicle
+import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.VehicleRepository
 
 class CsvVehicleRepository(
@@ -26,12 +27,12 @@ class CsvVehicleRepository(
 
     override fun getAll(): List<Vehicle> = vehicles
 
-    override fun updateVehicleCurrentHub(vehicleId: String, hubId: String): Vehicle {
-        println("[[temp]] (1/2) Updating vehicle $vehicleId's hub -> $hubId")
-        println("[[temp]] (2/2) Registering vehicle $vehicleId in hub $hubId's fleet")
+    override fun updateVehicleCurrentHub(vehicle: Vehicle, newHub: Warehouse): Vehicle {
+        println("[[temp]] (1/2) Updating vehicle ${vehicle.id}'s hub -> ${newHub.id}")
+        println("[[temp]] (2/2) Registering vehicle ${vehicle.id} in hub ${newHub.id}'s fleet")
 
-        val vehicle = getVehicleById(vehicleId)
-        return vehicle
+        val newVehicle = vehicle.copy(currentHub = newHub ) // TODO(delete)
+        return newVehicle
     }
 
     private fun getVehicleById(vehicleId: String): Vehicle {
