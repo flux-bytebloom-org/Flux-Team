@@ -6,15 +6,25 @@ import org.byte_bloom.flux.data.parsers.parseFleet
 import org.byte_bloom.flux.data.readers.readCsv
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.repository.VehicleRepository
+import org.byte_bloom.flux.domain.repository.WarehouseRepository
 
 class CsvVehicleRepository(
-    private val filePath: String
+    private val filePath: String,
+    private val warehouseRepository: WarehouseRepository
 ) : VehicleRepository {
 
-    override fun getAll(): List<Vehicle> {
-        val lines = readCsv(filePath)
-        val cleanedLines = cleanLines(lines)
-        return parseFleet(cleanedLines).map { it.toDomain() }
+    private val vehicles: List<Vehicle> by lazy {
+        val warehouseMap = warehouseRepository
+            .getAll()
+            .associateBy { it.id }
+
+        parseFleet(
+            cleanLines(readCsv(filePath))
+        )
+            .mapNotNull { it.toDomain(warehouseMap) }
+            .onEach { it.currentHub.addVehicle(it) }
     }
+
+    override fun getAll(): List<Vehicle> = vehicles
 }
 
