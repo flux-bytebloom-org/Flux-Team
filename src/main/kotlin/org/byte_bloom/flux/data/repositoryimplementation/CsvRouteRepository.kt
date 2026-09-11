@@ -6,15 +6,25 @@ import org.byte_bloom.flux.data.parsers.parseRoutes
 import org.byte_bloom.flux.data.readers.readCsv
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.repository.RouteRepository
+import org.byte_bloom.flux.domain.repository.WarehouseRepository
 
 class CsvRouteRepository(
-    private val filePath: String
+    private val filePath: String,
+    private val warehouseRepository: WarehouseRepository
 ) : RouteRepository {
 
-    override fun getAll(): List<Route> {
-        val lines = readCsv(filePath)
-        val cleanedLines = cleanLines(lines)
-        return parseRoutes(cleanedLines).map { it.toDomain() }
+    private val routes: List<Route> by lazy {
+        val warehouseMap = warehouseRepository
+            .getAll()
+            .associateBy { it.id }
+
+        parseRoutes(
+            cleanLines(readCsv(filePath))
+        )
+            .mapNotNull { it.toDomain(warehouseMap) }
+            .onEach { it.originHub.addRoute(it) }
     }
+
+    override fun getAll(): List<Route> = routes
 }
 
