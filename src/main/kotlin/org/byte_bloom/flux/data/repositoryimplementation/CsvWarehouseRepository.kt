@@ -11,10 +11,14 @@ class CsvWarehouseRepository(
     private val filePath: String
 ) : WarehouseRepository {
 
-    override fun getAll(): List<Warehouse> {
+    private val warehouses: List<Warehouse> by lazy {
         val lines = readCsv(filePath)
         val cleanedLines = cleanLines(lines)
-        return parseWarehouses(cleanedLines).map { it.toDomain() }
+
+        parseWarehouses(cleanedLines)
+            .map { it.toDomain() }
     }
+
+    override fun getAll(): List<Warehouse> = warehouses
 }
 
