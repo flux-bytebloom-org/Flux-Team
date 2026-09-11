@@ -22,8 +22,5 @@ class CsvWarehouseRepository(
 
     override fun getAll(): List<Warehouse> = warehouses
 
-    override fun removePackageFromCargoQueue(hub: Warehouse, pkg: Package) {
-        println("[[temp]] Removing package ${pkg.id} from warehouse ${hub.id}'s cargo queue in CSV repository (not implemented YET)")
-    }
 }
 

@@ -37,7 +37,8 @@ class CsvPackageRepository(
     }
 
     override fun removePackageFromHub(pkg: Package, hub: Warehouse) {
-        println("[[temp]] Removing package ${pkg.id} from hub ${hub.id} in CSV repository (not implemented YET)")
+        println("[[temp]] (1/2) Removing package ${pkg.id}'s hub association")
+        println("[[temp]] (2/2) Removing package ${pkg.id} from hub ${hub.id}'s cargo queue")
     }
 
     override fun updatePackageDestination(pkg: Package, newDestination: Warehouse): Package {

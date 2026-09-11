@@ -4,11 +4,9 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
-import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.response.DispatchedVehicle
 
 class DispatchVehicleUseCase (
-    val warehouseRepo: WarehouseRepository,
     val packageRepo: PackageRepository
 ){
 
@@ -17,7 +15,6 @@ class DispatchVehicleUseCase (
 
         selectedPackages.forEach { pkg ->
             packageRepo.removePackageFromHub(pkg, hub)
-            warehouseRepo.removePackageFromCargoQueue(hub, pkg)
         }
 
         val totalWeight = selectedPackages.fold(0.0) { acc, pkg -> acc + (pkg.weight ?: 0.0) }
