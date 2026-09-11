@@ -115,7 +115,7 @@ private fun runCommandTestScenario(context: ScenarioContext,packageRepo : Packag
     printState(context, "after redoSteps($STEPS_TO_REDO)")
 
     println("\nStep 6: Dispatch vehicle at hubB (new command clears redoStack)")
-    invoker.executeCommand(DispatchVehicleCommand(hubB, vehicle, dispatchUseCase))
+    invoker.executeCommand(DispatchVehicleCommand(hubB, vehicle, dispatchUseCase,assignUseCase))
     printState(context, "after dispatch")
     val redoAfterNewCommand = invoker.redo()
     println("  redo() after new command → $redoAfterNewCommand (should be false, redoStack was cleared)")
