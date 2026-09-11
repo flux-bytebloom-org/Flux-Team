@@ -4,7 +4,6 @@ import org.byte_bloom.flux.data.repositoryimplementation.CsvPackageRepository
 import org.byte_bloom.flux.data.repositoryimplementation.CsvRouteRepository
 import org.byte_bloom.flux.data.repositoryimplementation.CsvVehicleRepository
 import org.byte_bloom.flux.data.repositoryimplementation.CsvWarehouseRepository
-import org.byte_bloom.flux.domain.builder.DomainGraphBuilder
 import org.byte_bloom.flux.domain.logic.pricing.decorator.ColdChainDecorator
 import org.byte_bloom.flux.domain.logic.pricing.decorator.ExpressInsuranceDecorator
 import org.byte_bloom.flux.domain.logic.pricing.decorator.FragileHandlingDecorator
@@ -161,27 +160,33 @@ private fun testDecoratorStacking(warehouses: List<Warehouse>) {
 }
 
 private fun initializeAndPrintGraph(): Pair<List<Warehouse>, List<Package>> {
-    val warehouseRepository = CsvWarehouseRepository(WAREHOUSES_CSV_PATH)
-    val packageRepository = CsvPackageRepository(PACKAGES_CSV_PATH)
-    val routeRepository = CsvRouteRepository(ROUTES_CSV_PATH)
-    val vehicleRepository = CsvVehicleRepository(FLEET_CSV_PATH)
+    val warehouseRepository = CsvWarehouseRepository(
+        WAREHOUSES_CSV_PATH
+    )
 
-    val packages = packageRepository.getAll()
+    val packageRepository = CsvPackageRepository(
+        PACKAGES_CSV_PATH,
+        warehouseRepository
+    )
+
+    val routeRepository = CsvRouteRepository(
+        ROUTES_CSV_PATH,
+        warehouseRepository
+    )
+
+    val vehicleRepository = CsvVehicleRepository(
+        FLEET_CSV_PATH,
+        warehouseRepository
+    )
     val warehouses = warehouseRepository.getAll()
+    val packages = packageRepository.getAll()
     val routes = routeRepository.getAll()
     val fleet = vehicleRepository.getAll()
 
     printParsingSummary(packages, warehouses, routes, fleet)
     printTopPriorityPackages(packages)
+    printWarehouseGraph(warehouses)
 
-    val domainGraphBuilder = DomainGraphBuilder(
-        warehouseRepository = warehouseRepository,
-        packageRepository = packageRepository,
-        routeRepository = routeRepository,
-        vehicleRepository = vehicleRepository
-    )
-    val warehousesGraph = domainGraphBuilder.buildGraph()
-    printWarehouseGraph(warehousesGraph)
-
-    return Pair(warehousesGraph, packages)
+    return Pair(warehouses, packages)
 }
+
