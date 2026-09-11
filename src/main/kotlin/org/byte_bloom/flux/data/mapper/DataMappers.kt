@@ -11,35 +11,62 @@ import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.model.Priority as DomainPriority
 
-private const val DEFAULT_COORDINATE = 0.0
-
-private fun createEmptyWarehouse(id: String) = Warehouse(
-    id = id, name = "", regionalZone = "",
-    latitude = DEFAULT_COORDINATE, longitude = DEFAULT_COORDINATE
-)
-
 fun WarehouseRaw.toDomain() = Warehouse(
     id = id, name = name, regionalZone = regionalZone,
     latitude = latitude, longitude = longitude
 )
 
-fun VehicleRaw.toDomain() = Vehicle(
-    id = id, maxCapacityKg = maxCapacityKg, costPerKm = costPerKm,
-    currentHub = createEmptyWarehouse(currentHubId)
-)
+fun VehicleRaw.toDomain(
+    warehousesById: Map<String, Warehouse>
+): Vehicle? {
+    val currentHub = warehousesById[currentHubId]
+        ?: return null
 
-fun PackageRaw.toDomain() = Package(
-    id = id, weight = weight,
-    originHub = createEmptyWarehouse(originHubId),
-    destinationHub = createEmptyWarehouse(destinationHubId),
-    priority = priority.toDomain()
-)
+    return Vehicle(
+        id = id,
+        maxCapacityKg = maxCapacityKg,
+        costPerKm = costPerKm,
+        currentHub = currentHub
+    )
+}
 
-fun RouteRaw.toDomain() = Route(
-    id = id, distanceKm = distanceKm, typicalDelayMin = typicalDelayMin,
-    originHub = createEmptyWarehouse(originHubId),
-    destinationHub = createEmptyWarehouse(destinationHubId)
-)
+fun PackageRaw.toDomain(
+    warehousesById: Map<String, Warehouse>
+): Package? {
+    val origin = warehousesById[originHubId]
+    val destination = warehousesById[destinationHubId]
+
+    if (origin == null || destination == null) {
+        return null
+    }
+
+    return Package(
+        id = id,
+        weight = weight,
+        originHub = origin,
+        destinationHub = destination,
+        priority = priority.toDomain()
+    )
+}
+
+fun RouteRaw.toDomain(
+    warehousesById: Map<String, Warehouse>
+): Route? {
+    val origin = warehousesById[originHubId]
+    val destination = warehousesById[destinationHubId]
+
+    if (origin == null || destination == null) {
+        return null
+    }
+
+    return Route(
+        id = id,
+        distanceKm = distanceKm,
+        typicalDelayMin = typicalDelayMin,
+        originHub = origin,
+        destinationHub = destination
+    )
+}
 
 fun Priority.toDomain(): DomainPriority = when (this) {
     Priority.LOW -> DomainPriority.LOW
