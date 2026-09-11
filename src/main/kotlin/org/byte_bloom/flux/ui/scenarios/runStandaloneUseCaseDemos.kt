@@ -27,7 +27,7 @@ fun runStandaloneUseCaseDemos(
 ) {
     println("\n=== Standalone Use Case Demos ===")
 
-    testAddVehicleToHub(warehouses, vehicleRepo, warehouseRepo)
+    testAddVehicleToHub(warehouses, vehicleRepo)
     testAssignPackageToCargoQueue(warehouses ,packageRepo ,warehouseRepo)
     testFindOptimalVehicleForPackage(warehouses)
     testFindFewestHopsRoute(warehouses)
@@ -37,8 +37,7 @@ fun runStandaloneUseCaseDemos(
 // 1) AddVehicleToHubUseCase — uses a real warehouse, guaranteed not to affect other scenarios
 private fun testAddVehicleToHub(
     warehouses: List<Warehouse>,
-    vehicleRepository: VehicleRepository,
-    warehouseRepository: WarehouseRepository
+    vehicleRepository: VehicleRepository
 ) {
     println("\n[Standalone] AddVehicleToHubUseCase")
 
@@ -47,7 +46,7 @@ private fun testAddVehicleToHub(
         return
     }
 
-    val addVehicleToHubUseCase = AddVehicleToHubUseCase(vehicleRepository, warehouseRepository)
+    val addVehicleToHubUseCase = AddVehicleToHubUseCase(vehicleRepository)
     val beforeCount = hub.getStationedVehicles().size
 
     val newVehicle = Vehicle(

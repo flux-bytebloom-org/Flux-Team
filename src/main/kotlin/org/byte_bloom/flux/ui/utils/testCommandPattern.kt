@@ -81,7 +81,7 @@ private fun buildScenarioContext(
         vehicle = vehicle,
         invoker = CommandInvoker(),
         assignUseCase = AssignPackageToCargoQueueUseCase(warehouseRepo,packageRepo),
-        addVehicleUseCase = AddVehicleToHubUseCase(vehicleRepo, warehouseRepo),
+        addVehicleUseCase = AddVehicleToHubUseCase(vehicleRepo),
         rerouteUseCase = ReroutePackageUseCase(packageRepo),
         dispatchUseCase = DispatchVehicleUseCase(warehouseRepo,packageRepo),
         p1 = Package("P1", FIRST_PACKAGE_WEIGHT_KG, hubA, hubA, Priority.URGENT),

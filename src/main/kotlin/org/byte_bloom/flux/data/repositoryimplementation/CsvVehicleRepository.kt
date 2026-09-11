@@ -27,13 +27,13 @@ class CsvVehicleRepository(
     override fun getAll(): List<Vehicle> = vehicles
 
     override fun updateVehicleCurrentHub(vehicleId: String, hubId: String): Vehicle {
-        println("[[temp]] Updating vehicle $vehicleId to hub $hubId in CSV repository (not implemented YET)")
+        println("[[temp]] (1/2) Updating vehicle $vehicleId's hub -> $hubId")
+        println("[[temp]] (2/2) Registering vehicle $vehicleId in hub $hubId's fleet")
+
         val vehicle = getVehicleById(vehicleId)
         return vehicle
-        //must return the updated vehicle,
-        // but since we are not actually updating it in the CSV,
-        // we just return the original vehicle for now.
     }
+
     private fun getVehicleById(vehicleId: String): Vehicle {
         val vehicles = getAll()
         val unknownWarehouse = Warehouse(

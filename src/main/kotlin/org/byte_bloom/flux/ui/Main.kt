@@ -25,6 +25,7 @@ import org.byte_bloom.flux.domain.usecase.AssignPackageToCargoQueueUseCase
 import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
 import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
 import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
+import org.byte_bloom.flux.domain.usecase.ReroutePackageUseCase
 import org.byte_bloom.flux.ui.scenarios.runBottleneckCheckScenario
 import org.byte_bloom.flux.ui.scenarios.runDispatchScenario
 import org.byte_bloom.flux.ui.scenarios.runStandaloneUseCaseDemos
@@ -32,7 +33,6 @@ import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printBottleneckReport
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 import org.byte_bloom.flux.ui.utils.runAllScenarios
-import org.byte_bloom.flux.ui.utils.testCommandPattern
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 private const val DEFAULT_BASE_RATE = 100.0
