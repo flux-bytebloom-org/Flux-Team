@@ -15,6 +15,7 @@ import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.usecase.AddVehicleToHubUseCase
 import org.byte_bloom.flux.domain.usecase.AssignPackageToCargoQueueUseCase
 import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
+import org.byte_bloom.flux.domain.usecase.RemovePackageFromQueueUseCase
 import org.byte_bloom.flux.domain.usecase.ReroutePackageUseCase
 
 
@@ -39,6 +40,7 @@ private data class ScenarioContext(
     val addVehicleUseCase: AddVehicleToHubUseCase,
     val rerouteUseCase: ReroutePackageUseCase,
     val dispatchUseCase: DispatchVehicleUseCase,
+    val removePkgFromHubUseCase: RemovePackageFromQueueUseCase,
     val p1: Package,
     val p2: Package,
     val p3: Package,
@@ -84,6 +86,7 @@ private fun buildScenarioContext(
         addVehicleUseCase = AddVehicleToHubUseCase(vehicleRepo),
         rerouteUseCase = ReroutePackageUseCase(packageRepo),
         dispatchUseCase = DispatchVehicleUseCase(packageRepo),
+        removePkgFromHubUseCase = RemovePackageFromQueueUseCase(packageRepo),
         p1 = Package("P1", FIRST_PACKAGE_WEIGHT_KG, hubA, hubA, Priority.URGENT),
         p2 = Package("P2", SECOND_PACKAGE_WEIGHT_KG, hubA, hubA, Priority.STANDARD),
         p3 = Package("P3", THIRD_PACKAGE_WEIGHT_KG, hubA, hubA, Priority.LOW),
@@ -130,9 +133,9 @@ private fun runCommandTestScenario(context: ScenarioContext,packageRepo : Packag
 }
 
 private fun assignThreePackagesToHubA(context: ScenarioContext,packageRepo : PackageRepository) = with(context) {
-    invoker.executeCommand(AssignPackageToQueueCommand(hubA, p1, assignUseCase,packageRepo))
-    invoker.executeCommand(AssignPackageToQueueCommand(hubA, p2, assignUseCase,packageRepo))
-    invoker.executeCommand(AssignPackageToQueueCommand(hubA, p3, assignUseCase,packageRepo))
+    invoker.executeCommand(AssignPackageToQueueCommand(hubA, p1, assignUseCase,removePkgFromHubUseCase))
+    invoker.executeCommand(AssignPackageToQueueCommand(hubA, p2, assignUseCase,removePkgFromHubUseCase))
+    invoker.executeCommand(AssignPackageToQueueCommand(hubA, p3, assignUseCase,removePkgFromHubUseCase))
     printState(context, "after 3 assigns")
 }
 
