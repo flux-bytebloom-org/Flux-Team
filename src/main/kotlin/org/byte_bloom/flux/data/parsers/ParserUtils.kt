@@ -1,5 +1,8 @@
 package org.byte_bloom.flux.data.parsers
 
+private const val INVALID_NUMERIC_FIELD_DEFAULT = -1.0
+private const val HEADER_ROW_COUNT = 1
+
 fun splitColumns(line: String): List<String> {
     return line
         .trimEnd(',')
@@ -16,9 +19,9 @@ fun parseDoubleOrDefault(
     return value.toDoubleOrNull()
         ?: run {
             logWarning(
-                "Invalid $fieldName in line [$line], using -1.0"
+                "Invalid $fieldName in line [$line], using $INVALID_NUMERIC_FIELD_DEFAULT"
             )
-            -1.0
+            INVALID_NUMERIC_FIELD_DEFAULT
         }
 }
 
@@ -47,7 +50,7 @@ fun cleanLines(
 ): List<String> {
 
     return rawLines
-        .drop(1)
+        .drop(HEADER_ROW_COUNT)
         .map { it.trim() }
         .filter { it.isNotEmpty() }
 }
@@ -55,5 +58,3 @@ fun cleanLines(
 fun logWarning(message: String) {
     println("WARNING: $message")
 }
-
-
