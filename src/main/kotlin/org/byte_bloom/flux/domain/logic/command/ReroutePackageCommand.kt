@@ -21,11 +21,8 @@ class ReroutePackageCommand(
 
     override fun undo() {
         if (!::reroutedPackage.isInitialized) return
-        originHub.removePackage(reroutedPackage)
 
-        val restoredPackage = reroutedPackage.copy(destinationHub = originalDestination)
-        originHub.addPackage(restoredPackage)
-        originHub.sortCargoQueue()
+        reroutedPackage =reroutePackageUseCase(originHub, reroutedPackage, originalDestination)
     }
 
     override fun describe(): String =
