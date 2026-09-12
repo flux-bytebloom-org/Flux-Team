@@ -1,8 +1,5 @@
 package org.byte_bloom.flux.domain.logic.pricing
 
-private const val EXPRESS_COST_MULTIPLIER = 1.5
-private const val EXPRESS_PRIORITY_MULTIPLIER = 2.0
-
 class ExpressStrategy : DispatchStrategy {
 
 
@@ -18,5 +15,9 @@ class ExpressStrategy : DispatchStrategy {
     override fun getPriorityMultiplier(): Double {
         return EXPRESS_PRIORITY_MULTIPLIER
     }
-}
 
+    companion object {
+        private const val EXPRESS_COST_MULTIPLIER = 1.5
+        private const val EXPRESS_PRIORITY_MULTIPLIER = 2.0
+    }
+}
