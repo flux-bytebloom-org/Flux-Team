@@ -8,19 +8,12 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 
-class CsvWarehouseRepository(
-    private val filePath: String
+class WarehouseRepositoryImpl(
+    private val warehouseDataSource: WarehouseDataSource
 ) : WarehouseRepository {
 
-    private val warehouses: List<Warehouse> by lazy {
-        val lines = readCsv(filePath)
-        val cleanedLines = cleanLines(lines)
-
-        parseWarehouses(cleanedLines)
-            .map { it.toDomain() }
-    }
-
-    override fun getAll(): List<Warehouse> = warehouses
+    override fun getAll(): List<Warehouse> =
+        warehouseDataSource.getAll().map { it.toDomain() }
 
 }
 
