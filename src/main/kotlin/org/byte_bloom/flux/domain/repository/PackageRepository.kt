@@ -6,10 +6,10 @@ import org.byte_bloom.flux.domain.model.Warehouse
 interface PackageRepository {
     fun getAll(): List<Package>
 
-    /** Updates the package's origin hub AND places it in that hub's cargo sorted queue — two steps, one call. */
+    /** Updates the package's origin hub AND places it in that hub's cargo sorted queue. */
     fun updatePackageOriginHub(pkg: Package, hub: Warehouse): Package
 
-    /** Removes the package's hub association AND removes it from that hub's cargo queue — two steps, one call. */
+    /** Removes the package's hub association AND removes it from that hub's cargo queue*/
     fun removePackageFromHub(pkg: Package, hub: Warehouse)
 
     fun updatePackageDestination(pkg: Package, newDestination: Warehouse) : Package

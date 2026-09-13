@@ -20,6 +20,7 @@ import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
+import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.usecase.AddVehicleToHubUseCase
 import org.byte_bloom.flux.domain.usecase.AssignPackageToCargoQueueUseCase
 import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
@@ -166,7 +167,7 @@ private fun testDecoratorStacking(warehouses: List<Warehouse>) {
 
 private fun initializeAndPrintGraph(): Pair<List<Warehouse>, List<Package>> {
     val warehouseRepository = CsvWarehouseRepository(WAREHOUSES_CSV_PATH)
-    val packageRepository = CsvPackageRepository(PACKAGES_CSV_PATH)
+    val packageRepository = PackageRepositoryImpl(CsvPackageDataSource(PACKAGES_CSV_PATH))
     val routeRepository = CsvRouteRepository(ROUTES_CSV_PATH)
     val vehicleRepository = CsvVehicleRepository(FLEET_CSV_PATH)
 
