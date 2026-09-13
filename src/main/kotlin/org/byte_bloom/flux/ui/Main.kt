@@ -1,9 +1,10 @@
 package org.byte_bloom.flux.ui
 
 import org.byte_bloom.flux.data.datasource.csv.CsvPackageDataSource
+import org.byte_bloom.flux.data.datasource.csv.CsvRouteDataSource
 import org.byte_bloom.flux.data.datasource.csv.CsvVehicleDataSource
 import org.byte_bloom.flux.data.repositoryimplementation.PackageRepositoryImpl
-import org.byte_bloom.flux.data.repositoryimplementation.CsvRouteRepository
+import org.byte_bloom.flux.data.repositoryimplementation.RouteRepositoryImpl
 import org.byte_bloom.flux.data.repositoryimplementation.VehicleRepositoryImpl
 import org.byte_bloom.flux.data.repositoryimplementation.CsvWarehouseRepository
 import org.byte_bloom.flux.domain.builder.DomainGraphBuilder
@@ -170,7 +171,7 @@ private fun testDecoratorStacking(warehouses: List<Warehouse>) {
 private fun initializeAndPrintGraph(): Pair<List<Warehouse>, List<Package>> {
     val warehouseRepository = CsvWarehouseRepository(WAREHOUSES_CSV_PATH)
     val packageRepository = PackageRepositoryImpl(CsvPackageDataSource(PACKAGES_CSV_PATH))
-    val routeRepository = CsvRouteRepository(ROUTES_CSV_PATH)
+    val routeRepository = RouteRepositoryImpl(CsvRouteDataSource(ROUTES_CSV_PATH))
     val vehicleRepository = VehicleRepositoryImpl(CsvVehicleDataSource(FLEET_CSV_PATH))
 
     val packages = packageRepository.getAll()
