@@ -1,0 +1,16 @@
+package org.byte_bloom.flux.data.remote.dto
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class RouteRequestDto(
+    @SerialName("origin_hub_id")
+    val originHubId: String,
+    @SerialName("destination_hub_id")
+    val destinationHubId: String,
+    @SerialName("distance_km")
+    val distanceKm: Double,
+    @SerialName("typical_delay_min")
+    val typicalDelayMin: Double
+)
