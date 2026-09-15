@@ -8,7 +8,6 @@ import org.byte_bloom.flux.data.repositoryimplementation.PackageRepositoryImpl
 import org.byte_bloom.flux.data.repositoryimplementation.RouteRepositoryImpl
 import org.byte_bloom.flux.data.repositoryimplementation.VehicleRepositoryImpl
 import org.byte_bloom.flux.data.repositoryimplementation.WarehouseRepositoryImpl
-import org.byte_bloom.flux.domain.builder.DomainGraphBuilder
 import org.byte_bloom.flux.domain.logic.pricing.decorator.ColdChainDecorator
 import org.byte_bloom.flux.domain.logic.pricing.decorator.ExpressInsuranceDecorator
 import org.byte_bloom.flux.domain.logic.pricing.decorator.FragileHandlingDecorator
@@ -25,6 +24,8 @@ import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
+import org.byte_bloom.flux.domain.repository.VehicleRepository
+import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.usecase.AddVehicleToHubUseCase
 import org.byte_bloom.flux.domain.usecase.AssignPackageToCargoQueueUseCase
 import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
@@ -38,6 +39,7 @@ import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printBottleneckReport
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 import org.byte_bloom.flux.ui.utils.runAllScenarios
+import org.byte_bloom.flux.ui.utils.testCommandPattern
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 private const val DEFAULT_BASE_RATE = 100.0
@@ -48,28 +50,32 @@ private const val PACKAGES_CSV_PATH = "src/main/resources/packages.csv"
 private const val ROUTES_CSV_PATH = "src/main/resources/routes.csv"
 private const val FLEET_CSV_PATH = "src/main/resources/fleet.csv"
 
-
 fun main() {
+    val init = initializeAndPrintGraph()
 
-    val (warehousesGraph, packages) = initializeAndPrintGraph()
-    testBidirectionalIdentity(warehousesGraph)
-    testWarehouseQuickSort(warehousesGraph)
+    testBidirectionalIdentity(init.warehouses)
+    testWarehouseQuickSort(init.warehouses)
     drowPackageAssignmentRing()
 
     val bfsRouter = BreadthFirstRouter()
     val dijkstraRouter = DijkstraRouter()
     val findOptimalPathUseCase = FindOptimalPathUseCase(dijkstraRouter)
     val findFewestHopsRouteUseCase = FindFewestHopsRouteUseCase(bfsRouter)
-    testRoutingComparison(warehousesGraph, findFewestHopsRouteUseCase, findOptimalPathUseCase)
-    testDecoratorStacking(warehousesGraph)
+    testRoutingComparison(init.warehouses, findFewestHopsRouteUseCase, findOptimalPathUseCase)
+    testDecoratorStacking(init.warehouses)
 
-    val allRoutes = warehousesGraph.flatMap { it.getOutgoingRoutes() }
+    val allRoutes = init.warehouses.flatMap { it.getOutgoingRoutes() }
     val bidirectionalRouter = BidirectionalBfsRouter(allRoutes)
-    benchmarkRouters(warehousesGraph, bfsRouter, bidirectionalRouter)
+    benchmarkRouters(init.warehouses, bfsRouter, bidirectionalRouter)
+    /*
+        runAllScenarios(
+            init.warehouses, init.packages,
+            init.vehicleRepository, init.warehouseRepository, init.packageRepository
+        )
 
-    runAllScenarios(warehousesGraph, packages)
+    testCommandPattern(init.vehicleRepository, init.warehouseRepository, init.packageRepository)
+*/
 
-    testCommandPattern()
 }
 
 private fun printParsingSummary(
@@ -169,7 +175,7 @@ private fun testDecoratorStacking(warehouses: List<Warehouse>) {
     println("+ ExpressInsurance: ${fullyStacked.getDescription()} → ${fullyStacked.calculateTransitRate(baseRate)}")
 }
 
-private fun initializeAndPrintGraph(): Pair<List<Warehouse>, List<Package>> {
+private fun initializeAndPrintGraph(): InitResult {
     val warehouseRepository = WarehouseRepositoryImpl(CsvWarehouseDataSource(WAREHOUSES_CSV_PATH))
     val packageRepository = PackageRepositoryImpl(CsvPackageDataSource(PACKAGES_CSV_PATH))
     val routeRepository = RouteRepositoryImpl(CsvRouteDataSource(ROUTES_CSV_PATH))
@@ -184,5 +190,13 @@ private fun initializeAndPrintGraph(): Pair<List<Warehouse>, List<Package>> {
     printTopPriorityPackages(packages)
     printWarehouseGraph(warehouses)
 
-    return Pair(warehouses, packages)
+    return InitResult(warehouses, packages, vehicleRepository, warehouseRepository, packageRepository)
 }
+
+private data class InitResult(
+    val warehouses: List<Warehouse>,
+    val packages: List<Package>,
+    val vehicleRepository: VehicleRepository,
+    val warehouseRepository: WarehouseRepository,
+    val packageRepository: PackageRepository
+)

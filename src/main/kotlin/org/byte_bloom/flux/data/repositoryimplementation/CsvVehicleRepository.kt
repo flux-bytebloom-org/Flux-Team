@@ -7,6 +7,7 @@ import org.byte_bloom.flux.data.readers.readCsv
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.VehicleRepository
+import org.byte_bloom.flux.domain.repository.WarehouseRepository
 
 class CsvVehicleRepository(
     private val filePath: String,
@@ -21,7 +22,8 @@ class CsvVehicleRepository(
         parseFleet(
             cleanLines(readCsv(filePath))
         )
-            .mapNotNull { it.toDomain(warehouseMap) }
+            .mapNotNull { it.toDomain() }
+            //.mapNotNull { it.toDomain(warehouseMap) }
             .onEach { it.currentHub.addVehicle(it) }
     }
 

@@ -23,7 +23,8 @@ class CsvPackageRepository(
         parsePackages(
             cleanLines(readCsv(filePath))
         )
-            .mapNotNull { it.toDomain(warehouseMap) }
+            .mapNotNull { it.toDomain() }
+            //.mapNotNull { it.toDomain(warehouseMap) }
             .onEach { it.destinationHub.addPackage(it) }
     }
 
