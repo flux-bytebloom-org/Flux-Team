@@ -1,8 +1,5 @@
 package org.byte_bloom.flux.domain.logic.tree
 
-private const val NO_STEPS_TAKEN = 0
-private const val STEP_INCREMENT = 1
-
 class BinarySearchTree {
     private var root: BinarySearchTreeNode? = null
 
@@ -40,5 +37,10 @@ class BinarySearchTree {
             value < node.value -> searchStepCount(node.left, value, stepsAfterVisitingThisNode)
             else -> searchStepCount(node.right, value, stepsAfterVisitingThisNode)
         }
+    }
+
+    companion object {
+        private const val NO_STEPS_TAKEN = 0
+        private const val STEP_INCREMENT = 1
     }
 }

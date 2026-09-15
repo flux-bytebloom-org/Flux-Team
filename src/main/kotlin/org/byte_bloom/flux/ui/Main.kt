@@ -95,7 +95,7 @@ private fun printParsingSummary(
 private fun printTopPriorityPackages(packages: List<Package>) {
     val sortedPackages = sortByPriorityAndWeightDescending(packages)
 
-    println("\n--- Top 3 Urgent & Heaviest Packages ---")
+    println("\n--- Top $TOP_PACKAGES_DISPLAY_COUNT Urgent & Heaviest Packages ---")
     val topPackages = sortedPackages.take(TOP_PACKAGES_DISPLAY_COUNT)
     topPackages.forEach { pkg ->
         printPackageLine(pkg)

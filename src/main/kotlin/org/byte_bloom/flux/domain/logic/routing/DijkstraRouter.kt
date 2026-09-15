@@ -26,9 +26,6 @@ enum class RoutingCriterion {
     TIME_DELAY
 }
 
-private const val START_INDEX = 0
-private const val INITIAL_COST = 0.0
-
 class DijkstraRouter {
 
     fun findShortestPath(start: Warehouse, destination: Warehouse,criterion: RoutingCriterion): List<Warehouse> {
@@ -135,5 +132,9 @@ class DijkstraRouter {
         return path
     }
 
-}
+    companion object {
+        private const val START_INDEX = 0
+        private const val INITIAL_COST = 0.0
+    }
 
+}
