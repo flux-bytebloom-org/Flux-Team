@@ -9,8 +9,11 @@ import org.byte_bloom.flux.domain.model.Warehouse
 private const val DEFAULT_COORDINATE = 0.0
 
 private fun createEmptyWarehouse(id: String) = Warehouse(
-    id = id, name = "", regionalZone = "",
-    latitude = DEFAULT_COORDINATE, longitude = DEFAULT_COORDINATE
+    id = id,
+    name = "",
+    regionalZone = "",
+    latitude = DEFAULT_COORDINATE,
+    longitude = DEFAULT_COORDINATE
 )
 
 private fun parsePackagePriority(value: String): Priority {
@@ -27,7 +30,7 @@ fun WarehouseResponseDto.toDomain(): Warehouse {
     return Warehouse(
         id = id,
         name = name,
-        regionalZone = regional_zone,
+        regionalZone = regionalZone,
         latitude = latitude,
         longitude = longitude
     )
@@ -36,7 +39,7 @@ fun WarehouseResponseDto.toDomain(): Warehouse {
 fun Warehouse.toRequestDto(): WarehouseRequestDto {
     return WarehouseRequestDto(
         name = name,
-        regional_zone = regionalZone,
+        regionalZone = regionalZone,
         latitude = latitude,
         longitude = longitude
     )
@@ -48,8 +51,8 @@ fun PackageResponseDto.toDomain(): Package {
     return Package(
         id = id,
         weight = weight,
-        originHub = createEmptyWarehouse(origin_hub_id),
-        destinationHub = createEmptyWarehouse(destination_hub_id),
+        originHub = createEmptyWarehouse(originHubId),
+        destinationHub = createEmptyWarehouse(destinationHubId),
         priority = parsePackagePriority(priority)
     )
 }
@@ -57,8 +60,8 @@ fun PackageResponseDto.toDomain(): Package {
 fun Package.toRequestDto(): PackageRequestDto {
     return PackageRequestDto(
         weight = weight,
-        origin_hub_id = originHub.id,
-        destination_hub_id = destinationHub.id,
+        originHubId = originHub.id,
+        destinationHubId = destinationHub.id,
         priority = priority.name
     )
 }
@@ -68,17 +71,17 @@ fun Package.toRequestDto(): PackageRequestDto {
 fun VehicleResponseDto.toDomain(): Vehicle {
     return Vehicle(
         id = id,
-        maxCapacityKg = max_capacity_kg,
-        costPerKm = cost_per_km,
-        currentHub = createEmptyWarehouse(current_hub_id)
+        maxCapacityKg = maxCapacityKg,
+        costPerKm = costPerKm,
+        currentHub = createEmptyWarehouse(currentHubId)
     )
 }
 
 fun Vehicle.toRequestDto(): VehicleRequestDto {
     return VehicleRequestDto(
-        current_hub_id = currentHub.id,
-        max_capacity_kg = maxCapacityKg,
-        cost_per_km = costPerKm
+        currentHubId = currentHub.id,
+        maxCapacityKg = maxCapacityKg,
+        costPerKm = costPerKm
     )
 }
 
@@ -87,18 +90,18 @@ fun Vehicle.toRequestDto(): VehicleRequestDto {
 fun RouteResponseDto.toDomain(): Route {
     return Route(
         id = id,
-        distanceKm = distance_km,
-        typicalDelayMin = typical_delay_min,
-        originHub = createEmptyWarehouse(origin_hub_id),
-        destinationHub = createEmptyWarehouse(destination_hub_id)
+        distanceKm = distanceKm,
+        typicalDelayMin = typicalDelayMin,
+        originHub = createEmptyWarehouse(originHubId),
+        destinationHub = createEmptyWarehouse(destinationHubId)
     )
 }
 
 fun Route.toRequestDto(): RouteRequestDto {
     return RouteRequestDto(
-        origin_hub_id = originHub.id,
-        destination_hub_id = destinationHub.id,
-        distance_km = distanceKm,
-        typical_delay_min = typicalDelayMin
+        originHubId = originHub.id,
+        destinationHubId = destinationHub.id,
+        distanceKm = distanceKm,
+        typicalDelayMin = typicalDelayMin
     )
 }

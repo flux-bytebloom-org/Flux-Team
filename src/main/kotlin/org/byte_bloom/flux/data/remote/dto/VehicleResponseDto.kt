@@ -5,7 +5,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class VehicleResponseDto(
     val id: String,
-    val current_hub_id: String,
-    val max_capacity_kg: Double,
-    val cost_per_km: Double
+    @SerialName("current_hub_id")
+    val currentHubId: String,
+    @SerialName("max_capacity_kg")
+    val maxCapacityKg: Double,
+    @SerialName("cost_per_km")
+    val costPerKm: Double
 )
