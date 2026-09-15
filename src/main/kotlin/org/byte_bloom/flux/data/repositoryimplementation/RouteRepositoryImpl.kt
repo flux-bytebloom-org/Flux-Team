@@ -7,13 +7,19 @@ import org.byte_bloom.flux.data.parsers.parseRoutes
 import org.byte_bloom.flux.data.readers.readCsv
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.repository.RouteRepository
+import org.byte_bloom.flux.domain.repository.WarehouseRepository
+
 
 class RouteRepositoryImpl(
-    private val routeDataSource: RouteDataSource
+    private val routeDataSource: RouteDataSource,
+    private val warehouseRepository: WarehouseRepository
 ) : RouteRepository {
 
-    override fun getAll(): List<Route> =
-        routeDataSource.getAll().map { it.toDomain() }
-
+    override fun getAll(): List<Route> {
+        val warehousesById = warehouseRepository.getAll().associateBy { it.id }
+        return routeDataSource.getAll()
+            .mapNotNull { it.toDomain(warehousesById) }
+            .onEach { route -> route.originHub.addRoute(route) }
+    }
 }
 

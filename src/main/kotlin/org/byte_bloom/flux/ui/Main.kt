@@ -53,28 +53,29 @@ private const val FLEET_CSV_PATH = "src/main/resources/fleet.csv"
 fun main() {
     val init = initializeAndPrintGraph()
 
-    testBidirectionalIdentity(init.warehouses)
-    testWarehouseQuickSort(init.warehouses)
-    drowPackageAssignmentRing()
+        testBidirectionalIdentity(init.warehouses)
+        testWarehouseQuickSort(init.warehouses)
+        drowPackageAssignmentRing()
 
-    val bfsRouter = BreadthFirstRouter()
-    val dijkstraRouter = DijkstraRouter()
-    val findOptimalPathUseCase = FindOptimalPathUseCase(dijkstraRouter)
-    val findFewestHopsRouteUseCase = FindFewestHopsRouteUseCase(bfsRouter)
-    testRoutingComparison(init.warehouses, findFewestHopsRouteUseCase, findOptimalPathUseCase)
-    testDecoratorStacking(init.warehouses)
+        val bfsRouter = BreadthFirstRouter()
+        val dijkstraRouter = DijkstraRouter()
+        val findOptimalPathUseCase = FindOptimalPathUseCase(dijkstraRouter)
+        val findFewestHopsRouteUseCase = FindFewestHopsRouteUseCase(bfsRouter)
+        testRoutingComparison(init.warehouses, findFewestHopsRouteUseCase, findOptimalPathUseCase)
+        testDecoratorStacking(init.warehouses)
 
-    val allRoutes = init.warehouses.flatMap { it.getOutgoingRoutes() }
-    val bidirectionalRouter = BidirectionalBfsRouter(allRoutes)
-    benchmarkRouters(init.warehouses, bfsRouter, bidirectionalRouter)
-    /*
+        val allRoutes = init.warehouses.flatMap { it.getOutgoingRoutes() }
+        val bidirectionalRouter = BidirectionalBfsRouter(allRoutes)
+        benchmarkRouters(init.warehouses, bfsRouter, bidirectionalRouter)
+
+
+        /*comment this part until doing exception handling
         runAllScenarios(
             init.warehouses, init.packages,
             init.vehicleRepository, init.warehouseRepository, init.packageRepository
         )
-
-    testCommandPattern(init.vehicleRepository, init.warehouseRepository, init.packageRepository)
-*/
+        testCommandPattern(init.vehicleRepository, init.warehouseRepository, init.packageRepository)
+        */
 
 }
 
@@ -177,9 +178,9 @@ private fun testDecoratorStacking(warehouses: List<Warehouse>) {
 
 private fun initializeAndPrintGraph(): InitResult {
     val warehouseRepository = WarehouseRepositoryImpl(CsvWarehouseDataSource(WAREHOUSES_CSV_PATH))
-    val packageRepository = PackageRepositoryImpl(CsvPackageDataSource(PACKAGES_CSV_PATH))
-    val routeRepository = RouteRepositoryImpl(CsvRouteDataSource(ROUTES_CSV_PATH))
-    val vehicleRepository = VehicleRepositoryImpl(CsvVehicleDataSource(FLEET_CSV_PATH))
+    val packageRepository = PackageRepositoryImpl(CsvPackageDataSource(PACKAGES_CSV_PATH),warehouseRepository)
+    val routeRepository = RouteRepositoryImpl(CsvRouteDataSource(ROUTES_CSV_PATH),warehouseRepository)
+    val vehicleRepository = VehicleRepositoryImpl(CsvVehicleDataSource(FLEET_CSV_PATH),warehouseRepository)
 
     val packages = packageRepository.getAll()
     val warehouses = warehouseRepository.getAll()

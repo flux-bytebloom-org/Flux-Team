@@ -8,13 +8,18 @@ import org.byte_bloom.flux.data.readers.readCsv
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.VehicleRepository
+import org.byte_bloom.flux.domain.repository.WarehouseRepository
 
 class VehicleRepositoryImpl(
-    private val vehicleDataSource: VehicleDataSource
+    private val vehicleDataSource: VehicleDataSource,private val warehouseRepository: WarehouseRepository
 ) : VehicleRepository {
 
-    override fun getAll(): List<Vehicle> =
-        vehicleDataSource.getAll().map { it.toDomain() }
+    override fun getAll(): List<Vehicle> {
+        val warehousesById = warehouseRepository.getAll().associateBy { it.id }
+        return vehicleDataSource.getAll()
+            .mapNotNull { it.toDomain(warehousesById) }
+            .onEach { vehicle -> vehicle.currentHub.addVehicle(vehicle) }
+    }
 
 
     override fun updateVehicleCurrentHub(vehicle: Vehicle, newHub: Warehouse): Vehicle {
