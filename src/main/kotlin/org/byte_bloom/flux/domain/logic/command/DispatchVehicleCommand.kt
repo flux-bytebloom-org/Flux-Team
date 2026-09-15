@@ -4,11 +4,13 @@ import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
 import org.byte_bloom.flux.domain.response.DispatchedVehicle
+import org.byte_bloom.flux.domain.usecase.AssignPackageToCargoQueueUseCase
 
 class DispatchVehicleCommand(
     private val hub: Warehouse,
     private val vehicle: Vehicle,
-    private val dispatchVehicleUseCase: DispatchVehicleUseCase = DispatchVehicleUseCase()
+    private val dispatchVehicleUseCase: DispatchVehicleUseCase,
+    private val assignPackageToCargoQueueUseCase: AssignPackageToCargoQueueUseCase
 ) : Command {
 
     private lateinit var result: DispatchedVehicle
@@ -21,8 +23,9 @@ class DispatchVehicleCommand(
     override fun undo() {
         if (!::result.isInitialized) return
 
-        result.loadedPackages.forEach { hub.addPackage(it) }
-        hub.sortCargoQueue()
+        result.loadedPackages.forEach {pkg ->
+            assignPackageToCargoQueueUseCase(hub,pkg)
+        }
     }
 
     override fun describe(): String =

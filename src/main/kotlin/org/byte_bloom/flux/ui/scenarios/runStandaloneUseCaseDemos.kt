@@ -6,28 +6,37 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
+import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.usecase.AddVehicleToHubUseCase
 import org.byte_bloom.flux.domain.usecase.AssignPackageToCargoQueueUseCase
 import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
 import org.byte_bloom.flux.domain.usecase.FindSmallestFitVehicleUseCase
 import org.byte_bloom.flux.domain.usecase.TraceHubLineageUseCase
+import org.byte_bloom.flux.domain.repository.VehicleRepository
 
 private const val TEST_VEHICLE_CAPACITY = 500.0
 private const val TEST_VEHICLE_COST_PER_KM = 3.0
 private const val TEST_PACKAGE_WEIGHT = 15.0
 
-fun runStandaloneUseCaseDemos(warehouses: List<Warehouse>) {
+fun runStandaloneUseCaseDemos(
+    warehouses: List<Warehouse>,
+    vehicleRepo: VehicleRepository,
+    packageRepo: PackageRepository
+) {
     println("\n=== Standalone Use Case Demos ===")
 
-    testAddVehicleToHub(warehouses)
-    testAssignPackageToCargoQueue(warehouses)
+    testAddVehicleToHub(warehouses, vehicleRepo)
+    testAssignPackageToCargoQueue(warehouses, packageRepo)
     testFindOptimalVehicleForPackage(warehouses)
     testFindFewestHopsRoute(warehouses)
     testTraceHubLineage(warehouses)
 }
 
 // 1) AddVehicleToHubUseCase — uses a real warehouse, guaranteed not to affect other scenarios
-private fun testAddVehicleToHub(warehouses: List<Warehouse>) {
+private fun testAddVehicleToHub(
+    warehouses: List<Warehouse>,
+    vehicleRepository: VehicleRepository
+) {
     println("\n[Standalone] AddVehicleToHubUseCase")
 
     val hub = warehouses.firstOrNull() ?: run {
@@ -35,7 +44,7 @@ private fun testAddVehicleToHub(warehouses: List<Warehouse>) {
         return
     }
 
-    val addVehicleToHubUseCase = AddVehicleToHubUseCase()
+    val addVehicleToHubUseCase = AddVehicleToHubUseCase(vehicleRepository)
     val beforeCount = hub.getStationedVehicles().size
 
     val newVehicle = Vehicle(
@@ -53,7 +62,10 @@ private fun testAddVehicleToHub(warehouses: List<Warehouse>) {
 }
 
 // 2) AssignPackageToCargoQueueUseCase — verifies that addition + sorting happen correctly
-private fun testAssignPackageToCargoQueue(warehouses: List<Warehouse>) {
+private fun testAssignPackageToCargoQueue(
+    warehouses: List<Warehouse>,
+    packageRepo: PackageRepository
+) {
     println("\n[Standalone] AssignPackageToCargoQueueUseCase")
 
     val hub = warehouses.firstOrNull() ?: run {
@@ -61,7 +73,7 @@ private fun testAssignPackageToCargoQueue(warehouses: List<Warehouse>) {
         return
     }
 
-    val assignPackageToCargoQueueUseCase = AssignPackageToCargoQueueUseCase()
+    val assignPackageToCargoQueueUseCase = AssignPackageToCargoQueueUseCase(packageRepo)
     val beforeCount = hub.getCargoQueue().size
 
     val newPackage = Package(

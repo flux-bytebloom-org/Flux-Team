@@ -9,10 +9,14 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
+import org.byte_bloom.flux.domain.repository.PackageRepository
+import org.byte_bloom.flux.domain.repository.VehicleRepository
 import org.byte_bloom.flux.domain.usecase.AddVehicleToHubUseCase
 import org.byte_bloom.flux.domain.usecase.AssignPackageToCargoQueueUseCase
 import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
+import org.byte_bloom.flux.domain.usecase.RemovePackageFromQueueUseCase
 import org.byte_bloom.flux.domain.usecase.ReroutePackageUseCase
+
 
 private const val DEFAULT_LATITUDE = 0.0
 private const val DEFAULT_LONGITUDE = 0.0
@@ -35,10 +39,11 @@ private data class ScenarioContext(
     val addVehicleUseCase: AddVehicleToHubUseCase,
     val rerouteUseCase: ReroutePackageUseCase,
     val dispatchUseCase: DispatchVehicleUseCase,
+    val removePkgFromHubUseCase: RemovePackageFromQueueUseCase,
     val p1: Package,
     val p2: Package,
-    val p3: Package
-)
+    val p3: Package,
+    )
 
 /**
  * End-to-end scenario for the Command Pattern Dispatch Panel (Sub-Task 5 + Bonus Task 2).
@@ -56,13 +61,19 @@ private data class ScenarioContext(
  *  8. Final check confirms the domain state is back to its original empty state,
  *     proving undo/redo stayed consistent through the whole journey.
  */
-fun testCommandPattern() {
+fun testCommandPattern(
+    vehicleRepo: VehicleRepository,
+    packageRepo: PackageRepository
+) {
     println("\n--- Week 5 - Subtask 5 & Bonus Task 2 - Testing Command Pattern Dispatch Panel ---")
-    val context = buildScenarioContext()
+    val context = buildScenarioContext(vehicleRepo, packageRepo)
     runCommandTestScenario(context)
 }
 
-private fun buildScenarioContext(): ScenarioContext {
+private fun buildScenarioContext(
+    vehicleRepo: VehicleRepository,
+    packageRepo: PackageRepository
+): ScenarioContext {
     val hubA = Warehouse("H1", "Main Hub", "ZoneA", DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
     val hubB = Warehouse("H2", "Second Hub", "ZoneB", DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
     val vehicle = Vehicle("V1", hubA, VEHICLE_CAPACITY_KG, VEHICLE_COST_PER_KM)
@@ -72,13 +83,15 @@ private fun buildScenarioContext(): ScenarioContext {
         hubB = hubB,
         vehicle = vehicle,
         invoker = CommandInvoker(),
-        assignUseCase = AssignPackageToCargoQueueUseCase(),
-        addVehicleUseCase = AddVehicleToHubUseCase(),
-        rerouteUseCase = ReroutePackageUseCase(),
-        dispatchUseCase = DispatchVehicleUseCase(),
+        assignUseCase = AssignPackageToCargoQueueUseCase(packageRepo),
+        addVehicleUseCase = AddVehicleToHubUseCase(vehicleRepo),
+        rerouteUseCase = ReroutePackageUseCase(packageRepo),
+        dispatchUseCase = DispatchVehicleUseCase(packageRepo),
+        removePkgFromHubUseCase = RemovePackageFromQueueUseCase(packageRepo),
         p1 = Package("P1", FIRST_PACKAGE_WEIGHT_KG, hubA, hubA, Priority.URGENT),
         p2 = Package("P2", SECOND_PACKAGE_WEIGHT_KG, hubA, hubA, Priority.STANDARD),
-        p3 = Package("P3", THIRD_PACKAGE_WEIGHT_KG, hubA, hubA, Priority.LOW)
+        p3 = Package("P3", THIRD_PACKAGE_WEIGHT_KG, hubA, hubA, Priority.LOW),
+
     )
 }
 
@@ -106,7 +119,7 @@ private fun runCommandTestScenario(context: ScenarioContext) = with(context) {
     printState(context, "after redoSteps($STEPS_TO_REDO)")
 
     println("\nStep 6: Dispatch vehicle at hubB (new command clears redoStack)")
-    invoker.executeCommand(DispatchVehicleCommand(hubB, vehicle, dispatchUseCase))
+    invoker.executeCommand(DispatchVehicleCommand(hubB, vehicle, dispatchUseCase,assignUseCase))
     printState(context, "after dispatch")
     val redoAfterNewCommand = invoker.redo()
     println("  redo() after new command → $redoAfterNewCommand (should be false, redoStack was cleared)")
@@ -121,9 +134,9 @@ private fun runCommandTestScenario(context: ScenarioContext) = with(context) {
 }
 
 private fun assignThreePackagesToHubA(context: ScenarioContext) = with(context) {
-    invoker.executeCommand(AssignPackageToQueueCommand(hubA, p1, assignUseCase))
-    invoker.executeCommand(AssignPackageToQueueCommand(hubA, p2, assignUseCase))
-    invoker.executeCommand(AssignPackageToQueueCommand(hubA, p3, assignUseCase))
+    invoker.executeCommand(AssignPackageToQueueCommand(hubA, p1, assignUseCase,removePkgFromHubUseCase))
+    invoker.executeCommand(AssignPackageToQueueCommand(hubA, p2, assignUseCase,removePkgFromHubUseCase))
+    invoker.executeCommand(AssignPackageToQueueCommand(hubA, p3, assignUseCase,removePkgFromHubUseCase))
     printState(context, "after 3 assigns")
 }
 

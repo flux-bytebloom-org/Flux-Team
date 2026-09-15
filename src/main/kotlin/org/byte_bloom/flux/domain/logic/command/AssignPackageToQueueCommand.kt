@@ -3,11 +3,13 @@ package org.byte_bloom.flux.domain.logic.command
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.usecase.AssignPackageToCargoQueueUseCase
+import org.byte_bloom.flux.domain.usecase.RemovePackageFromQueueUseCase
 
 class AssignPackageToQueueCommand(
     private val hub: Warehouse,
     private val packageItem: Package,
-    private val assignPackageToCargoQueueUseCase: AssignPackageToCargoQueueUseCase
+    private val assignPackageToCargoQueueUseCase: AssignPackageToCargoQueueUseCase,
+    private val removePackageFromQueueUseCase: RemovePackageFromQueueUseCase
 ) : Command {
 
     override fun execute() {
@@ -15,7 +17,8 @@ class AssignPackageToQueueCommand(
     }
 
     override fun undo() {
-        hub.removePackage(packageItem)
+        removePackageFromQueueUseCase(hub,packageItem)
+
     }
 
     override fun describe(): String =
