@@ -13,3 +13,4 @@ data class PackageResponseDto(
     val destinationHubId: String,
     val priority: String
 )
+

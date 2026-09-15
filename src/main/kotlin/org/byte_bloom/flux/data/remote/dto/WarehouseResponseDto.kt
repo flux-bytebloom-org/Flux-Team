@@ -1,6 +1,7 @@
 package org.byte_bloom.flux.data.remote.dto
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 data class WarehouseResponseDto(
@@ -11,3 +12,5 @@ data class WarehouseResponseDto(
     val latitude: Double,
     val longitude: Double
 )
+
+
