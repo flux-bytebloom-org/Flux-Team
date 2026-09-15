@@ -19,7 +19,6 @@ import org.byte_bloom.flux.domain.usecase.FindStationedVehiclesByCapacityUseCase
 fun runDispatchScenario(
     hub: Warehouse,
     destination: Warehouse,
-    pkg: Package,
     tripPackages: List<Package>,
     packageRepo: PackageRepository,
     warehouseRepo: WarehouseRepository
@@ -27,6 +26,7 @@ fun runDispatchScenario(
     println("\n=== Scenario: Dispatch & Pricing ===")
 
     val dispatchUseCases = DispatchUseCases(packageRepo,warehouseRepo)
+
 
     val isUrgent = dispatchUseCases.classifyTripUrgencyUseCase(tripPackages)
     println("Trip urgency: $isUrgent (based on ${tripPackages.size} packages)")
@@ -42,12 +42,14 @@ fun runDispatchScenario(
         a.getOutgoingRoutes().first { it.destinationHub.id == b.id }.distanceKm
     }
 
-    val price = dispatchUseCases.calculatePricingUseCase(pkg, distanceKm)
-    println("Calculated price for ${pkg.id}: $price (distance=$distanceKm km)")
+    val firstBkg = hub.getCargoQueue().first()
 
-    val vehicle = dispatchUseCases.assignPackageToLowestCostStationedVehicleUseCase(hub, pkg, distanceKm)
+    val price = dispatchUseCases.calculatePricingUseCase(firstBkg, distanceKm)
+    println("Calculated price for ${firstBkg.id}: $price (distance=$distanceKm km)")
+
+    val vehicle = dispatchUseCases.assignPackageToLowestCostStationedVehicleUseCase(hub, firstBkg, distanceKm)
     if (vehicle == null) {
-        println("No eligible vehicle found at ${hub.id} for package ${pkg.id}.")
+        println("No eligible vehicle found at ${hub.id} for package ${firstBkg.id}.")
         return
     }
     println("Assigned vehicle: ${vehicle.id} (cost/km=${vehicle.costPerKm})")

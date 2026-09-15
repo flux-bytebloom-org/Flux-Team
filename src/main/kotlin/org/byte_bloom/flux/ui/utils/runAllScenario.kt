@@ -9,10 +9,18 @@ import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.repository.VehicleRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 
-fun runAllScenarios(warehousesGraph: List<Warehouse>, packages: List<Package>,vehicleRepo: VehicleRepository,warehouseRepo: WarehouseRepository,packageRepo: PackageRepository) {
+fun runAllScenarios(
+    warehousesGraph: List<Warehouse>,
+    packages: List<Package>,
+    vehicleRepo: VehicleRepository,
+    warehouseRepo: WarehouseRepository,
+    packageRepo: PackageRepository
+) {
+
     val bottleneckResult = runBottleneckCheckScenario(warehousesGraph, packages,packageRepo)
     printBottleneckReport(bottleneckResult)
-    // val settledPackages = bottleneckResult.finalPackages
+
+
 
     val dispatchHub = warehousesGraph.firstOrNull { it.getCargoQueue().isNotEmpty() }
     val dispatchDestination = warehousesGraph.lastOrNull { it.id != dispatchHub?.id }
@@ -22,7 +30,6 @@ fun runAllScenarios(warehousesGraph: List<Warehouse>, packages: List<Package>,ve
         runDispatchScenario(
             hub = dispatchHub,
             destination = dispatchDestination,
-            pkg = dispatchPackage,
             tripPackages = dispatchHub.getCargoQueue(),
             packageRepo = packageRepo,
             warehouseRepo = warehouseRepo
@@ -31,5 +38,5 @@ fun runAllScenarios(warehousesGraph: List<Warehouse>, packages: List<Package>,ve
         println("\n[SKIP] Dispatch scenario — not enough data (hub/destination/package) found.")
     }
 
-    runStandaloneUseCaseDemos(warehousesGraph, vehicleRepo, warehouseRepo,packageRepo)
+    runStandaloneUseCaseDemos(warehousesGraph, vehicleRepo, packageRepo)
 }

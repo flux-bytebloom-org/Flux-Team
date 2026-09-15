@@ -22,15 +22,22 @@ fun VehicleRaw.toDomain(warehousesById: Map<String, Warehouse>): Vehicle? {
 }
 
 fun PackageRaw.toDomain(warehousesById: Map<String, Warehouse>): Package? {
-    val origin = warehousesById[originHubId] ?: return null
-    val destination = warehousesById[destinationHubId] ?: return null
-    return Package(id = id, weight = weight, originHub = origin, destinationHub = destination, priority = priority.toDomain())
+    val origin = warehousesById[originHubId]
+    val destination = warehousesById[destinationHubId]
+    if (origin == null || destination == null) return null
+
+    return Package(id = id,weight = weight,originHub = origin,
+        destinationHub = destination, priority = priority.toDomain()
+    )
 }
 
 fun RouteRaw.toDomain(warehousesById: Map<String, Warehouse>): Route? {
-    val origin = warehousesById[originHubId] ?: return null
-    val destination = warehousesById[destinationHubId] ?: return null
-    return Route(id = id, distanceKm = distanceKm, typicalDelayMin = typicalDelayMin, originHub = origin, destinationHub = destination)
+    val origin = warehousesById[originHubId]
+    val destination = warehousesById[destinationHubId]
+    if (origin == null || destination == null) return null
+
+    return Route(id = id, distanceKm = distanceKm, typicalDelayMin = typicalDelayMin,
+        originHub = origin,destinationHub = destination)
 }
 
 fun Priority.toDomain(): DomainPriority = when (this) {

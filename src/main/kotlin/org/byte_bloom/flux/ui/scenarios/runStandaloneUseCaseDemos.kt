@@ -13,7 +13,6 @@ import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
 import org.byte_bloom.flux.domain.usecase.FindSmallestFitVehicleUseCase
 import org.byte_bloom.flux.domain.usecase.TraceHubLineageUseCase
 import org.byte_bloom.flux.domain.repository.VehicleRepository
-import org.byte_bloom.flux.domain.repository.WarehouseRepository
 
 private const val TEST_VEHICLE_CAPACITY = 500.0
 private const val TEST_VEHICLE_COST_PER_KM = 3.0
@@ -22,13 +21,12 @@ private const val TEST_PACKAGE_WEIGHT = 15.0
 fun runStandaloneUseCaseDemos(
     warehouses: List<Warehouse>,
     vehicleRepo: VehicleRepository,
-    warehouseRepo: WarehouseRepository,
-    packageRepo : PackageRepository
+    packageRepo: PackageRepository
 ) {
     println("\n=== Standalone Use Case Demos ===")
 
     testAddVehicleToHub(warehouses, vehicleRepo)
-    testAssignPackageToCargoQueue(warehouses ,packageRepo ,warehouseRepo)
+    testAssignPackageToCargoQueue(warehouses, packageRepo)
     testFindOptimalVehicleForPackage(warehouses)
     testFindFewestHopsRoute(warehouses)
     testTraceHubLineage(warehouses)
@@ -66,8 +64,7 @@ private fun testAddVehicleToHub(
 // 2) AssignPackageToCargoQueueUseCase — verifies that addition + sorting happen correctly
 private fun testAssignPackageToCargoQueue(
     warehouses: List<Warehouse>,
-    packageRepo: PackageRepository,
-    warehouseRepository: WarehouseRepository
+    packageRepo: PackageRepository
 ) {
     println("\n[Standalone] AssignPackageToCargoQueueUseCase")
 
