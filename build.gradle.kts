@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "2.2.20"
     kotlin("plugin.serialization") version "2.2.20"
     id("org.jetbrains.kotlinx.kover") version "0.9.1"
+    kotlin("plugin.serialization") version "2.2.20"
     id("io.gitlab.arturbosch.detekt") version "1.23.5"
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.androidLibrary) apply false
@@ -19,10 +20,14 @@ repositories {
 }
 
 dependencies {
+    implementation("io.ktor:ktor-client-core:3.3.1")
+    implementation("io.ktor:ktor-client-cio:3.3.1")
+    implementation("io.ktor:ktor-client-content-negotiation:3.3.1")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+
     testImplementation(kotlin("test"))
 }
-
 tasks.test {
     useJUnitPlatform()
 }
@@ -36,7 +41,7 @@ kover {
         filters {
             includes {
                 // we want to include only the data parsers package in the coverage report
-                packages("org.byte_bloom.flux.data.parsers")
+                packages("org.byte_bloom.flux.data.csv.parsers")
             }
         }
 

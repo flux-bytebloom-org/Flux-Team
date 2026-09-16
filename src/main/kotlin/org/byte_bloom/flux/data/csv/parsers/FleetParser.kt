@@ -1,6 +1,6 @@
-package org.byte_bloom.flux.data.parsers
+package org.byte_bloom.flux.data.csv.parsers
 
-import org.byte_bloom.flux.data.dataholders.VehicleRaw
+import org.byte_bloom.flux.data.csv.dataholders.VehicleRaw
 
 private const val VEHICLE_COLUMN_COUNT = 4
 private const val VEHICLE_ID_INDEX = 0

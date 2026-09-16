@@ -1,6 +1,6 @@
-package org.byte_bloom.flux.data.parsers
+package org.byte_bloom.flux.data.csv.parsers
 
-import org.byte_bloom.flux.data.dataholders.RouteRaw
+import org.byte_bloom.flux.data.csv.dataholders.RouteRaw
 
 private const val ROUTE_COLUMN_COUNT = 5
 

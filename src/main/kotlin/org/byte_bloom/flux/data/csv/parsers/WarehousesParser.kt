@@ -1,7 +1,7 @@
-package org.byte_bloom.flux.data.parsers
+package org.byte_bloom.flux.data.csv.parsers
 
 
-import org.byte_bloom.flux.data.dataholders.WarehouseRaw
+import org.byte_bloom.flux.data.csv.dataholders.WarehouseRaw
 
 private const val WAREHOUSE_COLUMN_COUNT = 5
 

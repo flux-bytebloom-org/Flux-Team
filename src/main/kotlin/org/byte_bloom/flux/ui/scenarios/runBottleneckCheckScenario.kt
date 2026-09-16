@@ -5,6 +5,7 @@ import org.byte_bloom.flux.domain.exception.UseCaseException
 import org.byte_bloom.flux.domain.logic.routing.DijkstraRouter
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Warehouse
+import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.response.BottleneckCheckResult
 import org.byte_bloom.flux.domain.response.RebalanceSummaryEntry
 import org.byte_bloom.flux.domain.response.WeightedPath
@@ -21,7 +22,7 @@ import org.byte_bloom.flux.domain.usecase.SplitAndRerouteShipmentsUseCase
 
 private const val DEFAULT_MIN_TRANSIT_LOAD = 1
 
-private class BottleneckUseCases {
+private class BottleneckUseCases (packageRepo : PackageRepository){
     val extractUniqueShipmentRoutesUseCase = ExtractUniqueShipmentRoutesUseCase()
     val findOptimalPathUseCase = FindOptimalPathUseCase(DijkstraRouter())
     val generateWeightedShipmentPathsUseCase = GenerateWeightedShipmentPathsUseCase(findOptimalPathUseCase)
@@ -30,17 +31,18 @@ private class BottleneckUseCases {
     val filterActualAlternativePathsUseCase = FilterActualAlternativePathsUseCase()
     val getWarehouseLoadFactorUseCase = GetWarehouseLoadFactorUseCase()
     val calculateRebalanceRatioUseCase = CalculateRebalanceRatioUseCase()
-    val splitAndRerouteShipmentsUseCase = SplitAndRerouteShipmentsUseCase(ReroutePackageUseCase())
+    val splitAndRerouteShipmentsUseCase = SplitAndRerouteShipmentsUseCase(ReroutePackageUseCase(packageRepo))
 }
 
 fun runBottleneckCheckScenario(
     warehouses: List<Warehouse>,
     packages: List<Package>,
+    packageRepo : PackageRepository,
     minTransitLoad: Int = DEFAULT_MIN_TRANSIT_LOAD
 ): BottleneckCheckResult {
 
     println("\n=== Scenario: Bottleneck Check ===")
-    val useCases = BottleneckUseCases()
+    val useCases = BottleneckUseCases(packageRepo)
     val warehousesById = warehouses.associateBy { it.id.uppercase() }
 
     val weightedPaths = computeWeightedPaths(packages, warehousesById, useCases)
