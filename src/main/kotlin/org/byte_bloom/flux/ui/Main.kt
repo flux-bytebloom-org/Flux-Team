@@ -1,9 +1,9 @@
 package org.byte_bloom.flux.ui
 
-import org.byte_bloom.flux.data.datasource.csv.CsvPackageDataSource
-import org.byte_bloom.flux.data.datasource.csv.CsvRouteDataSource
-import org.byte_bloom.flux.data.datasource.csv.CsvVehicleDataSource
-import org.byte_bloom.flux.data.datasource.csv.CsvWarehouseDataSource
+import org.byte_bloom.flux.data.csv.datasource.CsvPackageDataSource
+import org.byte_bloom.flux.data.csv.datasource.CsvRouteDataSource
+import org.byte_bloom.flux.data.csv.datasource.CsvVehicleDataSource
+import org.byte_bloom.flux.data.csv.datasource.CsvWarehouseDataSource
 import org.byte_bloom.flux.data.repositoryimplementation.PackageRepositoryImpl
 import org.byte_bloom.flux.data.repositoryimplementation.RouteRepositoryImpl
 import org.byte_bloom.flux.data.repositoryimplementation.VehicleRepositoryImpl
@@ -14,32 +14,20 @@ import org.byte_bloom.flux.domain.logic.pricing.decorator.FragileHandlingDecorat
 import org.byte_bloom.flux.domain.logic.routing.BidirectionalBfsRouter
 import org.byte_bloom.flux.domain.logic.routing.BreadthFirstRouter
 import org.byte_bloom.flux.domain.logic.routing.DijkstraRouter
-import org.byte_bloom.flux.domain.logic.routing.FakeBidirectionalRouter
 import org.byte_bloom.flux.domain.logic.routing.benchmarkRouters
 import org.byte_bloom.flux.domain.logic.routing.testRoutingComparison
 import org.byte_bloom.flux.domain.logic.sorting.sortByPriorityAndWeightDescending
 import org.byte_bloom.flux.domain.model.Package
-import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.repository.VehicleRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
-import org.byte_bloom.flux.domain.usecase.AddVehicleToHubUseCase
-import org.byte_bloom.flux.domain.usecase.AssignPackageToCargoQueueUseCase
-import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
 import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
 import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
-import org.byte_bloom.flux.domain.usecase.ReroutePackageUseCase
-import org.byte_bloom.flux.ui.scenarios.runBottleneckCheckScenario
-import org.byte_bloom.flux.ui.scenarios.runDispatchScenario
-import org.byte_bloom.flux.ui.scenarios.runStandaloneUseCaseDemos
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
-import org.byte_bloom.flux.ui.utils.printBottleneckReport
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
-import org.byte_bloom.flux.ui.utils.runAllScenarios
-import org.byte_bloom.flux.ui.utils.testCommandPattern
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 private const val DEFAULT_BASE_RATE = 100.0
@@ -176,7 +164,7 @@ private fun testDecoratorStacking(warehouses: List<Warehouse>) {
     println("+ ExpressInsurance: ${fullyStacked.getDescription()} → ${fullyStacked.calculateTransitRate(baseRate)}")
 }
 
-private fun initializeAndPrintGraph(): InitResult {
+private suspend fun initializeAndPrintGraph(): InitResult {
     val warehouseRepository = WarehouseRepositoryImpl(CsvWarehouseDataSource(WAREHOUSES_CSV_PATH))
     val packageRepository = PackageRepositoryImpl(CsvPackageDataSource(PACKAGES_CSV_PATH),warehouseRepository)
     val routeRepository = RouteRepositoryImpl(CsvRouteDataSource(ROUTES_CSV_PATH),warehouseRepository)

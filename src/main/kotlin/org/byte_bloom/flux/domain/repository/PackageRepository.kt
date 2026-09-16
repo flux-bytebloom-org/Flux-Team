@@ -4,7 +4,7 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Warehouse
 
 interface PackageRepository {
-    fun getAll(): List<Package>
+    suspend fun getAll(): List<Package>
 
     /** Updates the package's origin hub AND places it in that hub's cargo sorted queue. */
     fun updatePackageOriginHub(pkg: Package, hub: Warehouse): Package
