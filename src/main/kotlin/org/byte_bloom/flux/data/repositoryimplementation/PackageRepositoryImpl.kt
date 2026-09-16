@@ -1,10 +1,7 @@
 package org.byte_bloom.flux.data.repositoryimplementation
 
-import org.byte_bloom.flux.data.datasource.PackageDataSource
-import org.byte_bloom.flux.data.mapper.toDomain
-import org.byte_bloom.flux.data.parsers.cleanLines
-import org.byte_bloom.flux.data.parsers.parsePackages
-import org.byte_bloom.flux.data.readers.readCsv
+import org.byte_bloom.flux.data.csv.datasource.PackageDataSource
+import org.byte_bloom.flux.data.csv.mapper.toDomain
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
@@ -16,7 +13,7 @@ class PackageRepositoryImpl(
 
 ) : PackageRepository {
 
-    override fun getAll(): List<Package> {
+    override suspend fun getAll(): List<Package> {
         val warehousesById = warehouseRepository.getAll().associateBy { it.id }
         return pkgDataSource.getAll()
             .mapNotNull { it.toDomain(warehousesById) }
