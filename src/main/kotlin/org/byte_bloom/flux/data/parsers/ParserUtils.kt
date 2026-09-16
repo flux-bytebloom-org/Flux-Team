@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.data.parsers
+package org.byte_bloom.flux.data.csv.parsers
 
 private const val INVALID_NUMERIC_FIELD_DEFAULT = -1.0
 private const val HEADER_ROW_COUNT = 1
