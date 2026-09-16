@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.data.parsers
+package org.byte_bloom.flux.data.csv.parsers
 
 fun splitColumns(line: String): List<String> {
     return line

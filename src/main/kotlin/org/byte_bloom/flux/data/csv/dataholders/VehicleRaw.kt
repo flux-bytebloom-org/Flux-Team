@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.data.dataholders
+package org.byte_bloom.flux.data.csv.dataholders
 
 data class VehicleRaw(
     val id: String,

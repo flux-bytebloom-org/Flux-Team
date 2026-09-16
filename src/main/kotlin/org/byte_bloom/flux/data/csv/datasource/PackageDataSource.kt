@@ -1,6 +1,6 @@
-package org.byte_bloom.flux.data.datasource
+package org.byte_bloom.flux.data.csv.datasource
 
-import org.byte_bloom.flux.data.dataholders.PackageRaw
+import org.byte_bloom.flux.data.csv.dataholders.PackageRaw
 
 interface PackageDataSource {
     fun getAll(): List<PackageRaw>

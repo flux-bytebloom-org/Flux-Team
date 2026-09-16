@@ -1,10 +1,10 @@
-package org.byte_bloom.flux.data.mapper
+package org.byte_bloom.flux.data.csv.mapper
 
-import org.byte_bloom.flux.data.dataholders.RouteRaw
-import org.byte_bloom.flux.data.dataholders.VehicleRaw
-import org.byte_bloom.flux.data.dataholders.Priority
-import org.byte_bloom.flux.data.dataholders.PackageRaw
-import org.byte_bloom.flux.data.dataholders.WarehouseRaw
+import org.byte_bloom.flux.data.csv.dataholders.RouteRaw
+import org.byte_bloom.flux.data.csv.dataholders.VehicleRaw
+import org.byte_bloom.flux.data.csv.dataholders.Priority
+import org.byte_bloom.flux.data.csv.dataholders.PackageRaw
+import org.byte_bloom.flux.data.csv.dataholders.WarehouseRaw
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle

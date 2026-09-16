@@ -1,7 +1,7 @@
-package org.byte_bloom.flux.data.parsers
+package org.byte_bloom.flux.data.csv.parsers
 
-import org.byte_bloom.flux.data.dataholders.PackageRaw
-import org.byte_bloom.flux.data.dataholders.Priority
+import org.byte_bloom.flux.data.csv.dataholders.PackageRaw
+import org.byte_bloom.flux.data.csv.dataholders.Priority
 
 private const val PACKAGE_COLUMN_COUNT = 5
 private const val PACKAGE_ID_INDEX = 0

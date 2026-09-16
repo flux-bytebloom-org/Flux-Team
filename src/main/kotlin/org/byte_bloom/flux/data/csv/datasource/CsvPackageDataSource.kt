@@ -1,23 +1,9 @@
-package org.byte_bloom.flux.data.datasource.csv
+package org.byte_bloom.flux.data.csv.datasource
 
-import org.byte_bloom.flux.data.dataholders.PackageRaw
-import org.byte_bloom.flux.data.datasource.PackageDataSource
-import org.byte_bloom.flux.data.parsers.cleanLines
-import org.byte_bloom.flux.data.parsers.parsePackages
-import org.byte_bloom.flux.data.readers.readCsv
-
-/* ===============================================================
-Note: if you need to change in warehouse file call its interface
-* example
-        class CsvPackageDataSource(
-            private val pkgFilePath: String,
- ===>       private val warehouseDataSource: WarehouseDataSource
-        ) : PackageDataSource {
-            override fun updateOriginHub(packageId: String, hubId: String) {
-                // edit if pkg file
- ===>           warehouseDataSource.addToHubQueue(packageId, hubId)
-            }
-}  ===============================================================*/
+import org.byte_bloom.flux.data.csv.dataholders.PackageRaw
+import org.byte_bloom.flux.data.csv.parsers.cleanLines
+import org.byte_bloom.flux.data.csv.parsers.parsePackages
+import org.byte_bloom.flux.data.csv.readers.readCsv
 
 class CsvPackageDataSource(
     private val filePath: String

@@ -1,10 +1,9 @@
-package org.byte_bloom.flux.data.datasource.csv
+package org.byte_bloom.flux.data.csv.datasource
 
-import org.byte_bloom.flux.data.datasource.VehicleDataSource
-import org.byte_bloom.flux.data.parsers.cleanLines
-import org.byte_bloom.flux.data.parsers.parseFleet
-import org.byte_bloom.flux.data.readers.readCsv
-import org.byte_bloom.flux.data.dataholders.VehicleRaw
+import org.byte_bloom.flux.data.csv.dataholders.VehicleRaw
+import org.byte_bloom.flux.data.csv.parsers.cleanLines
+import org.byte_bloom.flux.data.csv.parsers.parseFleet
+import org.byte_bloom.flux.data.csv.readers.readCsv
 
 class CsvVehicleDataSource(
     private val filePath: String

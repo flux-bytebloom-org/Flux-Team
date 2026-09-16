@@ -1,6 +1,6 @@
-package org.byte_bloom.flux.data.datasource
+package org.byte_bloom.flux.data.csv.datasource
 
-import org.byte_bloom.flux.data.dataholders.VehicleRaw
+import org.byte_bloom.flux.data.csv.dataholders.VehicleRaw
 
 interface VehicleDataSource {
     fun getAll(): List<VehicleRaw>
