@@ -13,4 +13,3 @@ data class VehicleResponseDto(
     @SerialName("cost_per_km")
     val costPerKm: Double
 )
-

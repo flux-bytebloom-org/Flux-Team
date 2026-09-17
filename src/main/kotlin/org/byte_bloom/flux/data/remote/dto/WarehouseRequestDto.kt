@@ -11,4 +11,3 @@ data class WarehouseRequestDto(
     val latitude: Double,
     val longitude: Double
 )
-

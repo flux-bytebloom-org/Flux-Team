@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.data.remote.datasource
 
-import io.ktor.client.call.*
-import io.ktor.client.request.*
+import io.ktor.client.call.body
+import io.ktor.client.request.get
 import org.byte_bloom.flux.data.remote.client.SupabaseHttpClient
 import org.byte_bloom.flux.data.remote.dto.warehouse.WarehouseResponseDto
 

@@ -1,3 +1,4 @@
+
 package org.byte_bloom.flux.data.remote.dto.warehouse
 
 import kotlinx.serialization.SerialName
