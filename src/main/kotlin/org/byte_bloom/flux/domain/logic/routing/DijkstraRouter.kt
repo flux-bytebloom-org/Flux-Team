@@ -119,7 +119,6 @@ class DijkstraRouter {
                 }
             }
         }
-
         return minNode
     }
 
