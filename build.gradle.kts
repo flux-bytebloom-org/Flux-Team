@@ -1,8 +1,7 @@
 plugins {
-    kotlin("jvm") version "2.2.20"
-    kotlin("plugin.serialization") version "2.2.20"
+    alias(libs.plugins.kotlinJvm)
+    alias(libs.plugins.kotlinSerialization)
     id("org.jetbrains.kotlinx.kover") version "0.9.1"
-    kotlin("plugin.serialization") version "2.2.20"
     id("io.gitlab.arturbosch.detekt") version "1.23.5"
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.androidLibrary) apply false
@@ -20,11 +19,11 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-client-core:3.3.1")
-    implementation("io.ktor:ktor-client-cio:3.3.1")
-    implementation("io.ktor:ktor-client-content-negotiation:3.3.1")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(kotlin("test"))
 }
@@ -40,14 +39,12 @@ kover {
     reports {
         filters {
             includes {
-                // we want to include only the data parsers package in the coverage report
                 packages("org.byte_bloom.flux.data.csv.parsers")
             }
         }
 
         verify {
             rule {
-                // we will change the min bound to 80 it now 20 just for pass the coverage
                 minBound(20)
             }
         }

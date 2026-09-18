@@ -87,21 +87,18 @@ fun Vehicle.toRequestDto(): VehicleRequestDto {
 
 // ---------- Route ----------
 
-fun RouteResponseDto.toDomain(): Route {
+fun RouteResponseDto.toDomain(warehousesById: Map<String, Warehouse>): Route? {
+    val origin = warehousesById[originHubId]
+    val destination = warehousesById[destinationHubId]
+    if (origin == null || destination == null) return null
+
     return Route(
         id = id,
         distanceKm = distanceKm,
         typicalDelayMin = typicalDelayMin,
-        originHub = createEmptyWarehouse(originHubId),
-        destinationHub = createEmptyWarehouse(destinationHubId)
+        originHub = origin,
+        destinationHub = destination
     )
 }
 
-fun Route.toRequestDto(): RouteRequestDto {
-    return RouteRequestDto(
-        originHubId = originHub.id,
-        destinationHubId = destinationHub.id,
-        distanceKm = distanceKm,
-        typicalDelayMin = typicalDelayMin
-    )
-}
+

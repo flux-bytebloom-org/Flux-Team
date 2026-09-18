@@ -28,6 +28,9 @@ import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
 import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
+import kotlinx.coroutines.runBlocking
+import org.byte_bloom.flux.data.repositoryimplementation.SupabaseRouteRepositoryImpl
+import org.byte_bloom.flux.data.remote.datasource.RemoteRouteDataSource
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 private const val DEFAULT_BASE_RATE = 100.0
@@ -35,10 +38,9 @@ private const val DEFAULT_BASE_RATE = 100.0
 
 private const val WAREHOUSES_CSV_PATH = "src/main/resources/warehouses.csv"
 private const val PACKAGES_CSV_PATH = "src/main/resources/packages.csv"
-private const val ROUTES_CSV_PATH = "src/main/resources/routes.csv"
 private const val FLEET_CSV_PATH = "src/main/resources/fleet.csv"
 
-fun main() {
+fun main()  = runBlocking{
     val init = initializeAndPrintGraph()
 
         testBidirectionalIdentity(init.warehouses)
@@ -167,7 +169,7 @@ private fun testDecoratorStacking(warehouses: List<Warehouse>) {
 private suspend fun initializeAndPrintGraph(): InitResult {
     val warehouseRepository = WarehouseRepositoryImpl(CsvWarehouseDataSource(WAREHOUSES_CSV_PATH))
     val packageRepository = PackageRepositoryImpl(CsvPackageDataSource(PACKAGES_CSV_PATH),warehouseRepository)
-    val routeRepository = RouteRepositoryImpl(CsvRouteDataSource(ROUTES_CSV_PATH),warehouseRepository)
+    val routeRepository = SupabaseRouteRepositoryImpl(RemoteRouteDataSource(), warehouseRepository)
     val vehicleRepository = VehicleRepositoryImpl(CsvVehicleDataSource(FLEET_CSV_PATH),warehouseRepository)
 
     val packages = packageRepository.getAll()

@@ -1,11 +1,13 @@
 package org.byte_bloom.flux.data.remote.client
 
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.request.*
-import io.ktor.http.*
+import io.ktor.client.request.header
+import io.ktor.client.request.url
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.byte_bloom.flux.data.remote.config.SupabaseConfig
