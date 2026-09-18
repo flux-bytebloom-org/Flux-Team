@@ -4,6 +4,7 @@ import org.byte_bloom.flux.data.csv.datasource.CsvPackageDataSource
 import org.byte_bloom.flux.data.csv.datasource.CsvRouteDataSource
 import org.byte_bloom.flux.data.csv.datasource.CsvVehicleDataSource
 import org.byte_bloom.flux.data.csv.datasource.CsvWarehouseDataSource
+import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseWarehouseDataSource
 import org.byte_bloom.flux.data.repositoryimplementation.PackageRepositoryImpl
 import org.byte_bloom.flux.data.repositoryimplementation.RouteRepositoryImpl
 import org.byte_bloom.flux.data.repositoryimplementation.VehicleRepositoryImpl
@@ -26,6 +27,10 @@ import org.byte_bloom.flux.domain.repository.VehicleRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
 import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
+import org.byte_bloom.flux.domain.usecase.crud.CreateWarehouseUseCase
+import org.byte_bloom.flux.domain.usecase.crud.DeleteWarehouseUseCase
+import org.byte_bloom.flux.domain.usecase.crud.GetWarehouseByIdUseCase
+import org.byte_bloom.flux.domain.usecase.crud.UpdateWarehouseUseCase
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 
@@ -38,7 +43,7 @@ private const val PACKAGES_CSV_PATH = "src/main/resources/packages.csv"
 private const val ROUTES_CSV_PATH = "src/main/resources/routes.csv"
 private const val FLEET_CSV_PATH = "src/main/resources/fleet.csv"
 
-fun main() {
+fun main() = kotlinx.coroutines.runBlocking {
     val init = initializeAndPrintGraph()
 
         testBidirectionalIdentity(init.warehouses)
@@ -55,6 +60,8 @@ fun main() {
         val allRoutes = init.warehouses.flatMap { it.getOutgoingRoutes() }
         val bidirectionalRouter = BidirectionalBfsRouter(allRoutes)
         benchmarkRouters(init.warehouses, bfsRouter, bidirectionalRouter)
+
+       testWarehouseCrudFlow(init.warehouseRepository)
 
 
         /*comment this part until doing exception handling
@@ -165,7 +172,10 @@ private fun testDecoratorStacking(warehouses: List<Warehouse>) {
 }
 
 private suspend fun initializeAndPrintGraph(): InitResult {
-    val warehouseRepository = WarehouseRepositoryImpl(CsvWarehouseDataSource(WAREHOUSES_CSV_PATH))
+    val warehouseRepository = WarehouseRepositoryImpl(
+        localDataSource = CsvWarehouseDataSource(WAREHOUSES_CSV_PATH),
+        remoteDataSource = SupabaseWarehouseDataSource()
+    )
     val packageRepository = PackageRepositoryImpl(CsvPackageDataSource(PACKAGES_CSV_PATH),warehouseRepository)
     val routeRepository = RouteRepositoryImpl(CsvRouteDataSource(ROUTES_CSV_PATH),warehouseRepository)
     val vehicleRepository = VehicleRepositoryImpl(CsvVehicleDataSource(FLEET_CSV_PATH),warehouseRepository)
@@ -189,3 +199,21 @@ private data class InitResult(
     val warehouseRepository: WarehouseRepository,
     val packageRepository: PackageRepository
 )
+suspend fun testWarehouseCrudFlow(repository: WarehouseRepository) {
+    val createUC = CreateWarehouseUseCase(repository)
+    val getByIdUC = GetWarehouseByIdUseCase(repository)
+    val updateUC = UpdateWarehouseUseCase(repository)
+    val deleteUC = DeleteWarehouseUseCase(repository)
+
+    val created = createUC(Warehouse(id = "", name = "Test Hub", regionalZone = "NORTH", latitude = 32.0, longitude = 35.0))
+    println("Created: $created")
+
+    val fetched = getByIdUC(created.id)
+    println("Fetched: $fetched")
+
+    val updated = updateUC(created.id, created.copy(name = "Updated Hub"))
+    println("Updated: $updated")
+
+    deleteUC(created.id)
+    println("Deleted: ${created.id}")
+}
