@@ -68,12 +68,18 @@ fun Package.toRequestDto(): PackageRequestDto {
 
 // ---------- Vehicle ----------
 
-fun VehicleResponseDto.toDomain(): Vehicle {
+fun VehicleResponseDto.toDomain(warehousesById: Map<String, Warehouse>): Vehicle {
+    val vehiclesHub = warehousesById[currentHubId]
+    if (vehiclesHub == null ) return null
+
+    // val hub = warehousesById[currentHubId]
+    //        ?: throw DomainException.ResourceNotFoundException(currentHubId)
+
     return Vehicle(
         id = id,
         maxCapacityKg = maxCapacityKg,
         costPerKm = costPerKm,
-        currentHub = createEmptyWarehouse(currentHubId)
+        currentHub = vehiclesHub
     )
 }
 
