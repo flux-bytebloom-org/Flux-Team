@@ -33,4 +33,20 @@ class PackageRepositoryImpl(
         pkgDataSource.updateDestination(pkg.id,newDestination.id)
         return pkg.copy(destinationHub = newDestination)
     }
+
+    override suspend fun getById(id: String): Package {
+        throw UnsupportedOperationException("CSV repository does not support getById")
+    }
+
+    override suspend fun create(pkg: Package): Package {
+        throw UnsupportedOperationException("CSV repository does not support create")
+    }
+
+    override suspend fun update(id: String, pkg: Package): Package {
+        throw UnsupportedOperationException("CSV repository does not support update")
+    }
+
+    override suspend fun delete(id: String) {
+        throw UnsupportedOperationException("CSV repository does not support delete")
+    }
 }

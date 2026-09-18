@@ -4,11 +4,11 @@ import kotlinx.coroutines.runBlocking
 import org.byte_bloom.flux.data.remote.datasource.RemotePackageDataSource
 import org.byte_bloom.flux.data.remote.dto.PackageRequestDto
 import org.byte_bloom.flux.data.remote.dto.toDomain
+import org.byte_bloom.flux.data.remote.dto.toRequestDto
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
-import org.gradle.internal.impldep.kotlinx.coroutines.runBlocking
 
 class SupabasePackageRepositoryImpl(
     private val remoteDataSource: RemotePackageDataSource,
@@ -20,6 +20,33 @@ class SupabasePackageRepositoryImpl(
         return remoteDataSource.getAll()
             .mapNotNull { it.toDomain(warehousesById) }
             .onEach { pkg -> pkg.originHub.addPackage(pkg) }
+    }
+
+    override suspend fun getById(id: String): Package {
+        val warehousesById = warehouseRepository.getAll().associateBy { it.id }
+        return requireNotNull(remoteDataSource.getById(id).toDomain(warehousesById)) {
+            "Package $id references an unknown warehouse"
+        }
+    }
+
+    override suspend fun create(pkg: Package): Package {
+        val warehousesById = warehouseRepository.getAll().associateBy { it.id }
+        val response = remoteDataSource.create(pkg.toRequestDto())
+        return requireNotNull(response.toDomain(warehousesById)) {
+            "Created package references an unknown warehouse"
+        }
+    }
+
+    override suspend fun update(id: String, pkg: Package): Package {
+        val warehousesById = warehouseRepository.getAll().associateBy { it.id }
+        val response = remoteDataSource.update(id, pkg.toRequestDto())
+        return requireNotNull(response.toDomain(warehousesById)) {
+            "Updated package references an unknown warehouse"
+        }
+    }
+
+    override suspend fun delete(id: String) {
+        remoteDataSource.delete(id)
     }
 
     override fun updatePackageOriginHub(pkg: Package, hub: Warehouse): Package {
