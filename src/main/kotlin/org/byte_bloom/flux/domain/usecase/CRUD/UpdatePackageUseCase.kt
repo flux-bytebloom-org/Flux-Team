@@ -1,15 +1,16 @@
 package org.byte_bloom.flux.domain.usecase.crud
 
-import org.byte_bloom.flux.data.remote.datasource.RemotePackageDataSource
-import org.byte_bloom.flux.data.remote.dto.PackageRequestDto
-import org.byte_bloom.flux.data.remote.dto.toDomain
 import org.byte_bloom.flux.domain.model.Package
+import org.byte_bloom.flux.domain.model.Priority
+import org.byte_bloom.flux.domain.repository.PackageRepository
+import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.validator.PackageIdValidator
 import org.byte_bloom.flux.domain.validator.PackageUpdateValidator
 import org.byte_bloom.flux.domain.validator.ValidationResult
 
 class UpdatePackageUseCase(
-    private val dataSource: RemotePackageDataSource,
+    private val repository: PackageRepository,
+    private val warehouseRepository: WarehouseRepository,
     private val idValidator: PackageIdValidator,
     private val updateValidator: PackageUpdateValidator
 ) {
@@ -33,17 +34,17 @@ class UpdatePackageUseCase(
         }
 
         return runCatching {
-            val existing = dataSource.getById(id)
+            val existing = repository.getById(id)
+            val warehousesById = warehouseRepository.getAll().associateBy { it.id }
 
-            val requestDto = PackageRequestDto(
+            val updated = existing.copy(
                 weight = weight ?: existing.weight,
-                origin_hub_id = originHubId ?: existing.origin_hub_id,
-                destination_hub_id = destinationHubId ?: existing.destination_hub_id,
-                priority = priority ?: existing.priority
+                originHub = originHubId?.let { warehousesById[it] } ?: existing.originHub,
+                destinationHub = destinationHubId?.let { warehousesById[it] } ?: existing.destinationHub,
+                priority = priority?.let { Priority.valueOf(it.uppercase()) } ?: existing.priority
             )
 
-            dataSource.update(id, requestDto).toDomain()
+            repository.update(id, updated)
         }
     }
 }
-
