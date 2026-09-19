@@ -37,13 +37,13 @@ class UpdatePackageUseCase(
 
             val requestDto = PackageRequestDto(
                 weight = weight ?: existing.weight,
-                origin_hub_id = originHubId ?: existing.origin_hub_id,
-                destination_hub_id = destinationHubId ?: existing.destination_hub_id,
+                originHubId = originHubId ?: existing.originHubId,
+                destinationHubId = destinationHubId ?: existing.destinationHubId,
                 priority = priority ?: existing.priority
             )
-
             dataSource.update(id, requestDto).toDomain()
         }
     }
 }
+
 
