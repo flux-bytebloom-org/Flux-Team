@@ -47,12 +47,18 @@ fun Warehouse.toRequestDto(): WarehouseRequestDto {
 
 // ---------- Package ----------
 
-fun PackageResponseDto.toDomain(): Package {
+// ---------- Package ----------
+
+fun PackageResponseDto.toDomain(warehousesById: Map<String, Warehouse>): Package? {
+    val origin = warehousesById[originHubId]
+    val destination = warehousesById[destinationHubId]
+    if (origin == null || destination == null) return null
+
     return Package(
         id = id,
         weight = weight,
-        originHub = createEmptyWarehouse(originHubId),
-        destinationHub = createEmptyWarehouse(destinationHubId),
+        originHub = origin,
+        destinationHub = destination,
         priority = parsePackagePriority(priority)
     )
 }
