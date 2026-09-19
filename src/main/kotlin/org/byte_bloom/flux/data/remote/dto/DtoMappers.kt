@@ -68,7 +68,7 @@ fun Package.toRequestDto(): PackageRequestDto {
 
 // ---------- Vehicle ----------
 
-fun VehicleResponseDto.toDomain(warehousesById: Map<String, Warehouse>): Vehicle {
+fun VehicleResponseDto.toDomain(warehousesById: Map<String, Warehouse>): Vehicle? {
     val vehiclesHub = warehousesById[currentHubId]
     if (vehiclesHub == null ) return null
 
