@@ -30,7 +30,6 @@ class PackageUpdateValidator : Validator<PackageUpdateRequest> {
                 originHubId.isNullOrBlank() &&
                 destinationHubId.isNullOrBlank() &&
                 priority.isNullOrBlank()
-
-        if (allBlank) ValidationField.NoFieldUpdated else null
+        return if (allBlank) ValidationField.NoFieldUpdated() else null
     }
 }
