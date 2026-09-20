@@ -1,15 +1,20 @@
-package org.byte_bloom.flux.data.remote.datasource
+package org.byte_bloom.flux.data.remote.datasource.impl
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.*
-import io.ktor.client.request.*
+import io.ktor.client.call.body
+import io.ktor.client.request.delete
+import io.ktor.client.request.get
+import io.ktor.client.request.patch
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import org.byte_bloom.flux.data.remote.client.SupabaseHttpClient
+import org.byte_bloom.flux.data.remote.datasource.RemotePackageDataSource
 import org.byte_bloom.flux.data.remote.dto.PackageRequestDto
 import org.byte_bloom.flux.data.remote.dto.PackageResponseDto
 
 class SupabasePackageDataSource(
     private val client: HttpClient = SupabaseHttpClient.client
-) :RemotePackageDataSource {
+) : RemotePackageDataSource {
     private val table = "packages"
 
     override suspend fun getAll(): List<PackageResponseDto> =

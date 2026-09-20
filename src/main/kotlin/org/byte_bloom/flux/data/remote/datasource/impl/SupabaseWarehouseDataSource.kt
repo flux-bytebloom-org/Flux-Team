@@ -9,7 +9,8 @@ import org.byte_bloom.flux.data.remote.datasource.WarehouseDataSource
 import org.byte_bloom.flux.data.remote.dto.WarehouseRequestDto
 import org.byte_bloom.flux.data.remote.dto.WarehouseResponseDto
 
-class SupabaseWarehouseDataSource( private val client: HttpClient = SupabaseHttpClient.client
+class SupabaseWarehouseDataSource(
+    private val client: HttpClient = SupabaseHttpClient.client
 ) : WarehouseDataSource {
     private val table = "warehouses"
 

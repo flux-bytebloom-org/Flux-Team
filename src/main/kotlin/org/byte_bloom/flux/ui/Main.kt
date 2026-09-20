@@ -4,6 +4,7 @@ import org.byte_bloom.flux.data.csv.datasource.CsvPackageDataSource
 import org.byte_bloom.flux.data.csv.datasource.CsvRouteDataSource
 import org.byte_bloom.flux.data.csv.datasource.CsvVehicleDataSource
 import org.byte_bloom.flux.data.csv.datasource.CsvWarehouseDataSource
+import org.byte_bloom.flux.data.remote.datasource.impl.SupabasePackageDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseWarehouseDataSource
 import org.byte_bloom.flux.data.repositoryimplementation.PackageRepositoryImpl
 import org.byte_bloom.flux.data.repositoryimplementation.RouteRepositoryImpl
@@ -33,6 +34,8 @@ import org.byte_bloom.flux.domain.usecase.crud.GetWarehouseByIdUseCase
 import org.byte_bloom.flux.domain.usecase.crud.UpdateWarehouseUseCase
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
+import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseRouteDataSource
+import org.byte_bloom.flux.domain.repository.RouteRepository
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 private const val DEFAULT_BASE_RATE = 100.0
@@ -176,10 +179,17 @@ private suspend fun initializeAndPrintGraph(): InitResult {
         localDataSource = CsvWarehouseDataSource(WAREHOUSES_CSV_PATH),
         remoteDataSource = SupabaseWarehouseDataSource()
     )
-    val packageRepository = PackageRepositoryImpl(CsvPackageDataSource(PACKAGES_CSV_PATH),warehouseRepository)
-    val routeRepository = RouteRepositoryImpl(CsvRouteDataSource(ROUTES_CSV_PATH),warehouseRepository)
-    val vehicleRepository = VehicleRepositoryImpl(CsvVehicleDataSource(FLEET_CSV_PATH),warehouseRepository)
-
+    val routeRepository = RouteRepositoryImpl(
+        localRouteDataSource = CsvRouteDataSource(ROUTES_CSV_PATH),
+        remoteRouteDataSource = SupabaseRouteDataSource(),
+        warehouseRepository = warehouseRepository
+    )
+    val vehicleRepository = VehicleRepositoryImpl(CsvVehicleDataSource(FLEET_CSV_PATH), warehouseRepository)
+    val packageRepository = PackageRepositoryImpl(
+        pkgDataSource = CsvPackageDataSource(PACKAGES_CSV_PATH),
+        remoteDataSource = SupabasePackageDataSource(),
+        warehouseRepository = warehouseRepository
+    )
     val packages = packageRepository.getAll()
     val warehouses = warehouseRepository.getAll()
     val routes = routeRepository.getAll()
@@ -189,7 +199,7 @@ private suspend fun initializeAndPrintGraph(): InitResult {
     printTopPriorityPackages(packages)
     printWarehouseGraph(warehouses)
 
-    return InitResult(warehouses, packages, vehicleRepository, warehouseRepository, packageRepository)
+    return InitResult(warehouses, packages, vehicleRepository, warehouseRepository, packageRepository, routeRepository)
 }
 
 private data class InitResult(
@@ -197,7 +207,8 @@ private data class InitResult(
     val packages: List<Package>,
     val vehicleRepository: VehicleRepository,
     val warehouseRepository: WarehouseRepository,
-    val packageRepository: PackageRepository
+    val packageRepository: PackageRepository,
+    val routeRepository: RouteRepository
 )
 suspend fun testWarehouseCrudFlow(repository: WarehouseRepository) {
     val createUC = CreateWarehouseUseCase(repository)
