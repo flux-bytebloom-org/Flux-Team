@@ -32,7 +32,7 @@ sealed class ValidationField(val field: EntityField) {
 
     class MissingReference(field: EntityField, val referencedId: String) : ValidationField(field)
 
-    class NoFieldUpdated (field : EntityField = EntityField.NONE)
+    class NoFieldUpdated (field : EntityField = EntityField.NONE):ValidationField(field= EntityField.NONE)
 
     class InvalidEnumValue(field: EntityField, val actualValue: String, val allowedValues: List<String>) : ValidationField(field)
 }
