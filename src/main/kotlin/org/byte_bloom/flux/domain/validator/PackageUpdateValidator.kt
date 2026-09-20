@@ -1,12 +1,9 @@
 package org.byte_bloom.flux.domain.validator
 
-class PackageUpdateValidator {
+class PackageUpdateValidator :  Validator<PackageUpdateRequest>{
 
-    operator fun invoke(
-        weight: Double?,
-        originHubId: String?,
-        destinationHubId: String?,
-        priority: String?
+    override operator fun invoke(
+        pkgUpdateReq :  PackageUpdateRequest
     ): ValidationResult {
         val errors = buildErrorList(weight, originHubId, destinationHubId, priority)
 
