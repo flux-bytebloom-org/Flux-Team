@@ -1,6 +1,10 @@
-package org.byte_bloom.flux.domain.validator
+package org.byte_bloom.flux.domain.validator.packageValidations
 
 import org.byte_bloom.flux.domain.model.Package
+import org.byte_bloom.flux.domain.validator.EntityField
+import org.byte_bloom.flux.domain.validator.FieldChecks
+import org.byte_bloom.flux.domain.validator.ValidationResult
+import org.byte_bloom.flux.domain.validator.Validator
 
 class PackageCreateValidator: Validator<Package> {
 
