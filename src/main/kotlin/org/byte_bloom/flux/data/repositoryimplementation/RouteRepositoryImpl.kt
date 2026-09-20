@@ -4,6 +4,7 @@ import org.byte_bloom.flux.data.csv.datasource.RouteDataSource as LocalDataSours
 import org.byte_bloom.flux.data.csv.mapper.toDomain
 import org.byte_bloom.flux.data.remote.datasource.RemoteRouteDataSource
 import org.byte_bloom.flux.data.remote.dto.toDomain
+import org.byte_bloom.flux.data.remote.dto.toRequestDto
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
@@ -22,21 +23,17 @@ class RouteRepositoryImpl(
             .onEach { route -> route.originHub.addRoute(route) }
     }
 
-    override suspend fun getById(id: String): Route? {
-        val warehousesById = warehouseRepository.getAll().associateBy { it.id }
-        return remoteRouteDataSource.getById(id)?.toDomain(warehousesById)
-    }
+    override suspend fun getById(id: String): Route? =
+        remoteRouteDataSource.getById(id)?.toDomain(warehouseRepository.getAll().associateBy { it.id })
 
-    override suspend fun create(route: Route): Route {
-        TODO("Not yet implemented")
-    }
+    override suspend fun create(route: Route): Route =
+        remoteRouteDataSource.create(route.toRequestDto())
+            .toDomain(warehouseRepository.getAll().associateBy { it.id })!!
 
-    override suspend fun update(id: String, warehouse: Route): Route {
-        TODO("Not yet implemented")
-    }
+    override suspend fun update(id: String, warehouse: Route): Route =
+        remoteRouteDataSource.update(id, warehouse.toRequestDto())
+            .toDomain(warehouseRepository.getAll().associateBy { it.id })!!
 
-    override suspend fun delete(id: String) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun delete(id: String) =
+        remoteRouteDataSource.delete(id)
 }
-

@@ -107,4 +107,11 @@ fun RouteResponseDto.toDomain(warehousesById: Map<String, Warehouse>): Route? {
     )
 }
 
-
+fun Route.toRequestDto(): RouteRequestDto {
+    return RouteRequestDto(
+        originHubId = originHub.id,
+        destinationHubId = destinationHub.id,
+        distanceKm = distanceKm,
+        typicalDelayMin = typicalDelayMin
+    )
+}
