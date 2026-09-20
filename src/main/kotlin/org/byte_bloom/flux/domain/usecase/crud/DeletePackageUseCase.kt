@@ -1,12 +1,15 @@
 package org.byte_bloom.flux.domain.usecase.crud
 
 import org.byte_bloom.flux.domain.repository.PackageRepository
-import org.byte_bloom.flux.domain.validator.PackageIdValidator
+import org.byte_bloom.flux.domain.validator.EntityPrefixes
+import org.byte_bloom.flux.domain.validator.IdValidator
 import org.byte_bloom.flux.domain.validator.ValidationResult
+
+private const val PACKAGE_ID_PREFIX = "PKG-"
 
 class DeletePackageUseCase(
     private val repository: PackageRepository,
-    private val validator: PackageIdValidator
+    private val validator: IdValidator = IdValidator(EntityPrefixes.PACKAGE)
 ) {
 
     suspend operator fun invoke(id: String): Result<Unit> {

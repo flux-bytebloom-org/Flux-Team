@@ -4,14 +4,16 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
-import org.byte_bloom.flux.domain.validator.PackageIdValidator
+import org.byte_bloom.flux.domain.validator.EntityPrefixes
+import org.byte_bloom.flux.domain.validator.IdValidator
+import org.byte_bloom.flux.domain.validator.PackageUpdateRequest
 import org.byte_bloom.flux.domain.validator.PackageUpdateValidator
 import org.byte_bloom.flux.domain.validator.ValidationResult
 
 class UpdatePackageUseCase(
     private val repository: PackageRepository,
     private val warehouseRepository: WarehouseRepository,
-    private val idValidator: PackageIdValidator,
+    private val idValidator: IdValidator = IdValidator(EntityPrefixes.PACKAGE),
     private val updateValidator: PackageUpdateValidator
 ) {
 
@@ -28,7 +30,9 @@ class UpdatePackageUseCase(
             return Result.failure(IllegalArgumentException(idValidation.errors.joinToString(", ")))
         }
 
-        val updateValidation = updateValidator(weight, originHubId, destinationHubId, priority)
+        val PkgUpdateRequest = PackageUpdateRequest(weight, originHubId, destinationHubId, priority)
+
+        val updateValidation = updateValidator(PkgUpdateRequest)
         if (updateValidation is ValidationResult.Invalid) {
             return Result.failure(IllegalArgumentException(updateValidation.errors.joinToString(", ")))
         }
@@ -48,4 +52,6 @@ class UpdatePackageUseCase(
         }
     }
 }
+
+
 
