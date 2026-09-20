@@ -25,7 +25,7 @@ class PackageRepositoryImpl(
 
     override suspend fun getById(id: String): Package {
         val warehousesById = warehouseRepository.getAll().associateBy { it.id }
-        return requireNotNull(remoteDataSource.getById(id).toDomain(warehousesById)) {
+        return requireNotNull(remoteDataSource.getById(id)?.toDomain(warehousesById)) {
             "Package $id references an unknown warehouse"
         }
     }
