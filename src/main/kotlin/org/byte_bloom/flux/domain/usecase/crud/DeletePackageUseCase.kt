@@ -1,11 +1,11 @@
 package org.byte_bloom.flux.domain.usecase.crud
 
-import org.byte_bloom.flux.data.remote.datasource.RemotePackageDataSource
+import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.validator.PackageIdValidator
 import org.byte_bloom.flux.domain.validator.ValidationResult
 
 class DeletePackageUseCase(
-    private val dataSource: RemotePackageDataSource,
+    private val repository: PackageRepository,
     private val validator: PackageIdValidator
 ) {
 
@@ -19,7 +19,8 @@ class DeletePackageUseCase(
         }
 
         return runCatching {
-            dataSource.delete(id)
+            repository.delete(id)
         }
     }
 }
+

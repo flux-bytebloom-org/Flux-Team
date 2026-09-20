@@ -1,13 +1,12 @@
 package org.byte_bloom.flux.domain.usecase.crud
 
-import org.byte_bloom.flux.data.remote.datasource.RemotePackageDataSource
-import org.byte_bloom.flux.data.remote.dto.toDomain
 import org.byte_bloom.flux.domain.model.Package
+import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.validator.PackageIdValidator
 import org.byte_bloom.flux.domain.validator.ValidationResult
 
 class GetPackageByIdUseCase(
-    private val dataSource: RemotePackageDataSource,
+    private val repository: PackageRepository,
     private val validator: PackageIdValidator
 ) {
 
@@ -21,7 +20,8 @@ class GetPackageByIdUseCase(
         }
 
         return runCatching {
-            dataSource.getById(id).toDomain()
+            repository.getById(id)
         }
     }
 }
+
