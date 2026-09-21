@@ -5,16 +5,12 @@ sealed class ValidationResult {
     data class Invalid(val errors: List<ValidationField>) : ValidationResult()
 }
 enum class EntityField {
-    // Warehouse
     WAREHOUSE_NAME, LATITUDE, LONGITUDE, WAREHOUSE_CAPACITY_KG,
-    // Vehicle
-    CURRENT_HUB_ID, MAX_CAPACITY_KG, COST_PER_KM,
-    // Route
     ORIGIN_HUB_ID, DESTINATION_HUB_ID, DISTANCE_KM, TYPICAL_DELAY_MIN,
-    // Package
     WEIGHT, PRIORITY,
     ID ,
-    NONE
+    NONE,
+    REGIONAL_ZONE
 }
 
 sealed class ValidationField(val field: EntityField) {
