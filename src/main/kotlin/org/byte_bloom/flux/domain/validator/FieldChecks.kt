@@ -5,10 +5,10 @@ object FieldChecks {
         if (value.isBlank()) ValidationField.Blank(field) else null
 
     fun positive(field: EntityField, value: Double?): ValidationField? =
-        if (value <= 0) ValidationField.NotPositive(field, value) else null
+        if (value != null && value <= 0) ValidationField.NotPositive(field, value) else null
 
     fun notNegative(field: EntityField, value: Double?): ValidationField? =
-        if (value < 0) ValidationField.Negative(field, value) else null
+        if (value != null && value < 0) ValidationField.Negative(field, value) else null
 
     fun inRange(field: EntityField, value: Double, min: Double, max: Double): ValidationField? =
         if (value < min || value > max) ValidationField.OutOfRange(field, value, min, max) else null
