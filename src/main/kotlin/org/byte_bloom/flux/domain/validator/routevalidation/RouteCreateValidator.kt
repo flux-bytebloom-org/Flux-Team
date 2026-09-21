@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.validator.routeValidation
+package org.byte_bloom.flux.domain.validator.routevalidation
 
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.validator.EntityField

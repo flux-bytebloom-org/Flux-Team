@@ -5,8 +5,8 @@ import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.validator.EntityPrefixes
 import org.byte_bloom.flux.domain.validator.IdValidator
-import org.byte_bloom.flux.domain.validator.routeValidation.RouteUpdateRequest
-import org.byte_bloom.flux.domain.validator.routeValidation.RouteUpdateValidator
+import org.byte_bloom.flux.domain.validator.routevalidation.RouteUpdateRequest
+import org.byte_bloom.flux.domain.validator.routevalidation.RouteUpdateValidator
 import org.byte_bloom.flux.domain.validator.ValidationResult
 
 class UpdateRouteUseCase(

@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.validator.packageValidations
+package org.byte_bloom.flux.domain.validator.packagevalidations
 
 import org.byte_bloom.flux.domain.validator.EntityField
 import org.byte_bloom.flux.domain.validator.FieldChecks

@@ -3,7 +3,7 @@ package org.byte_bloom.flux.domain.usecase.crud.route
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.byte_bloom.flux.domain.validator.ValidationResult
-import org.byte_bloom.flux.domain.validator.routeValidation.RouteCreateValidator
+import org.byte_bloom.flux.domain.validator.routevalidation.RouteCreateValidator
 
 class CreateRouteUseCase(
     private val repository: RouteRepository,
