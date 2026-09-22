@@ -1,6 +1,6 @@
 package org.byte_bloom.flux.domain.usecase
 
-import org.byte_bloom.flux.domain.exception.UseCaseException
+import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.response.WeightedPath
 import org.byte_bloom.flux.domain.response.BottleneckWarehouse
@@ -12,7 +12,7 @@ class FindBottleneckWarehousesUseCase {
     ): List<BottleneckWarehouse> {
 
         if (minTransitLoad < 0) {
-            throw UseCaseException.InvalidTransitLoad(
+            throw LogisticsException.ValidationException.InvalidTransitLoadException(
                 "Minimum transit load cannot be negative"
             )
         }
