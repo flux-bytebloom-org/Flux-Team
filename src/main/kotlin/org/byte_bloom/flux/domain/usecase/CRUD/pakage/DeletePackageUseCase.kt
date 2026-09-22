@@ -1,5 +1,6 @@
 package org.byte_bloom.flux.domain.usecase.crud
 
+import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.validator.EntityPrefixes
 import org.byte_bloom.flux.domain.validator.IdValidator
@@ -17,12 +18,13 @@ class DeletePackageUseCase(
 
         if (validation is ValidationResult.Invalid) {
             return Result.failure(
-                IllegalArgumentException(validation.errors.joinToString(", "))
+                LogisticsException.ValidationException.EntityValidationException(
+                    validation.errors.map { it.toString() }
+                )
             )
         }
 
-        return runCatching {
-            repository.delete(id)
+        return repository.delete(id)
         }
     }
-}
+

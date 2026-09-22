@@ -1,5 +1,6 @@
-package org.byte_bloom.flux.domain.usecase.crud
+package org.byte_bloom.flux.domain.usecase.crud.pakage
 
+import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.validator.packagevalidations.PackageCreateValidator
@@ -15,13 +16,14 @@ class CreatePackageUseCase(
 
         if (validation is ValidationResult.Invalid) {
             return Result.failure(
-                IllegalArgumentException(validation.errors.joinToString(", "))
+                LogisticsException.ValidationException.EntityValidationException(
+                    validation.errors.map { it.toString() }
+                )
             )
         }
 
-        return runCatching {
-            repository.create(pkg)
+        return repository.create(pkg)
         }
     }
-}
+
 
