@@ -1,8 +1,8 @@
 package org.byte_bloom.flux.domain.validator
 
 object FieldChecks {
-    fun notBlank(field: EntityField, value: String): ValidationField? =
-        if (value.isBlank()) ValidationField.Blank(field) else null
+    fun notBlank(field: EntityField, value: String?): ValidationField? =
+        if (value != null &&value.isBlank()) ValidationField.Blank(field) else null
 
     fun positive(field: EntityField, value: Double?): ValidationField? =
         if (value != null && value <= 0) ValidationField.NotPositive(field, value) else null
