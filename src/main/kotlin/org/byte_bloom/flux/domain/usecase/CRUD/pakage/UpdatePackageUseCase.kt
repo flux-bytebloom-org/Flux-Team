@@ -16,23 +16,14 @@ class UpdatePackageUseCase(
     private val idValidator: IdValidator = IdValidator(EntityPrefixes.PACKAGE),
     private val updateValidator: PackageUpdateValidator
 ) {
-
-    suspend operator fun invoke(
-        id: String,
-        weight: Double?,
-        originHubId: String?,
-        destinationHubId: String?,
-        priority: String?
-    ): Result<Package> {
+    suspend operator fun invoke(id: String, request: PackageUpdateRequest): Result<Package> {
 
         val idValidation = idValidator(id)
         if (idValidation is ValidationResult.Invalid) {
             return Result.failure(IllegalArgumentException(idValidation.errors.joinToString(", ")))
         }
 
-        val PkgUpdateRequest = PackageUpdateRequest(weight, originHubId, destinationHubId, priority)
-
-        val updateValidation = updateValidator(PkgUpdateRequest)
+        val updateValidation = updateValidator(request)
         if (updateValidation is ValidationResult.Invalid) {
             return Result.failure(IllegalArgumentException(updateValidation.errors.joinToString(", ")))
         }
@@ -42,15 +33,16 @@ class UpdatePackageUseCase(
             val warehousesById = warehouseRepository.getAll().associateBy { it.id }
 
             val updated = existing.copy(
-                weight = weight ?: existing.weight,
-                originHub = originHubId?.let { warehousesById[it] } ?: existing.originHub,
-                destinationHub = destinationHubId?.let { warehousesById[it] } ?: existing.destinationHub,
-                priority = priority?.let { Priority.valueOf(it.uppercase()) } ?: existing.priority
+                weight = request.weight ?: existing.weight,
+                originHub = request.originHubId?.let { warehousesById[it] } ?: existing.originHub,
+                destinationHub = request.destinationHubId?.let { warehousesById[it] } ?: existing.destinationHub,
+                priority = request.priority?.let { Priority.valueOf(it.uppercase()) } ?: existing.priority
             )
 
             repository.update(id, updated)
         }
     }
+
 }
 
 

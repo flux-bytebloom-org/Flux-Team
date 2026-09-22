@@ -16,22 +16,14 @@ class UpdateRouteUseCase(
     private val updateValidator: RouteUpdateValidator
 ) {
 
-    suspend operator fun invoke(
-        id: String,
-        originHubId: String?,
-        destinationHubId: String?,
-        distanceKm: Double?,
-        typicalDelayMin: Double?
-    ): Result<Route> {
+    suspend operator fun invoke(id: String, request: RouteUpdateRequest): Result<Route> {
 
         val idValidation = idValidator(id)
         if (idValidation is ValidationResult.Invalid) {
             return Result.failure(IllegalArgumentException(idValidation.errors.joinToString(", ")))
         }
 
-        val routeUpdateRequest = RouteUpdateRequest(originHubId, destinationHubId, distanceKm, typicalDelayMin)
-
-        val updateValidation = updateValidator(routeUpdateRequest)
+        val updateValidation = updateValidator(request)
         if (updateValidation is ValidationResult.Invalid) {
             return Result.failure(IllegalArgumentException(updateValidation.errors.joinToString(", ")))
         }
@@ -41,13 +33,14 @@ class UpdateRouteUseCase(
             val warehousesById = warehouseRepository.getAll().associateBy { it.id }
 
             val updated = existing.copy(
-                originHub = originHubId?.let { warehousesById[it] } ?: existing.originHub,
-                destinationHub = destinationHubId?.let { warehousesById[it] } ?: existing.destinationHub,
-                distanceKm = distanceKm ?: existing.distanceKm,
-                typicalDelayMin = typicalDelayMin ?: existing.typicalDelayMin
+                originHub = request.originHubId?.let { warehousesById[it] } ?: existing.originHub,
+                destinationHub = request.destinationHubId?.let { warehousesById[it] } ?: existing.destinationHub,
+                distanceKm = request.distanceKm ?: existing.distanceKm,
+                typicalDelayMin = request.typicalDelayMin ?: existing.typicalDelayMin
             )
 
             repository.update(id, updated)
         }
     }
+
 }
