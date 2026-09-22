@@ -10,7 +10,7 @@ class GetWarehouseByIdUseCase(
     private val repository: WarehouseRepository,
     private val idValidator: IdValidator = IdValidator(EntityPrefixes.WAREHOUSE)
 ) {
-    suspend operator fun invoke(id: String): Warehouse? {
+    suspend operator fun invoke(id: String): Result<Warehouse> {
 
         val validation = idValidator(id)
 
