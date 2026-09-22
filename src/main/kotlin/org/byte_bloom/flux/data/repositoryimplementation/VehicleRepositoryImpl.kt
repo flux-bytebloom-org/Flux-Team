@@ -29,9 +29,9 @@ class VehicleRepositoryImpl(
         return vehicleDTO.toDomain((mapOf(hub.id to hub)))
     }
 
-    override suspend fun create(vehicle: Vehicle): Vehicle? =
+    override suspend fun create(vehicle: Vehicle): Vehicle = requireNotNull(
         remoteDataSource.create(vehicle.toRequestDto())
-            .toDomain(mapOf(vehicle.currentHub.id to vehicle.currentHub))
+            .toDomain(mapOf(vehicle.currentHub.id to vehicle.currentHub)))
 
     override suspend fun update(id: String, vehicle: Vehicle): Vehicle? =
         remoteDataSource.update(id, vehicle.toRequestDto())
