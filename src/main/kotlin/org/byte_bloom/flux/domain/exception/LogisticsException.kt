@@ -22,9 +22,6 @@ sealed class LogisticsException(message: String, cause: Throwable? = null) : Exc
         class EntityValidationException(val errors: List<String>) :
             ValidationException("Validation failed: ${errors.joinToString(", ")}")
 
-        class InvalidCapacityException(val capacity: Double) :
-            ValidationException("Invalid capacity: $capacity")
-
         class InvalidPackageWeightException(val reason: String) :
             ValidationException("Invalid package weight: $reason")
 
@@ -48,9 +45,6 @@ sealed class LogisticsException(message: String, cause: Throwable? = null) : Exc
     sealed class BusinessLogicException(message: String) : LogisticsException(message) {
         class NoStationedVehiclesException(val warehouseId: String) :
             BusinessLogicException("No stationed vehicles at warehouse: $warehouseId")
-
-        class ZeroFleetCapacityException(val warehouseId: String) :
-            BusinessLogicException("Zero fleet capacity at warehouse: $warehouseId")
 
         class NoSuitableVehicleException(val warehouseId: String) :
             BusinessLogicException("No suitable vehicle found at warehouse: $warehouseId")

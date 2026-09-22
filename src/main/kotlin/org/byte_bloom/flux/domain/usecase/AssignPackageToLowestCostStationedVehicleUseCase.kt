@@ -8,7 +8,7 @@ import org.byte_bloom.flux.domain.model.Warehouse
 class AssignPackageToLowestCostStationedVehicleUseCase
     (private val findStationedVehiclesByCapacityUseCase: FindStationedVehiclesByCapacityUseCase) {
 
-    operator fun invoke(warehouse: Warehouse, packageItem: Package, distanceKm: Double): Vehicle? {
+    operator fun invoke(warehouse: Warehouse, packageItem: Package, distanceKm: Double): Vehicle {
 
         val requiredWeight = packageItem.weight
             ?: throw LogisticsException.ValidationException.InvalidPackageWeightException("package ${packageItem.id} has no weight")
@@ -17,5 +17,6 @@ class AssignPackageToLowestCostStationedVehicleUseCase
             findStationedVehiclesByCapacityUseCase(warehouse, requiredWeight)
 
         return eligibleVehicles.minByOrNull { vehicle -> distanceKm * vehicle.costPerKm }
+            ?:throw LogisticsException.BusinessLogicException.NoSuitableVehicleException(warehouse.id)
     }
 }
