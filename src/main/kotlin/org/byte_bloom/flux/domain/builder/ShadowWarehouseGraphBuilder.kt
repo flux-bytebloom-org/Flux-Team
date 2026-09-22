@@ -1,7 +1,6 @@
 package org.byte_bloom.flux.domain.builder
 
 import org.byte_bloom.flux.domain.exception.LogisticsException
-import org.byte_bloom.flux.domain.exception.UseCaseException
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Warehouse
 

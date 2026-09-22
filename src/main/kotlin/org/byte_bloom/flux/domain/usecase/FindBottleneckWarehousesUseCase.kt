@@ -1,7 +1,6 @@
 package org.byte_bloom.flux.domain.usecase
 
 import org.byte_bloom.flux.domain.exception.LogisticsException
-import org.byte_bloom.flux.domain.exception.UseCaseException
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.response.WeightedPath
 import org.byte_bloom.flux.domain.response.BottleneckWarehouse
