@@ -1,57 +1,53 @@
-package org.byte_bloom.flux.domain.usecase.crud
+package org.byte_bloom.flux.domain.usecase.crud.route
 
-import org.byte_bloom.flux.domain.model.Package
-import org.byte_bloom.flux.domain.model.Priority
-import org.byte_bloom.flux.domain.repository.PackageRepository
+import org.byte_bloom.flux.domain.model.Route
+import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.validator.EntityPrefixes
 import org.byte_bloom.flux.domain.validator.IdValidator
-import org.byte_bloom.flux.domain.validator.packagevalidations.PackageUpdateRequest
-import org.byte_bloom.flux.domain.validator.packagevalidations.PackageUpdateValidator
+import org.byte_bloom.flux.domain.validator.routevalidation.RouteUpdateRequest
+import org.byte_bloom.flux.domain.validator.routevalidation.RouteUpdateValidator
 import org.byte_bloom.flux.domain.validator.ValidationResult
 
-class UpdatePackageUseCase(
-    private val repository: PackageRepository,
+class UpdateRouteUseCase(
+    private val repository: RouteRepository,
     private val warehouseRepository: WarehouseRepository,
-    private val idValidator: IdValidator = IdValidator(EntityPrefixes.PACKAGE),
-    private val updateValidator: PackageUpdateValidator
+    private val idValidator: IdValidator = IdValidator(EntityPrefixes.ROUTE),
+    private val updateValidator: RouteUpdateValidator
 ) {
 
     suspend operator fun invoke(
         id: String,
-        weight: Double?,
         originHubId: String?,
         destinationHubId: String?,
-        priority: String?
-    ): Result<Package> {
+        distanceKm: Double?,
+        typicalDelayMin: Double?
+    ): Result<Route> {
 
         val idValidation = idValidator(id)
         if (idValidation is ValidationResult.Invalid) {
             return Result.failure(IllegalArgumentException(idValidation.errors.joinToString(", ")))
         }
 
-        val PkgUpdateRequest = PackageUpdateRequest(weight, originHubId, destinationHubId, priority)
+        val routeUpdateRequest = RouteUpdateRequest(originHubId, destinationHubId, distanceKm, typicalDelayMin)
 
-        val updateValidation = updateValidator(PkgUpdateRequest)
+        val updateValidation = updateValidator(routeUpdateRequest)
         if (updateValidation is ValidationResult.Invalid) {
             return Result.failure(IllegalArgumentException(updateValidation.errors.joinToString(", ")))
         }
 
         return runCatching {
-            val existing = repository.getById(id)
+            val existing = requireNotNull(repository.getById(id)) { "Route $id not found" }
             val warehousesById = warehouseRepository.getAll().associateBy { it.id }
 
             val updated = existing.copy(
-                weight = weight ?: existing.weight,
                 originHub = originHubId?.let { warehousesById[it] } ?: existing.originHub,
                 destinationHub = destinationHubId?.let { warehousesById[it] } ?: existing.destinationHub,
-                priority = priority?.let { Priority.valueOf(it.uppercase()) } ?: existing.priority
+                distanceKm = distanceKm ?: existing.distanceKm,
+                typicalDelayMin = typicalDelayMin ?: existing.typicalDelayMin
             )
 
             repository.update(id, updated)
         }
     }
 }
-
-
-

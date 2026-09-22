@@ -4,6 +4,7 @@ import org.byte_bloom.flux.data.csv.datasource.CsvPackageDataSource
 import org.byte_bloom.flux.data.csv.datasource.CsvRouteDataSource
 import org.byte_bloom.flux.data.csv.datasource.CsvVehicleDataSource
 import org.byte_bloom.flux.data.csv.datasource.CsvWarehouseDataSource
+import org.byte_bloom.flux.data.csv.datasource.VehicleDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabasePackageDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseWarehouseDataSource
 import org.byte_bloom.flux.data.repositoryimplementation.PackageRepositoryImpl
@@ -35,6 +36,7 @@ import org.byte_bloom.flux.domain.usecase.crud.UpdateWarehouseUseCase
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseRouteDataSource
+import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseVehicleDataSource
 import org.byte_bloom.flux.domain.repository.RouteRepository
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
@@ -184,7 +186,11 @@ private suspend fun initializeAndPrintGraph(): InitResult {
         remoteRouteDataSource = SupabaseRouteDataSource(),
         warehouseRepository = warehouseRepository
     )
-    val vehicleRepository = VehicleRepositoryImpl(CsvVehicleDataSource(FLEET_CSV_PATH), warehouseRepository)
+    val vehicleRepository = VehicleRepositoryImpl(
+        localDataSource = CsvVehicleDataSource(FLEET_CSV_PATH),
+        remoteDataSource = SupabaseVehicleDataSource(),
+        warehouseRepository=warehouseRepository
+    )
     val packageRepository = PackageRepositoryImpl(
         pkgDataSource = CsvPackageDataSource(PACKAGES_CSV_PATH),
         remoteDataSource = SupabasePackageDataSource(),

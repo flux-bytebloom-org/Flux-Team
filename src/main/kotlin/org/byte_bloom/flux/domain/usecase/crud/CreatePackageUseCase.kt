@@ -2,7 +2,7 @@ package org.byte_bloom.flux.domain.usecase.crud
 
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.repository.PackageRepository
-import org.byte_bloom.flux.domain.validator.packageValidations.PackageCreateValidator
+import org.byte_bloom.flux.domain.validator.packagevalidations.PackageCreateValidator
 import org.byte_bloom.flux.domain.validator.ValidationResult
 
 class CreatePackageUseCase(
