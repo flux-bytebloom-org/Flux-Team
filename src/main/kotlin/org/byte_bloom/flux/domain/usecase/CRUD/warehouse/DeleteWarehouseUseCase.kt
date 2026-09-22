@@ -1,5 +1,6 @@
-package org.byte_bloom.flux.domain.usecase.crud
+package org.byte_bloom.flux.domain.usecase.crud.warehouse
 
+import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.validator.EntityPrefixes
 import org.byte_bloom.flux.domain.validator.IdValidator
@@ -10,15 +11,18 @@ class DeleteWarehouseUseCase(
     private val idValidator: IdValidator = IdValidator(EntityPrefixes.WAREHOUSE)
 ) {
 
-    suspend operator fun invoke(id: String) {
+    suspend operator fun invoke(id: String): Result<Unit> {
 
         val validation = idValidator(id)
-
         if (validation is ValidationResult.Invalid) {
-            throw IllegalArgumentException(
-                validation.errors.joinToString(", ")
+                return Result.failure(
+                    LogisticsException.ValidationException.EntityValidationException(
+                        validation.errors.map { it.toString() }
+                    )
             )
         }
 
-        repository.delete(id)
-    }}
+        return repository.delete(id)
+    }
+}
+

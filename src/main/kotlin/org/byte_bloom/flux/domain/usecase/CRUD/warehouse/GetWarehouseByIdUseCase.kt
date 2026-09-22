@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.usecase.crud
+package org.byte_bloom.flux.domain.usecase.crud.warehouse
 
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
