@@ -1,21 +1,19 @@
 package org.byte_bloom.flux.domain.usecase.CRUD.vehicle
 
 import org.byte_bloom.flux.domain.model.Vehicle
-import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.VehicleRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.validator.EntityPrefixes
 import org.byte_bloom.flux.domain.validator.IdValidator
 import org.byte_bloom.flux.domain.validator.ValidationResult
-import org.byte_bloom.flux.domain.validator.packagevalidations.PackageUpdateValidator
-import org.byte_bloom.flux.domain.validator.vehicleValidation.UpdateVehicleValidator
+import org.byte_bloom.flux.domain.validator.vehicleValidation.VehicleUpdateValidator
 import org.byte_bloom.flux.domain.validator.vehicleValidation.VehicleUpdateRequest
 
 class UpdateVehicleUseCase(
     private val repository: VehicleRepository,
     private val warehouseRepository: WarehouseRepository,
     private val idValidator: IdValidator = IdValidator(EntityPrefixes.VEHICLE),
-    private val updateValidator: UpdateVehicleValidator
+    private val updateValidator: VehicleUpdateValidator
 ){
     suspend operator fun invoke(id: String , request: VehicleUpdateRequest): Result<Vehicle>{
 

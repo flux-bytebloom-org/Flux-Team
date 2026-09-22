@@ -6,7 +6,7 @@ import org.byte_bloom.flux.domain.validator.FieldChecks
 import org.byte_bloom.flux.domain.validator.ValidationResult
 import org.byte_bloom.flux.domain.validator.Validator
 
-class CreateVehicleValidator: Validator<Vehicle>{
+class VehicleCreateValidator: Validator<Vehicle>{
     override fun invoke(vehicle: Vehicle): ValidationResult {
         val errors = listOfNotNull(
             FieldChecks.notBlank(EntityField.CURRENT_HUB_ID, vehicle.currentHub.id),
