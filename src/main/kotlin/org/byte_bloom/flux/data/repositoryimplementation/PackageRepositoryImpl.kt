@@ -5,6 +5,7 @@ import org.byte_bloom.flux.data.csv.mapper.toDomain
 import org.byte_bloom.flux.data.remote.datasource.RemotePackageDataSource
 import org.byte_bloom.flux.data.remote.dto.toDomain
 import org.byte_bloom.flux.data.remote.dto.toRequestDto
+import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
@@ -23,30 +24,27 @@ class PackageRepositoryImpl(
             .onEach { pkg -> pkg.originHub.addPackage(pkg) }
     }
 
-    override suspend fun getById(id: String): Package {
+    override suspend fun getById(id: String): Result<Package> = runCatching {
         val warehousesById = warehouseRepository.getAll().associateBy { it.id }
-        return requireNotNull(remoteDataSource.getById(id)?.toDomain(warehousesById)) {
-            "Package $id references an unknown warehouse"
-        }
+        remoteDataSource.getById(id)?.toDomain(warehousesById)
+        ?: throw LogisticsException.EntityNotFoundException.PackageNotFoundException(id)
     }
 
-    override suspend fun create(pkg: Package): Package {
+    override suspend fun create(pkg: Package): Result<Package> = runCatching {
         val warehousesById = warehouseRepository.getAll().associateBy { it.id }
         val response = remoteDataSource.create(pkg.toRequestDto())
-        return requireNotNull(response.toDomain(warehousesById)) {
-            "Created package references an unknown warehouse"
-        }
+       response.toDomain(warehousesById)
+           ?: throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(response.originHubId)
     }
 
-    override suspend fun update(id: String, pkg: Package): Package {
+    override suspend fun update(id: String, pkg: Package): Result<Package> = runCatching {
         val warehousesById = warehouseRepository.getAll().associateBy { it.id }
         val response = remoteDataSource.update(id, pkg.toRequestDto())
-        return requireNotNull(response.toDomain(warehousesById)) {
-            "Updated package references an unknown warehouse"
-        }
+        response.toDomain(warehousesById)
+            ?: throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(response.originHubId)
     }
 
-    override suspend fun delete(id: String) {
+    override suspend fun delete(id: String): Result<Unit> = runCatching {
         remoteDataSource.delete(id)
     }
 
