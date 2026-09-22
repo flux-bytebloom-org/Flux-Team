@@ -1,5 +1,6 @@
 package org.byte_bloom.flux.domain.usecase.crud
 
+import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.validator.EntityPrefixes
@@ -16,13 +17,14 @@ class UpdateWarehouseUseCase(
     suspend operator fun invoke(
         id: String,
         request: WarehouseUpdateRequest
-    ): Warehouse {
+    ): Result<Warehouse> {
 
         val idValidation = idValidator(id)
-
         if (idValidation is ValidationResult.Invalid) {
-            throw IllegalArgumentException(
-                idValidation.errors.joinToString(", ")
+            return Result.failure(
+                LogisticsException.ValidationException.EntityValidationException(
+                    idValidation.errors.map { it.toString() }
+                )
             )
         }
 
@@ -34,7 +36,7 @@ class UpdateWarehouseUseCase(
             )
         }
 
-        val existing = repository.getById(id)
+        val existing = repository.getById(id).getOrElse { error -> return Result.failure(error) }
             ?: throw IllegalArgumentException("Warehouse not found: $id")
 
         val updatedWarehouse = existing.copy(

@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.usecase.crud
+package org.byte_bloom.flux.domain.usecase.crud.warehouse
 
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
@@ -10,7 +10,7 @@ class GetWarehouseByIdUseCase(
     private val repository: WarehouseRepository,
     private val idValidator: IdValidator = IdValidator(EntityPrefixes.WAREHOUSE)
 ) {
-    suspend operator fun invoke(id: String): Warehouse? {
+    suspend operator fun invoke(id: String): Result<Warehouse> {
 
         val validation = idValidator(id)
 

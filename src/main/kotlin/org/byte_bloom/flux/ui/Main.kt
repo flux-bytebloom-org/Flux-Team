@@ -4,7 +4,6 @@ import org.byte_bloom.flux.data.csv.datasource.CsvPackageDataSource
 import org.byte_bloom.flux.data.csv.datasource.CsvRouteDataSource
 import org.byte_bloom.flux.data.csv.datasource.CsvVehicleDataSource
 import org.byte_bloom.flux.data.csv.datasource.CsvWarehouseDataSource
-import org.byte_bloom.flux.data.csv.datasource.VehicleDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabasePackageDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseWarehouseDataSource
 import org.byte_bloom.flux.data.repositoryimplementation.PackageRepositoryImpl
@@ -29,15 +28,12 @@ import org.byte_bloom.flux.domain.repository.VehicleRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
 import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
-import org.byte_bloom.flux.domain.usecase.crud.CreateWarehouseUseCase
-import org.byte_bloom.flux.domain.usecase.crud.DeleteWarehouseUseCase
-import org.byte_bloom.flux.domain.usecase.crud.GetWarehouseByIdUseCase
-import org.byte_bloom.flux.domain.usecase.crud.UpdateWarehouseUseCase
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseRouteDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseVehicleDataSource
 import org.byte_bloom.flux.domain.repository.RouteRepository
+import org.byte_bloom.flux.ui.scenarios.testWarehouseCrudFlow
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 private const val DEFAULT_BASE_RATE = 100.0
@@ -216,21 +212,3 @@ private data class InitResult(
     val packageRepository: PackageRepository,
     val routeRepository: RouteRepository
 )
-suspend fun testWarehouseCrudFlow(repository: WarehouseRepository) {
-    val createUC = CreateWarehouseUseCase(repository)
-    val getByIdUC = GetWarehouseByIdUseCase(repository)
-    val updateUC = UpdateWarehouseUseCase(repository)
-    val deleteUC = DeleteWarehouseUseCase(repository)
-
-    val created = createUC(Warehouse(id = "", name = "Test Hub", regionalZone = "NORTH", latitude = 32.0, longitude = 35.0))
-    println("Created: $created")
-
-    val fetched = getByIdUC(created.id)
-    println("Fetched: $fetched")
-
-    val updated = updateUC(created.id, created.copy(name = "Updated Hub"))
-    println("Updated: $updated")
-
-    deleteUC(created.id)
-    println("Deleted: ${created.id}")
-}
