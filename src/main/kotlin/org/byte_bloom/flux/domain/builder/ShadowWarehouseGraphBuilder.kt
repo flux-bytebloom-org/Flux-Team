@@ -1,5 +1,6 @@
 package org.byte_bloom.flux.domain.builder
 
+import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.exception.UseCaseException
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Warehouse
@@ -49,10 +50,10 @@ class ShadowWarehouseGraphBuilder {
             if (touchesBottleneck) route.distanceKm * penaltyFactor else route.distanceKm
 
         val shadowOrigin = shadowWarehousesById[route.originHub.id]
-            ?: throw UseCaseException.WarehouseNotFound(route.originHub.id)
+            ?: throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(route.originHub.id)
 
         val shadowDestination = shadowWarehousesById[route.destinationHub.id]
-            ?: throw UseCaseException.WarehouseNotFound(route.destinationHub.id)
+            ?: throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(route.destinationHub.id)
 
         shadowOrigin.addRoute(
             Route(

@@ -1,5 +1,6 @@
 package org.byte_bloom.flux.domain.usecase
 
+import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.exception.UseCaseException
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Vehicle
@@ -11,7 +12,7 @@ class AssignPackageToLowestCostStationedVehicleUseCase
     operator fun invoke(warehouse: Warehouse, packageItem: Package, distanceKm: Double): Vehicle? {
 
         val requiredWeight = packageItem.weight
-            ?: throw  UseCaseException.InvalidPackageWeight("package ${packageItem.id} has no weight")
+            ?: throw LogisticsException.ValidationException.InvalidPackageWeightException("package ${packageItem.id} has no weight")
 
         val eligibleVehicles =
             findStationedVehiclesByCapacityUseCase(warehouse, requiredWeight)

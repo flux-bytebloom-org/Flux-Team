@@ -1,6 +1,7 @@
 package org.byte_bloom.flux.ui.scenarios
 
 import org.byte_bloom.flux.domain.builder.ShadowWarehouseGraphBuilder
+import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.exception.UseCaseException
 import org.byte_bloom.flux.domain.logic.routing.DijkstraRouter
 import org.byte_bloom.flux.domain.model.Package
@@ -183,7 +184,7 @@ private fun pathDistance(path: List<Warehouse>): Double {
 private fun safeLoadFactor(warehouse: Warehouse, useCase: GetWarehouseLoadFactorUseCase): Double {
     return try {
         useCase(warehouse)
-    } catch (e: UseCaseException.NoStationedVehicles) {
+    } catch (e: LogisticsException.BusinessLogicException.NoStationedVehiclesException) {
         println("Info: Warehouse ${warehouse.id} has no vehicles: ${e.message}")
         0.0
     }

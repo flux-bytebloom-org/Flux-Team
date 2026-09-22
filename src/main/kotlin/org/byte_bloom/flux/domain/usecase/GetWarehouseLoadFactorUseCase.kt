@@ -1,5 +1,6 @@
 package org.byte_bloom.flux.domain.usecase
 
+import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.exception.UseCaseException
 import org.byte_bloom.flux.domain.model.Warehouse
 
@@ -11,7 +12,7 @@ class GetWarehouseLoadFactorUseCase {
             .sumOf { it.maxCapacityKg }
 
         if (totalFleetCapacityKg <= 0.0) {
-            throw UseCaseException.NoStationedVehicles(warehouse.id)
+            throw LogisticsException.BusinessLogicException.NoStationedVehiclesException(warehouse.id)
         }
 
         val totalQueueWeightKg = warehouse.getCargoQueue()

@@ -1,5 +1,6 @@
 package org.byte_bloom.flux.domain.usecase
 
+import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.exception.UseCaseException
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Warehouse
@@ -15,7 +16,7 @@ class ReroutePackageUseCase (
         newDestination: Warehouse,
     ): Package {
         val actualPackage = originHub.getCargoQueue().find { it.id == packageItem.id }
-            ?: throw UseCaseException.PackageNotInQueue(
+            ?: throw LogisticsException.BusinessLogicException.PackageNotInQueueException(
                 packageId = packageItem.id,
                 warehouseId = originHub.id
             )
