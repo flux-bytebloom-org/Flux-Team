@@ -6,7 +6,7 @@ import org.byte_bloom.flux.domain.model.Warehouse
 interface VehicleRepository {
     suspend fun getAll(): List<Vehicle>
 
-    suspend fun getById(id: String): Vehicle?
+    suspend fun getById(id: String): Vehicle
     suspend fun create(vehicle: Vehicle): Vehicle
     suspend fun update(id: String, vehicle: Vehicle): Vehicle?
     suspend fun delete(id: String)

@@ -26,7 +26,9 @@ class VehicleRepositoryImpl(
     override suspend fun getById(id: String): Vehicle? {
         val vehicleDTO = remoteDataSource.getById(id) ?: return null
         val hub = warehouseRepository.getById(vehicleDTO.currentHubId) ?: return null
-        return vehicleDTO.toDomain((mapOf(hub.id to hub)))
+        return requireNotNull(
+            vehicleDTO.toDomain((mapOf(hub.id to hub)))
+        )
     }
 
     override suspend fun create(vehicle: Vehicle): Vehicle = requireNotNull(
