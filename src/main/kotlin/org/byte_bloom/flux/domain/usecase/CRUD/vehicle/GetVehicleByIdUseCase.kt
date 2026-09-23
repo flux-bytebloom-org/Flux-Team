@@ -1,5 +1,6 @@
 package org.byte_bloom.flux.domain.usecase.CRUD.vehicle
 
+import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.repository.VehicleRepository
 import org.byte_bloom.flux.domain.validator.EntityPrefixes
@@ -17,12 +18,13 @@ class GetVehicleByIdUseCase(
 
         if (validation is ValidationResult.Invalid) {
             return Result.failure(
-                IllegalArgumentException(validation.errors.joinToString(", "))
+                LogisticsException.ValidationException.EntityValidationException(
+                    validation.errors.map{it.toString()}
+                )
             )
         }
 
-        return runCatching {
-            repository.getById(id)
-        }
+        return repository.getById(id)
+
     }
 }
