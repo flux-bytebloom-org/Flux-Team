@@ -3,6 +3,7 @@ package org.byte_bloom.flux.data.repositoryimplementation
 import org.byte_bloom.flux.data.remote.datasource.RemoteVehicleDataSource
 import org.byte_bloom.flux.data.remote.dto.toDomain
 import org.byte_bloom.flux.data.remote.dto.toRequestDto
+import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.data.csv.datasource.VehicleDataSource as LocalVehicleDataSource
 import org.byte_bloom.flux.data.csv.mapper.toDomain as toDomainLocal
 import org.byte_bloom.flux.domain.model.Vehicle
@@ -23,22 +24,28 @@ class VehicleRepositoryImpl(
             .onEach { vehicle -> vehicle.currentHub.addVehicle(vehicle) }
     }
 
-    override suspend fun getById(id: String): Vehicle {
-        val vehicleDTO = remoteDataSource.getById(id)!!
-        val hub = warehouseRepository.getById(vehicleDTO.currentHubId)!!
-            return requireNotNull( vehicleDTO.toDomain((mapOf(hub.id to hub))))
+    override suspend fun getById(id: String): Result<Vehicle> = runCatching{
+        val warehousesById = warehouseRepository.getAll().associateBy { it.id }
+        remoteDataSource.getById(id)?.toDomain(warehousesById)
+            ?:throw LogisticsException.EntityNotFoundException.VehicleNotFoundException(id)
 
     }
 
-    override suspend fun create(vehicle: Vehicle): Vehicle = requireNotNull(
-        remoteDataSource.create(vehicle.toRequestDto())
-            .toDomain(mapOf(vehicle.currentHub.id to vehicle.currentHub)))
+    override suspend fun create(vehicle: Vehicle): Result<Vehicle> = runCatching {
+        val warehousesById = warehouseRepository.getAll().associateBy { it.id }
+        val response  = remoteDataSource.create(vehicle.toRequestDto())
+        response.toDomain(warehousesById)
+            ?: throw LogisticsException.EntityNotFoundException.VehicleNotFoundException(response.currentHubId)
+    }
 
-    override suspend fun update(id: String, vehicle: Vehicle): Vehicle = requireNotNull(
-        remoteDataSource.update(id, vehicle.toRequestDto())
-            .toDomain(mapOf(vehicle.currentHub.id to vehicle.currentHub)))
+    override suspend fun update(id: String, vehicle: Vehicle): Result<Vehicle> = runCatching {
+        val warehousesById = warehouseRepository.getAll().associateBy { it.id }
+        val response  = remoteDataSource.update(id, vehicle.toRequestDto())
+        response.toDomain(warehousesById)
+            ?: throw LogisticsException.EntityNotFoundException.VehicleNotFoundException(response.currentHubId)
+    }
 
-    override suspend fun delete(id: String) = remoteDataSource.delete(id)
+    override suspend fun delete(id: String) : Result<Unit> =runCatching {  remoteDataSource.delete(id)}
 
 
 

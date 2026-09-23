@@ -1,5 +1,6 @@
 package org.byte_bloom.flux.data.remote.dto
 
+import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.Route
@@ -75,11 +76,7 @@ fun Package.toRequestDto(): PackageRequestDto {
 // ---------- Vehicle ----------
 
 fun VehicleResponseDto.toDomain(warehousesById: Map<String, Warehouse>): Vehicle? {
-    val vehiclesHub = warehousesById[currentHubId]
-    if (vehiclesHub == null ) return null
-
-    // val hub = warehousesById[currentHubId]
-    //        ?: throw DomainException.ResourceNotFoundException(currentHubId)
+    val vehiclesHub = warehousesById[currentHubId]?:return null
 
     return Vehicle(
         id = id,
