@@ -25,22 +25,24 @@ class VehicleRepositoryImpl(
     }
 
     override suspend fun getById(id: String): Result<Vehicle> = runCatching{
-        val vehicleDTO = remoteDataSource.getById(id)
+        val warehousesById = warehouseRepository.getAll().associateBy { it.id }
+        remoteDataSource.getById(id)?.toDomain(warehousesById)
             ?:throw LogisticsException.EntityNotFoundException.VehicleNotFoundException(id)
-        val hub = warehouseRepository.getById(vehicleDTO.currentHubId).getOrThrow()
-
-        vehicleDTO.toDomain((mapOf(hub.id to hub)))
 
     }
 
     override suspend fun create(vehicle: Vehicle): Result<Vehicle> = runCatching {
-        remoteDataSource.create(vehicle.toRequestDto())
-            .toDomain(mapOf(vehicle.currentHub.id to vehicle.currentHub))
+        val warehousesById = warehouseRepository.getAll().associateBy { it.id }
+        val response  = remoteDataSource.create(vehicle.toRequestDto())
+        response.toDomain(warehousesById)
+            ?: throw LogisticsException.EntityNotFoundException.VehicleNotFoundException(response.currentHubId)
     }
 
     override suspend fun update(id: String, vehicle: Vehicle): Result<Vehicle> = runCatching {
-        remoteDataSource.update(id, vehicle.toRequestDto())
-            .toDomain(mapOf(vehicle.currentHub.id to vehicle.currentHub))
+        val warehousesById = warehouseRepository.getAll().associateBy { it.id }
+        val response  = remoteDataSource.update(id, vehicle.toRequestDto())
+        response.toDomain(warehousesById)
+            ?: throw LogisticsException.EntityNotFoundException.VehicleNotFoundException(response.currentHubId)
     }
 
     override suspend fun delete(id: String) : Result<Unit> =runCatching {  remoteDataSource.delete(id)}

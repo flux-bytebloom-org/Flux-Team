@@ -75,9 +75,8 @@ fun Package.toRequestDto(): PackageRequestDto {
 
 // ---------- Vehicle ----------
 
-fun VehicleResponseDto.toDomain(warehousesById: Map<String, Warehouse>): Vehicle {
-    val vehiclesHub = warehousesById[currentHubId]
-        ?:throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(currentHubId)
+fun VehicleResponseDto.toDomain(warehousesById: Map<String, Warehouse>): Vehicle? {
+    val vehiclesHub = warehousesById[currentHubId]?:return null
 
     return Vehicle(
         id = id,
