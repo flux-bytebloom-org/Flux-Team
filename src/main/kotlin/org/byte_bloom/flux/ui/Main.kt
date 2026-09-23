@@ -33,6 +33,7 @@ import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseRouteDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseVehicleDataSource
 import org.byte_bloom.flux.domain.repository.RouteRepository
+import org.byte_bloom.flux.ui.scenarios.testPackageCrudFlow
 import org.byte_bloom.flux.ui.scenarios.testWarehouseCrudFlow
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
@@ -63,6 +64,7 @@ fun main() = kotlinx.coroutines.runBlocking {
         benchmarkRouters(init.warehouses, bfsRouter, bidirectionalRouter)
 
        testWarehouseCrudFlow(init.warehouseRepository)
+        testPackageCrudFlow(init.packageRepository, init.warehouseRepository)
 
 
         /*comment this part until doing exception handling

@@ -1,5 +1,6 @@
-package org.byte_bloom.flux.domain.usecase.crud
+package org.byte_bloom.flux.domain.usecase.crud.pakage
 
+import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.repository.PackageRepository
@@ -20,16 +21,23 @@ class UpdatePackageUseCase(
 
         val idValidation = idValidator(id)
         if (idValidation is ValidationResult.Invalid) {
-            return Result.failure(IllegalArgumentException(idValidation.errors.joinToString(", ")))
+            return Result.failure(
+                LogisticsException.ValidationException.EntityValidationException(
+                    idValidation.errors.map { it.toString() }
+                )
+            )
         }
 
         val updateValidation = updateValidator(request)
         if (updateValidation is ValidationResult.Invalid) {
-            return Result.failure(IllegalArgumentException(updateValidation.errors.joinToString(", ")))
+            return Result.failure(
+                LogisticsException.ValidationException.EntityValidationException(
+                    updateValidation.errors.map { it.toString() }
+                )
+            )
         }
 
-        return runCatching {
-            val existing = repository.getById(id)
+            val existing = repository.getById(id).getOrElse { error -> return Result.failure(error) }
             val warehousesById = warehouseRepository.getAll().associateBy { it.id }
 
             val updated = existing.copy(
@@ -39,11 +47,10 @@ class UpdatePackageUseCase(
                 priority = request.priority?.let { Priority.valueOf(it.uppercase()) } ?: existing.priority
             )
 
-            repository.update(id, updated)
+        return repository.update(id, updated)
         }
     }
 
-}
 
 
 
