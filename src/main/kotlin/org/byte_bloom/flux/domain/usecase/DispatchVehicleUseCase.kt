@@ -16,7 +16,7 @@ class DispatchVehicleUseCase(
         val queue = hub.getCargoQueue()
 
         val targetHub = selectTargetHub(queue)
-            ?: return DispatchedVehicle(vehicle = vehicle, loadedPackages = emptyList(), totalWeight = 0.0,hub)
+            ?: return DispatchedVehicle(vehicle = vehicle, loadedPackages = emptyList(), totalWeight = 0.0,emptyList())
 
         val pathWarehouses = findOptimalPath(start = hub, destination = targetHub)
         val allowedHubIds = pathWarehouses.map { it.id }.toSet()
@@ -37,7 +37,7 @@ class DispatchVehicleUseCase(
             vehicle = vehicle,
             loadedPackages = selectedPackages,
             totalWeight = totalWeight,
-            mainDestination = targetHub
+            path = pathWarehouses
         )
     }
 

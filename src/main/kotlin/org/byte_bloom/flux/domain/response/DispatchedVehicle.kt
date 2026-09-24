@@ -8,5 +8,5 @@ data class DispatchedVehicle(
     val vehicle: Vehicle,
     val loadedPackages: List<Package>,
     val totalWeight: Double,
-    val mainDestination : Warehouse
+    val path : List<Warehouse>
 )
