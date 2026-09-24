@@ -1,29 +1,61 @@
 package org.byte_bloom.flux.domain.usecase
 
+import org.byte_bloom.flux.domain.response.DispatchedVehicle
 import org.byte_bloom.flux.domain.model.Package
+import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
-import org.byte_bloom.flux.domain.response.DispatchedVehicle
 
-class DispatchVehicleUseCase (
-    val packageRepo: PackageRepository
-){
+class DispatchVehicleUseCase(
+    private val packageRepo: PackageRepository,
+    private val findOptimalPath: FindOptimalPathUseCase
+) {
 
     operator fun invoke(hub: Warehouse, vehicle: Vehicle): DispatchedVehicle {
-        val selectedPackages = selectPackagesWithinCapacity(hub.getCargoQueue(),vehicle.maxCapacityKg)
+        val queue = hub.getCargoQueue()
+
+        val targetHub = selectTargetHub(queue)
+            ?: return DispatchedVehicle(vehicle = vehicle, loadedPackages = emptyList(), totalWeight = 0.0,hub)
+
+        val pathWarehouses = findOptimalPath(start = hub, destination = targetHub)
+        val allowedHubIds = pathWarehouses.map { it.id }.toSet()
+
+        val eligiblePackages = queue.filter { it.destinationHub.id in allowedHubIds }
+
+        val prioritized = eligiblePackages.sortedByDescending { it.priority == Priority.URGENT }
+
+        val selectedPackages = selectPackagesWithinCapacity(prioritized, vehicle.maxCapacityKg)
+
+        val totalWeight = selectedPackages.fold(0.0) { acc, pkg -> acc + (pkg.weight ?: 0.0) }
 
         selectedPackages.forEach { pkg ->
             packageRepo.removePackageFromHub(pkg, hub)
         }
 
-        val totalWeight = selectedPackages.fold(0.0) { acc, pkg -> acc + (pkg.weight ?: 0.0) }
-
         return DispatchedVehicle(
             vehicle = vehicle,
             loadedPackages = selectedPackages,
-            totalWeight = totalWeight
+            totalWeight = totalWeight,
+            mainDestination = targetHub
         )
+    }
+
+    private fun selectTargetHub(queue: List<Package>): Warehouse? {
+        val urgentGrouped = queue
+            .filter { it.priority == Priority.URGENT }
+            .groupBy { it.destinationHub }
+
+        val candidates = urgentGrouped.ifEmpty {
+            queue.groupBy { it.destinationHub }
+        }
+
+        return candidates.maxWithOrNull(
+            compareBy(
+                { it.value.size },
+                { it.value.fold(0.0) { acc, pkg -> acc + (pkg.weight ?: 0.0) } }
+            )
+        )?.key
     }
 
     private fun selectPackagesWithinCapacity(
