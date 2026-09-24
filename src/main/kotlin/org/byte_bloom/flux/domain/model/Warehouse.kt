@@ -5,7 +5,7 @@ import org.byte_bloom.flux.domain.logic.sorting.sortCargoByWeightDescending
 data class Warehouse(
     val id: String,
     val name: String,
-    val regionalZone: String,
+    val regionalZone: RegionalZone,
     val latitude: Double,
     val longitude: Double
 

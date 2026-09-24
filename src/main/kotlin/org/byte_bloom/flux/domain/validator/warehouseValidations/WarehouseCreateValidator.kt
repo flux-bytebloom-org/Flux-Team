@@ -10,7 +10,6 @@ class WarehouseCreateValidator : Validator<Warehouse> {
 
     override operator fun invoke(value: Warehouse): ValidationResult {
         val errors = listOfNotNull(FieldChecks.notBlank(EntityField.WAREHOUSE_NAME, value.name),
-            FieldChecks.notBlank(EntityField.REGIONAL_ZONE, value.regionalZone),
             FieldChecks.inRange(EntityField.LATITUDE, value.latitude, -90.0, 90.0),
             FieldChecks.inRange(EntityField.LONGITUDE, value.longitude, -180.0, 180.0)
         )

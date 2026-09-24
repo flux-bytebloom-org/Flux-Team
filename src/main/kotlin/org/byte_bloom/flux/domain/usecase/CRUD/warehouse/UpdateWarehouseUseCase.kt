@@ -1,6 +1,7 @@
 package org.byte_bloom.flux.domain.usecase.crud
 
 import org.byte_bloom.flux.domain.exception.LogisticsException
+import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.validator.EntityPrefixes
@@ -8,6 +9,7 @@ import org.byte_bloom.flux.domain.validator.IdValidator
 import org.byte_bloom.flux.domain.validator.ValidationResult
 import org.byte_bloom.flux.domain.validator.warehouseValidations.WarehouseUpdateRequest
 import org.byte_bloom.flux.domain.validator.warehouseValidations.WarehouseUpdateValidator
+import kotlin.text.uppercase
 
 class UpdateWarehouseUseCase(
     private val repository: WarehouseRepository,
@@ -41,7 +43,7 @@ class UpdateWarehouseUseCase(
 
         val updatedWarehouse = existing.copy(
             name = request.name ?: existing.name,
-            regionalZone = request.regionalZone ?: existing.regionalZone,
+            regionalZone = request.regionalZone?.let{ RegionalZone.valueOf(it.uppercase())}?: existing.regionalZone,
             latitude = request.latitude ?: existing.latitude,
             longitude = request.longitude ?: existing.longitude
         )
