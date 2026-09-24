@@ -3,6 +3,7 @@ package org.byte_bloom.flux.data.remote.dto
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
+import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
@@ -12,7 +13,7 @@ private const val DEFAULT_COORDINATE = 0.0
 private fun createEmptyWarehouse(id: String) = Warehouse(
     id = id,
     name = "",
-    regionalZone = "",
+    regionalZone = RegionalZone.UnKNOWN,
     latitude = DEFAULT_COORDINATE,
     longitude = DEFAULT_COORDINATE
 )
@@ -25,13 +26,22 @@ private fun parsePackagePriority(value: String): Priority {
     }
 }
 
+private fun parseWareHouseRegionalZone(value: String): RegionalZone = when(value.uppercase()) {
+    "NORTH" -> RegionalZone.NORTH
+    "SOUTH" -> RegionalZone.SOUTH
+    "EAST" -> RegionalZone.EAST
+    "WEST" -> RegionalZone.WEST
+    "CENTRAL" -> RegionalZone.CENTRAL
+    else -> RegionalZone.UnKNOWN
+}
+
 // ---------- Warehouse ----------
 
 fun WarehouseResponseDto.toDomain(): Warehouse {
     return Warehouse(
         id = id,
         name = name,
-        regionalZone = regionalZone,
+        regionalZone = parseWareHouseRegionalZone(regionalZone),
         latitude = latitude,
         longitude = longitude
     )
@@ -40,7 +50,7 @@ fun WarehouseResponseDto.toDomain(): Warehouse {
 fun Warehouse.toRequestDto(): WarehouseRequestDto {
     return WarehouseRequestDto(
         name = name,
-        regionalZone = regionalZone,
+        regionalZone = regionalZone.name,
         latitude = latitude,
         longitude = longitude
     )

@@ -3,6 +3,7 @@ package org.byte_bloom.flux.ui.scenarios
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
+import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
@@ -43,7 +44,7 @@ suspend fun testPackageCrudFlow(
         .onFailure { error -> printLogisticsError(error) }
 
     // Scenario 2: deliberate validation failure (blank hub ids, negative weight)
-    val invalidWarehouse = Warehouse(id = "", name = "", regionalZone = "", latitude = 0.0, longitude = 0.0)
+    val invalidWarehouse = Warehouse(id = "", name = "", regionalZone = RegionalZone.UnKNOWN, latitude = 0.0, longitude = 0.0)
     createUC(
         Package(id = "", weight = -5.0, originHub = invalidWarehouse, destinationHub = invalidWarehouse, priority = Priority.STANDARD)
     ).onSuccess { println("Unexpected success on invalid input") }

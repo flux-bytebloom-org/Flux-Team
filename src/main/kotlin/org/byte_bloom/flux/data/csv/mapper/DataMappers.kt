@@ -6,13 +6,14 @@ import org.byte_bloom.flux.data.csv.dataholders.Priority
 import org.byte_bloom.flux.data.csv.dataholders.PackageRaw
 import org.byte_bloom.flux.data.csv.dataholders.WarehouseRaw
 import org.byte_bloom.flux.domain.model.Package
+import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.model.Priority as DomainPriority
 
 fun WarehouseRaw.toDomain() = Warehouse(
-    id = id, name = name, regionalZone = regionalZone,
+    id = id, name = name, regionalZone = regionalZoneMap(regionalZone),
     latitude = latitude, longitude = longitude
 )
 
@@ -44,4 +45,13 @@ fun Priority.toDomain(): DomainPriority = when (this) {
     Priority.LOW -> DomainPriority.LOW
     Priority.STANDARD -> DomainPriority.STANDARD
     Priority.URGENT -> DomainPriority.URGENT
+}
+
+fun regionalZoneMap(zoneData: String): RegionalZone = when(zoneData) {
+    "NORTH" -> RegionalZone.NORTH
+    "SOUTH" -> RegionalZone.SOUTH
+    "EAST" -> RegionalZone.EAST
+    "WEST" -> RegionalZone.WEST
+    "CENTRAL" -> RegionalZone.CENTRAL
+    else -> RegionalZone.UnKNOWN
 }

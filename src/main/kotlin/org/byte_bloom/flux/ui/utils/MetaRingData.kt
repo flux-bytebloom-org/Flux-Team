@@ -2,6 +2,7 @@ package org.byte_bloom.flux.ui.utils
 
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
+import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
 
@@ -35,25 +36,25 @@ object MetaRingData {
         return mutableListOf(
             buildVehicle(
                 "V1",
-                buildWarehouse("W1", "Main", "ZoneA"),
+                buildWarehouse("W1", "Main", RegionalZone.CENTRAL),
                 FIRST_VEHICLE_CAPACITY,
                 FIRST_VEHICLE_COST_PER_KM
             ),
             buildVehicle(
                 "V2",
-                buildWarehouse("W2", "Second", "ZoneB"),
+                buildWarehouse("W2", "Second", RegionalZone.SOUTH),
                 SECOND_VEHICLE_CAPACITY,
                 SECOND_VEHICLE_COST_PER_KM
             ),
             buildVehicle(
                 "V3",
-                buildWarehouse("W3", "Third", "ZoneC"),
+                buildWarehouse("W3", "Third", RegionalZone.NORTH),
                 THIRD_VEHICLE_CAPACITY,
                 THIRD_VEHICLE_COST_PER_KM
             ),
             buildVehicle(
                 "V4",
-                buildWarehouse("W4", "Fourth", "ZoneD"),
+                buildWarehouse("W4", "Fourth", RegionalZone.EAST),
                 FOURTH_VEHICLE_CAPACITY,
                 FOURTH_VEHICLE_COST_PER_KM
             )
@@ -75,7 +76,7 @@ object MetaRingData {
         )
     }
 
-    private fun buildWarehouse(id: String, name: String, zone: String): Warehouse {
+    private fun buildWarehouse(id: String, name: String, zone: RegionalZone): Warehouse {
         return Warehouse(id, name, zone, DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
     }
 

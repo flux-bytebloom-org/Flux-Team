@@ -14,8 +14,12 @@ class WarehouseRepositoryImpl(
     private val remoteDataSource: RemoteWarehouseDataSource
 ) : WarehouseRepository {
 
-    override suspend fun getAll(): List<Warehouse> =
-        localDataSource.getAll().map { it.toDomain() }
+    private var cachedWarehouses: List<Warehouse>? = null
+
+    override suspend fun getAll(): List<Warehouse> = cachedWarehouses ?:
+         localDataSource.getAll().map { it.toDomain() }
+            .also { cachedWarehouses = it }
+
 
     override suspend fun getById(id: String): Result<Warehouse> = runCatching {
     remoteDataSource.getById(id)?.toDomain()

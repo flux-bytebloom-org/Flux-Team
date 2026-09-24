@@ -72,5 +72,5 @@ private class DispatchUseCases (packageRepo: PackageRepository,warehouseRepo: Wa
     val assignPackageToLowestCostStationedVehicleUseCase =
         AssignPackageToLowestCostStationedVehicleUseCase(findStationedVehiclesByCapacityUseCase)
 
-    val dispatchVehicleUseCase = DispatchVehicleUseCase(packageRepo)
+    val dispatchVehicleUseCase = DispatchVehicleUseCase(packageRepo,findOptimalPathUseCase)
 }

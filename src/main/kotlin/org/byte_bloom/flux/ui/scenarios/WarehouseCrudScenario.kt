@@ -1,6 +1,7 @@
 package org.byte_bloom.flux.ui.scenarios
 
 import org.byte_bloom.flux.domain.exception.LogisticsException
+import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.usecase.crud.UpdateWarehouseUseCase
@@ -19,7 +20,7 @@ suspend fun testWarehouseCrudFlow(repository: WarehouseRepository) {
 
     // Scenario 1: successful create
     val createResult = createUC(
-        Warehouse(id = "", name = "Test Hub", regionalZone = "NORTH", latitude = 32.0, longitude = 35.0)
+        Warehouse(id = "", name = "Test Hub", regionalZone = RegionalZone.NORTH, latitude = 32.0, longitude = 35.0)
     )
     createResult
         .onSuccess { created -> println("Created: $created") }
@@ -27,7 +28,7 @@ suspend fun testWarehouseCrudFlow(repository: WarehouseRepository) {
 
     // Scenario 2: deliberate validation failure
     createUC(
-        Warehouse(id = "", name = "", regionalZone = "", latitude = 999.0, longitude = 999.0)
+        Warehouse(id = "", name = "", regionalZone = RegionalZone.UnKNOWN, latitude = 999.0, longitude = 999.0)
     ).onSuccess { println("Unexpected success on invalid input") }
         .onFailure { error -> printLogisticsError(error) }
 
