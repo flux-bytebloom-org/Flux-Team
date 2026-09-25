@@ -32,9 +32,14 @@ import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseRouteDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseVehicleDataSource
+import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.repository.RouteRepository
+import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
+import org.byte_bloom.flux.domain.usecase.GreedyDispatchRequest
+import org.byte_bloom.flux.domain.usecase.GreedyFleetDispatchUseCase
 import org.byte_bloom.flux.ui.scenarios.testPackageCrudFlow
 import org.byte_bloom.flux.ui.scenarios.testWarehouseCrudFlow
+import org.byte_bloom.flux.ui.utils.testGreedyFleetDispatchUseCase
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 private const val DEFAULT_BASE_RATE = 100.0
@@ -63,9 +68,29 @@ fun main() = kotlinx.coroutines.runBlocking {
         val bidirectionalRouter = BidirectionalBfsRouter(allRoutes)
         benchmarkRouters(init.warehouses, bfsRouter, bidirectionalRouter)
 
-       testWarehouseCrudFlow(init.warehouseRepository)
-        testPackageCrudFlow(init.packageRepository, init.warehouseRepository)
+    testWarehouseCrudFlow(init.warehouseRepository)
+    testPackageCrudFlow(init.packageRepository, init.warehouseRepository)
 
+    // ===== Sub-Task 5: Greedy Fleet Dispatcher =====
+    testGreedyFleetDispatchUseCase()
+
+    val dispatchVehicleUseCase = DispatchVehicleUseCase(init.packageRepository, findOptimalPathUseCase)
+
+    val dispatchedVehicles = init.vehicleRepository.getAll().map { vehicle ->
+        dispatchVehicleUseCase(vehicle.currentHub, vehicle)
+    }
+
+    val targetZones = init.warehouses
+        .map { it.regionalZone }
+        .filter { it != RegionalZone.UnKNOWN }
+        .toSet()
+
+    val greedyResult = GreedyFleetDispatchUseCase()(GreedyDispatchRequest(targetZones, dispatchedVehicles))
+
+    println("\n--- Sub-Task 5: Greedy Fleet Dispatcher ---")
+    println("Target zones: $targetZones")
+    println("Selected vehicles: ${greedyResult.selectedVehicles.map { it.id }}")
+    println("Uncovered zones: ${greedyResult.uncoveredZones}")
 
         /*comment this part until doing exception handling
         runAllScenarios(
