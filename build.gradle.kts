@@ -24,6 +24,7 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:3.3.1")
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    testImplementation("com.lemonappdev:konsist:0.17.3")
 
     testImplementation(kotlin("test"))
 }
