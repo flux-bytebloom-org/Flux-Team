@@ -3,9 +3,9 @@ package org.byte_bloom.flux.domain.usecase.crud.route
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.repository.RouteRepository
-import org.byte_bloom.flux.domain.validator.EntityPrefixes
+import org.byte_bloom.flux.domain.validation.EntityPrefixes
 import org.byte_bloom.flux.domain.validator.IdValidator
-import org.byte_bloom.flux.domain.validator.ValidationResult
+import org.byte_bloom.flux.domain.validation.ValidationResult
 
 class GetRouteByIdUseCase(
     private val repository: RouteRepository,

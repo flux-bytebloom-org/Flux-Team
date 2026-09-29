@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.validator
+package org.byte_bloom.flux.domain.validation
 
 object FieldChecks {
     fun notBlank(field: EntityField, value: String?): ValidationField? =
@@ -22,4 +22,3 @@ object FieldChecks {
     fun oneOf(field: EntityField, value: String, allowed: List<String>): ValidationField? =
         if (value !in allowed) ValidationField.InvalidEnumValue(field, value, allowed) else null
 }
-

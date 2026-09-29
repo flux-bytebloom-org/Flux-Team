@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.validator.routevalidation
+package org.byte_bloom.flux.domain.request
 
 data class RouteUpdateRequest(
     val originHubId: String?,

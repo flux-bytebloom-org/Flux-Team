@@ -3,7 +3,7 @@ package org.byte_bloom.flux.domain.usecase.CRUD.vehicle
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.repository.VehicleRepository
-import org.byte_bloom.flux.domain.validator.ValidationResult
+import org.byte_bloom.flux.domain.validation.ValidationResult
 import org.byte_bloom.flux.domain.validator.vehicleValidation.VehicleCreateValidator
 
 class CreateVehicleUseCase(

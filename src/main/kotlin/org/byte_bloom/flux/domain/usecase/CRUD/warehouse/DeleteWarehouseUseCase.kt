@@ -2,9 +2,9 @@ package org.byte_bloom.flux.domain.usecase.crud.warehouse
 
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
-import org.byte_bloom.flux.domain.validator.EntityPrefixes
+import org.byte_bloom.flux.domain.validation.EntityPrefixes
 import org.byte_bloom.flux.domain.validator.IdValidator
-import org.byte_bloom.flux.domain.validator.ValidationResult
+import org.byte_bloom.flux.domain.validation.ValidationResult
 
 class DeleteWarehouseUseCase(
     private val repository: WarehouseRepository,

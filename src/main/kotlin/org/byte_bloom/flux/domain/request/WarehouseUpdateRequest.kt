@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.validator.warehouseValidations
+package org.byte_bloom.flux.domain.request
 
 data class WarehouseUpdateRequest(
     val name: String?,

@@ -1,9 +1,9 @@
 package org.byte_bloom.flux.domain.validator.vehicleValidation
 
 import org.byte_bloom.flux.domain.model.Vehicle
-import org.byte_bloom.flux.domain.validator.EntityField
-import org.byte_bloom.flux.domain.validator.FieldChecks
-import org.byte_bloom.flux.domain.validator.ValidationResult
+import org.byte_bloom.flux.domain.validation.EntityField
+import org.byte_bloom.flux.domain.validation.FieldChecks
+import org.byte_bloom.flux.domain.validation.ValidationResult
 import org.byte_bloom.flux.domain.validator.Validator
 
 class VehicleCreateValidator: Validator<Vehicle>{

@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.validator.packagevalidations
+package org.byte_bloom.flux.domain.request
 
 data class PackageUpdateRequest(
     val weight: Double?,

@@ -1,9 +1,9 @@
 package org.byte_bloom.flux.domain.validator.routevalidation
 
 import org.byte_bloom.flux.domain.model.Route
-import org.byte_bloom.flux.domain.validator.EntityField
-import org.byte_bloom.flux.domain.validator.FieldChecks
-import org.byte_bloom.flux.domain.validator.ValidationResult
+import org.byte_bloom.flux.domain.validation.EntityField
+import org.byte_bloom.flux.domain.validation.FieldChecks
+import org.byte_bloom.flux.domain.validation.ValidationResult
 import org.byte_bloom.flux.domain.validator.Validator
 
 class RouteCreateValidator : Validator<Route> {

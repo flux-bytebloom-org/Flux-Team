@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.validator
+package org.byte_bloom.flux.domain.validation
 
 sealed class ValidationResult {
     data object Valid : ValidationResult()

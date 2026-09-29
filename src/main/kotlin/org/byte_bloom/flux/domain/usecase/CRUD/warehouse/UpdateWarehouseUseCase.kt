@@ -4,10 +4,10 @@ import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
-import org.byte_bloom.flux.domain.validator.EntityPrefixes
+import org.byte_bloom.flux.domain.validation.EntityPrefixes
 import org.byte_bloom.flux.domain.validator.IdValidator
-import org.byte_bloom.flux.domain.validator.ValidationResult
-import org.byte_bloom.flux.domain.validator.warehouseValidations.WarehouseUpdateRequest
+import org.byte_bloom.flux.domain.validation.ValidationResult
+import org.byte_bloom.flux.domain.request.WarehouseUpdateRequest
 import org.byte_bloom.flux.domain.validator.warehouseValidations.WarehouseUpdateValidator
 import kotlin.text.uppercase
 
