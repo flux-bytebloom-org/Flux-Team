@@ -3,7 +3,6 @@ package org.byte_bloom.flux.domain.usecase
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.response.WeightedPath
-import org.byte_bloom.flux.ui.utils.logWarning
 
 class GenerateWeightedShipmentPathsUseCase(
     private val findOptimalPathUseCase: FindOptimalPathUseCase
@@ -26,7 +25,7 @@ class GenerateWeightedShipmentPathsUseCase(
 
             } catch (e: LogisticsException.EntityNotFoundException.WarehouseNotFoundException) {
                 skippedCount++
-                logWarning("Skipping route $routeKey: ${e.message}")
+                println("WARNING: Skipping route $routeKey: ${e.message}")
                 null
             }
         }
