@@ -34,8 +34,8 @@ import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseRouteDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseVehicleDataSource
 import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.repository.RouteRepository
+import org.byte_bloom.flux.domain.request.GreedyDispatchRequest
 import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
-import org.byte_bloom.flux.domain.usecase.GreedyDispatchRequest
 import org.byte_bloom.flux.domain.usecase.GreedyFleetDispatchUseCase
 import org.byte_bloom.flux.ui.scenarios.testPackageCrudFlow
 import org.byte_bloom.flux.ui.scenarios.testWarehouseCrudFlow

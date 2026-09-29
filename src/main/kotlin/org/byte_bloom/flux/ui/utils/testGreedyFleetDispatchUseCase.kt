@@ -3,8 +3,8 @@ package org.byte_bloom.flux.ui.utils
 import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
+import org.byte_bloom.flux.domain.request.GreedyDispatchRequest
 import org.byte_bloom.flux.domain.response.DispatchedVehicle
-import org.byte_bloom.flux.domain.usecase.GreedyDispatchRequest
 import org.byte_bloom.flux.domain.usecase.GreedyFleetDispatchUseCase
 
 fun testGreedyFleetDispatchUseCase() {
