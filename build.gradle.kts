@@ -28,6 +28,8 @@ dependencies {
     testImplementation("com.google.truth:truth:1.4.4")
     testImplementation("io.mockk:mockk:1.13.17")
     implementation("io.insert-koin:koin-core:4.1.1")
+    testImplementation("io.insert-koin:koin-test:4.1.1")
+
     testImplementation(kotlin("test"))
 }
 tasks.test {
