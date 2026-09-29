@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.usecase.crud
+package org.byte_bloom.flux.domain.usecase.crud.warehouse
 
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.RegionalZone
@@ -17,11 +17,11 @@ class UpdateWarehouseUseCase(
     private val validator: WarehouseUpdateValidator = WarehouseUpdateValidator()
 ) {
     suspend operator fun invoke(
-        id: String,
+        value: String,
         request: WarehouseUpdateRequest
     ): Result<Warehouse> {
 
-        val idValidation = idValidator(id)
+        val idValidation = idValidator(value)
         if (idValidation is ValidationResult.Invalid) {
             return Result.failure(
                 LogisticsException.ValidationException.EntityValidationException(
@@ -38,8 +38,7 @@ class UpdateWarehouseUseCase(
             )
         }
 
-        val existing = repository.getById(id).getOrElse { error -> return Result.failure(error) }
-            ?: throw IllegalArgumentException("Warehouse not found: $id")
+        val existing = repository.getById(value).getOrElse { error -> return Result.failure(error) }
 
         val updatedWarehouse = existing.copy(
             name = request.name ?: existing.name,
@@ -48,6 +47,6 @@ class UpdateWarehouseUseCase(
             longitude = request.longitude ?: existing.longitude
         )
 
-        return repository.update(id, updatedWarehouse)
+        return repository.update(value, updatedWarehouse)
     }
 }
