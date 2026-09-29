@@ -25,7 +25,8 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
-
+    testImplementation("com.google.truth:truth:1.4.4")
+    testImplementation("io.mockk:mockk:1.13.17")
     testImplementation(kotlin("test"))
 }
 tasks.test {
