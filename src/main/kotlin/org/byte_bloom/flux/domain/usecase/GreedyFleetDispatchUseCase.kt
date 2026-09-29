@@ -2,13 +2,9 @@ package org.byte_bloom.flux.domain.usecase
 
 import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Vehicle
+import org.byte_bloom.flux.domain.request.GreedyDispatchRequest
 import org.byte_bloom.flux.domain.response.DispatchedVehicle
 import org.byte_bloom.flux.domain.response.GreedyDispatchResult
-
-data class GreedyDispatchRequest(
-    val targetZones: Set<RegionalZone>,
-    val dispatchedVehicles: List<DispatchedVehicle>
-)
 
 /**
  * Solves the Set-Covering Problem with a Greedy heuristic: given target zones and a
