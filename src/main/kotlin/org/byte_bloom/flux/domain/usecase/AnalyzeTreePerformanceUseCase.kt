@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.domain.usecase
 
-import org.byte_bloom.flux.domain.logic.tree.BinarySearchTree
-import org.byte_bloom.flux.domain.logic.tree.buildBalancedInsertionOrder
+import org.byte_bloom.flux.domain.algorithm.tree.BinarySearchTree
+import org.byte_bloom.flux.domain.algorithm.tree.buildBalancedInsertionOrder
 
 private const val TRACKING_ID_RANGE_START = 1
 private const val TRACKING_ID_COUNT = 1000

@@ -1,6 +1,6 @@
 package org.byte_bloom.flux.domain.usecase
 
-import org.byte_bloom.flux.domain.logic.pricing.RoutePricingEngine
+import org.byte_bloom.flux.domain.algorithm.pricing.RoutePricingEngine
 import org.byte_bloom.flux.domain.model.Package
 
 class CalculatePricingUseCase(

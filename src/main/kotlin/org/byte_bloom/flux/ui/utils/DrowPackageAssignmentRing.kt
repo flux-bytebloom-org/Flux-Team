@@ -1,6 +1,6 @@
 package org.byte_bloom.flux.ui.utils
 
-import org.byte_bloom.flux.domain.logic.assignment.PackageAssignmentRing
+import org.byte_bloom.flux.domain.algorithm.assignment.PackageAssignmentRing
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Vehicle
 

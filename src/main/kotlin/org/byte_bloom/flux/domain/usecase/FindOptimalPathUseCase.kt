@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.domain.usecase
 
-import org.byte_bloom.flux.domain.logic.routing.DijkstraRouter
-import org.byte_bloom.flux.domain.logic.routing.RoutingCriterion
+import org.byte_bloom.flux.domain.algorithm.routing.DijkstraRouter
+import org.byte_bloom.flux.domain.algorithm.routing.RoutingCriterion
 import org.byte_bloom.flux.domain.model.Warehouse
 
 class FindOptimalPathUseCase(private val dijkstraRouter: DijkstraRouter){

@@ -1,11 +1,11 @@
 package org.byte_bloom.flux.ui.utils
 
-import org.byte_bloom.flux.domain.logic.command.AddVehicleToHubCommand
-import org.byte_bloom.flux.domain.logic.command.AssignPackageToQueueCommand
-import org.byte_bloom.flux.domain.logic.command.CommandInvoker
-import org.byte_bloom.flux.domain.logic.command.DispatchVehicleCommand
-import org.byte_bloom.flux.domain.logic.command.ReroutePackageCommand
-import org.byte_bloom.flux.domain.logic.routing.DijkstraRouter
+import org.byte_bloom.flux.domain.algorithm.command.AddVehicleToHubCommand
+import org.byte_bloom.flux.domain.algorithm.command.AssignPackageToQueueCommand
+import org.byte_bloom.flux.domain.algorithm.command.CommandInvoker
+import org.byte_bloom.flux.domain.algorithm.command.DispatchVehicleCommand
+import org.byte_bloom.flux.domain.algorithm.command.ReroutePackageCommand
+import org.byte_bloom.flux.domain.algorithm.routing.DijkstraRouter
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.RegionalZone

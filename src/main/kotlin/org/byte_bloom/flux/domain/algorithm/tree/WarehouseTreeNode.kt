@@ -1,0 +1,19 @@
+package org.byte_bloom.flux.domain.algorithm.tree
+
+import org.byte_bloom.flux.domain.model.Warehouse
+
+class WarehouseTreeNode(
+    val warehouse: Warehouse
+) {
+
+    var parent: WarehouseTreeNode? = null
+        private set
+
+    val children = mutableListOf<WarehouseTreeNode>()
+
+    fun addChild(child: WarehouseTreeNode) {
+        child.parent = this
+        children.add(child)
+    }
+}
+
