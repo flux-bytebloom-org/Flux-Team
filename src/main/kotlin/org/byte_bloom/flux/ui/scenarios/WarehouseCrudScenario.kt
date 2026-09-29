@@ -4,7 +4,7 @@ import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
-import org.byte_bloom.flux.domain.usecase.crud.UpdateWarehouseUseCase
+import org.byte_bloom.flux.domain.usecase.crud.warehouse.UpdateWarehouseUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.CreateWarehouseUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.DeleteWarehouseUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.GetWarehouseByIdUseCase

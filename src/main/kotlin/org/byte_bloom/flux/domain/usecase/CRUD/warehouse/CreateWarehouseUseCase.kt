@@ -3,7 +3,7 @@ package org.byte_bloom.flux.domain.usecase.crud.warehouse
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
-import org.byte_bloom.flux.domain.validator.ValidationResult
+import org.byte_bloom.flux.domain.validation.ValidationResult
 import org.byte_bloom.flux.domain.validator.warehouseValidations.WarehouseCreateValidator
 
 class CreateWarehouseUseCase(

@@ -1,6 +1,6 @@
 package org.byte_bloom.flux.domain.usecase
 
-import org.byte_bloom.flux.domain.logic.tree.WarehouseTreeNode
+import org.byte_bloom.flux.domain.algorithm.tree.WarehouseTreeNode
 import org.byte_bloom.flux.domain.model.Warehouse
 
 class TraceHubLineageUseCase {

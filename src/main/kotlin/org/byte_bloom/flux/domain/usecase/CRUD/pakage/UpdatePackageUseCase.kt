@@ -5,11 +5,11 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
-import org.byte_bloom.flux.domain.validator.EntityPrefixes
+import org.byte_bloom.flux.domain.validation.EntityPrefixes
 import org.byte_bloom.flux.domain.validator.IdValidator
-import org.byte_bloom.flux.domain.validator.packagevalidations.PackageUpdateRequest
+import org.byte_bloom.flux.domain.request.PackageUpdateRequest
 import org.byte_bloom.flux.domain.validator.packagevalidations.PackageUpdateValidator
-import org.byte_bloom.flux.domain.validator.ValidationResult
+import org.byte_bloom.flux.domain.validation.ValidationResult
 
 class UpdatePackageUseCase(
     private val repository: PackageRepository,

@@ -1,6 +1,6 @@
 package org.byte_bloom.flux.domain.model
 
-import org.byte_bloom.flux.domain.logic.pricing.decorator.PackageComponent
+import org.byte_bloom.flux.domain.algorithm.pricing.decorator.PackageComponent
 
 data class Package(
     val id: String,

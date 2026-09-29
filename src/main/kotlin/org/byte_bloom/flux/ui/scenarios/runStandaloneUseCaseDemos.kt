@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.ui.scenarios
 
-import org.byte_bloom.flux.domain.logic.routing.BreadthFirstRouter
-import org.byte_bloom.flux.domain.logic.tree.buildWarehouseTree
+import org.byte_bloom.flux.domain.algorithm.routing.BreadthFirstRouter
+import org.byte_bloom.flux.domain.algorithm.tree.buildWarehouseTree
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.Vehicle

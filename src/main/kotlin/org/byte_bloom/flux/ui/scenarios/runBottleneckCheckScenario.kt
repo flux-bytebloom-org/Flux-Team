@@ -2,7 +2,7 @@ package org.byte_bloom.flux.ui.scenarios
 
 import org.byte_bloom.flux.domain.builder.ShadowWarehouseGraphBuilder
 import org.byte_bloom.flux.domain.exception.LogisticsException
-import org.byte_bloom.flux.domain.logic.routing.DijkstraRouter
+import org.byte_bloom.flux.domain.algorithm.routing.DijkstraRouter
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
