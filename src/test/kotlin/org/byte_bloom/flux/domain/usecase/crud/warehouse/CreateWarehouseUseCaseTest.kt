@@ -5,6 +5,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.validation.ValidationResult
@@ -12,6 +13,8 @@ import org.byte_bloom.flux.domain.validator.warehouseValidations.WarehouseCreate
 import org.junit.jupiter.api.Test
 import kotlinx.coroutines.test.runTest
 import org.byte_bloom.flux.domain.testdata.createTestWarehouse
+import org.byte_bloom.flux.domain.validation.EntityField
+import org.byte_bloom.flux.domain.validation.ValidationField
 
 class CreateWarehouseUseCaseTest {
 
@@ -37,13 +40,17 @@ class CreateWarehouseUseCaseTest {
         coVerify(exactly = 1) {
             repository.create(warehouse)
         }
+        verify(exactly = 1) {
+            validator(warehouse)
+        }
     }
 
     @Test
     fun `given invalid warehouse when create then returns EntityValidationException`() = runTest {
         // Given
-        val validationError = ValidationResult.Invalid(emptyList())
-
+        val validationError = ValidationResult.Invalid(
+            listOf(ValidationField.Blank(EntityField.WAREHOUSE_NAME))
+        )
         every { validator(warehouse) } returns validationError
 
         // When
@@ -57,6 +64,10 @@ class CreateWarehouseUseCaseTest {
 
         coVerify(exactly = 0) {
             repository.create(any())
+
+        verify(exactly = 1) {
+            validator(warehouse)
+            }
         }
     }
 
