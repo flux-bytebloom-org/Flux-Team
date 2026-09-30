@@ -1,136 +1,119 @@
 package org.byte_bloom.flux.domain.validator.routevalidation
 
-import org.byte_bloom.flux.domain.model.RegionalZone
-import org.byte_bloom.flux.domain.model.Route
-import org.byte_bloom.flux.domain.model.Warehouse
+import com.google.common.truth.Truth.assertThat
+import org.byte_bloom.flux.domain.testdata.createRouteTestWarehouse
+import org.byte_bloom.flux.domain.testdata.createTestRoute
 import org.byte_bloom.flux.domain.validation.EntityField
 import org.byte_bloom.flux.domain.validation.ValidationField
 import org.byte_bloom.flux.domain.validation.ValidationResult
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
 
 class RouteCreateValidatorTest {
 
     private val validator = RouteCreateValidator()
 
+    private fun errorsOf(result: ValidationResult) = (result as ValidationResult.Invalid).errors
+
     @Test
-    fun `returns Valid when all fields are valid`() {
+    fun `given valid route when validate then returns Valid`() {
         // Given
-        val route = aValidRoute()
+        val route = createTestRoute()
 
         // When
         val result = validator(route)
 
         // Then
-        assertEquals(ValidationResult.Valid, result)
+        assertThat(result).isEqualTo(ValidationResult.Valid)
     }
 
     @Test
-    fun `returns Valid when typical delay is zero`() {
+    fun `given zero typical delay when validate then returns Valid`() {
         // Given
-        val route = aValidRoute(typicalDelayMin = 0.0)
+        val route = createTestRoute(typicalDelayMin = 0.0)
 
         // When
         val result = validator(route)
 
         // Then
-        assertEquals(ValidationResult.Valid, result)
+        assertThat(result).isEqualTo(ValidationResult.Valid)
     }
 
     @Test
-    fun `returns Blank error on ORIGIN_HUB_ID when origin hub id is empty`() {
+    fun `given blank origin hub id when validate then returns Blank error`() {
         // Given
-        val route = aValidRoute(originHubId = "")
+        val route = createTestRoute(origin = createRouteTestWarehouse(" "))
 
         // When
         val result = validator(route)
 
         // Then
-        val error = errorsOf(result).single()
-        assertIs<ValidationField.Blank>(error)
-        assertEquals(EntityField.ORIGIN_HUB_ID, error.field)
+        val errors = errorsOf(result)
+        assertThat(errors.map { it::class }).containsExactly(ValidationField.Blank::class)
+        assertThat(errors.first().field).isEqualTo(EntityField.ORIGIN_HUB_ID)
     }
 
     @Test
-    fun `returns Blank error on ORIGIN_HUB_ID when origin hub id is only spaces`() {
+    fun `given blank destination hub id when validate then returns Blank error`() {
         // Given
-        val route = aValidRoute(originHubId = "   ")
+        val route = createTestRoute(destination = createRouteTestWarehouse(""))
 
         // When
         val result = validator(route)
 
         // Then
-        val error = errorsOf(result).single()
-        assertIs<ValidationField.Blank>(error)
-        assertEquals(EntityField.ORIGIN_HUB_ID, error.field)
+        val errors = errorsOf(result)
+        assertThat(errors.map { it::class }).containsExactly(ValidationField.Blank::class)
+        assertThat(errors.first().field).isEqualTo(EntityField.DESTINATION_HUB_ID)
     }
 
     @Test
-    fun `returns Blank error on DESTINATION_HUB_ID when destination hub id is empty`() {
+    fun `given zero distance when validate then returns NotPositive error`() {
         // Given
-        val route = aValidRoute(destinationHubId = "")
+        val route = createTestRoute(distanceKm = 0.0)
 
         // When
         val result = validator(route)
 
         // Then
-        val error = errorsOf(result).single()
-        assertIs<ValidationField.Blank>(error)
-        assertEquals(EntityField.DESTINATION_HUB_ID, error.field)
+        val errors = errorsOf(result)
+        assertThat(errors.map { it::class }).containsExactly(ValidationField.NotPositive::class)
+        assertThat(errors.first().field).isEqualTo(EntityField.DISTANCE_KM)
     }
 
     @Test
-    fun `returns NotPositive error on DISTANCE_KM when distance is zero`() {
+    fun `given negative distance when validate then returns NotPositive error`() {
         // Given
-        val route = aValidRoute(distanceKm = 0.0)
+        val route = createTestRoute(distanceKm = -50.0)
 
         // When
         val result = validator(route)
 
         // Then
-        val error = errorsOf(result).single()
-        assertIs<ValidationField.NotPositive>(error)
-        assertEquals(EntityField.DISTANCE_KM, error.field)
-        assertEquals(0.0, error.actualValue)
+        val error = errorsOf(result).single() as ValidationField.NotPositive
+        assertThat(error.field).isEqualTo(EntityField.DISTANCE_KM)
+        assertThat(error.actualValue).isEqualTo(-50.0)
     }
 
     @Test
-    fun `returns NotPositive error on DISTANCE_KM when distance is negative`() {
+    fun `given negative typical delay when validate then returns Negative error`() {
         // Given
-        val route = aValidRoute(distanceKm = -50.0)
+        val route = createTestRoute(typicalDelayMin = -5.0)
 
         // When
         val result = validator(route)
 
         // Then
-        val error = errorsOf(result).single()
-        assertIs<ValidationField.NotPositive>(error)
-        assertEquals(EntityField.DISTANCE_KM, error.field)
-        assertEquals(-50.0, error.actualValue)
+        val error = errorsOf(result).single() as ValidationField.Negative
+        assertThat(error.field).isEqualTo(EntityField.TYPICAL_DELAY_MIN)
+        assertThat(error.actualValue).isEqualTo(-5.0)
     }
 
     @Test
-    fun `returns Negative error on TYPICAL_DELAY_MIN when delay is negative`() {
+    fun `given multiple invalid fields when validate then returns all errors`() {
         // Given
-        val route = aValidRoute(typicalDelayMin = -5.0)
-
-        // When
-        val result = validator(route)
-
-        // Then
-        val error = errorsOf(result).single()
-        assertIs<ValidationField.Negative>(error)
-        assertEquals(EntityField.TYPICAL_DELAY_MIN, error.field)
-        assertEquals(-5.0, error.actualValue)
-    }
-
-    @Test
-    fun `returns all errors when every field is invalid`() {
-        // Given
-        val route = aValidRoute(
-            originHubId = "",
-            destinationHubId = "",
+        val route = createTestRoute(
+            origin = createRouteTestWarehouse(""),
+            destination = createRouteTestWarehouse(""),
             distanceKm = 0.0,
             typicalDelayMin = -1.0
         )
@@ -139,38 +122,11 @@ class RouteCreateValidatorTest {
         val result = validator(route)
 
         // Then
-        assertEquals(
-            listOf(
-                EntityField.ORIGIN_HUB_ID,
-                EntityField.DESTINATION_HUB_ID,
-                EntityField.DISTANCE_KM,
-                EntityField.TYPICAL_DELAY_MIN
-            ),
-            errorsOf(result).map { it.field }
-        )
+        assertThat(errorsOf(result).map { it.field }).containsExactly(
+            EntityField.ORIGIN_HUB_ID,
+            EntityField.DESTINATION_HUB_ID,
+            EntityField.DISTANCE_KM,
+            EntityField.TYPICAL_DELAY_MIN
+        ).inOrder()
     }
-
-    private fun aValidRoute(
-        originHubId: String = "WH-001",
-        destinationHubId: String = "WH-002",
-        distanceKm: Double = 120.0,
-        typicalDelayMin: Double = 15.0
-    ) = Route(
-        id = "RT-001",
-        originHub = aWarehouse(originHubId),
-        destinationHub = aWarehouse(destinationHubId),
-        distanceKm = distanceKm,
-        typicalDelayMin = typicalDelayMin
-    )
-
-    private fun aWarehouse(id: String) = Warehouse(
-        id = id,
-        name = "Hub $id",
-        regionalZone = RegionalZone.NORTH,
-        latitude = 32.22,
-        longitude = 35.26
-    )
-
-    private fun errorsOf(result: ValidationResult): List<ValidationField> =
-        assertIs<ValidationResult.Invalid>(result).errors
 }
