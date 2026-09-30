@@ -3,6 +3,7 @@ package org.byte_bloom.flux.domain.validator.warehouseValidations
 import com.google.common.truth.Truth.assertThat
 import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Warehouse
+import org.byte_bloom.flux.domain.validation.EntityField
 import org.byte_bloom.flux.domain.validation.ValidationField
 import org.byte_bloom.flux.domain.validation.ValidationResult
 import org.junit.jupiter.api.Test
@@ -60,6 +61,8 @@ class WarehouseCreateValidatorTest {
 
         assertThat(errors.map { it::class })
             .containsExactly(ValidationField.OutOfRange::class)
+        assertThat(errors.single().field)
+            .isEqualTo(EntityField.LATITUDE)
     }
 
     @Test
@@ -75,6 +78,8 @@ class WarehouseCreateValidatorTest {
 
         assertThat(errors.map { it::class })
             .containsExactly(ValidationField.OutOfRange::class)
+        assertThat(errors.single().field)
+            .isEqualTo(EntityField.LATITUDE)
     }
 
     @Test
@@ -90,6 +95,8 @@ class WarehouseCreateValidatorTest {
 
         assertThat(errors.map { it::class })
             .containsExactly(ValidationField.OutOfRange::class)
+        assertThat(errors.single().field)
+            .isEqualTo(EntityField.LATITUDE)
     }
 
     @Test
@@ -105,12 +112,26 @@ class WarehouseCreateValidatorTest {
 
         assertThat(errors.map { it::class })
             .containsExactly(ValidationField.OutOfRange::class)
+        assertThat(errors.single().field)
+            .isEqualTo(EntityField.LONGITUDE)
     }
 
     @Test
     fun `given latitude and longitude at boundaries when validate then returns Valid`() {
         // Given
         val warehouse = warehouse(latitude = 90.0, longitude = 180.0)
+
+        // When
+        val result = validator(warehouse)
+
+        // Then
+        assertThat(result).isEqualTo(ValidationResult.Valid)
+    }
+
+    @Test
+    fun `given latitude and longitude at lower boundaries when validate then returns Valid`() {
+        // Given
+        val warehouse = warehouse(latitude = -90.0, longitude = -180.0)
 
         // When
         val result = validator(warehouse)
