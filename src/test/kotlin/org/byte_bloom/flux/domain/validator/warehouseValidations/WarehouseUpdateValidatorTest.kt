@@ -79,6 +79,8 @@ class WarehouseUpdateValidatorTest {
 
         assertThat(errors.map { it::class })
             .containsExactly(ValidationField.OutOfRange::class)
+        assertThat(errors.single().field)
+            .isEqualTo(EntityField.LATITUDE)
     }
 
     @Test
@@ -94,6 +96,8 @@ class WarehouseUpdateValidatorTest {
 
         assertThat(errors.map { it::class })
             .containsExactly(ValidationField.OutOfRange::class)
+        assertThat(errors.single().field)
+            .isEqualTo(EntityField.LATITUDE)
     }
 
     @Test
@@ -109,6 +113,8 @@ class WarehouseUpdateValidatorTest {
 
         assertThat(errors.map { it::class })
             .containsExactly(ValidationField.OutOfRange::class)
+        assertThat(errors.single().field)
+            .isEqualTo(EntityField.LONGITUDE)
     }
 
     @Test
@@ -124,15 +130,14 @@ class WarehouseUpdateValidatorTest {
 
         assertThat(errors.map { it::class })
             .containsExactly(ValidationField.OutOfRange::class)
+        assertThat(errors.single().field)
+            .isEqualTo(EntityField.LONGITUDE)
     }
 
     @Test
     fun `given latitude and longitude at boundaries when validate then returns Valid`() {
         // Given
-        val updateRequest = request(
-            latitude = 90.0,
-            longitude = 180.0
-        )
+        val updateRequest = request(latitude = 90.0, longitude = 180.0)
 
         // When
         val result = validator(updateRequest)
@@ -140,6 +145,19 @@ class WarehouseUpdateValidatorTest {
         // Then
         assertThat(result).isEqualTo(ValidationResult.Valid)
     }
+
+    @Test
+    fun `given latitude and longitude at lower boundaries when validate then returns Valid`() {
+        // Given
+        val updateRequest = request(latitude = -90.0, longitude = -180.0)
+
+        // When
+        val result = validator(updateRequest)
+
+        // Then
+        assertThat(result).isEqualTo(ValidationResult.Valid)
+    }
+
 
     @Test
     fun `given no fields to update when validate then returns NoFieldUpdated`() {
