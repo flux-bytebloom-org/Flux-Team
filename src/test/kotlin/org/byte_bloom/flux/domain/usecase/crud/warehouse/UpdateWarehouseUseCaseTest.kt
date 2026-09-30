@@ -5,6 +5,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.request.WarehouseUpdateRequest
@@ -14,6 +15,8 @@ import org.byte_bloom.flux.domain.validator.warehouseValidations.WarehouseUpdate
 import org.junit.jupiter.api.Test
 import kotlinx.coroutines.test.runTest
 import org.byte_bloom.flux.domain.testdata.createTestWarehouse
+import org.byte_bloom.flux.domain.validation.EntityField
+import org.byte_bloom.flux.domain.validation.ValidationField
 
 class UpdateWarehouseUseCaseTest {
 
@@ -66,6 +69,9 @@ class UpdateWarehouseUseCaseTest {
         coVerify(exactly = 1) {
             repository.update("WH-1", expectedWarehouse)
         }
+        verify(exactly = 1) {
+            validator(request)
+        }
     }
 
     @Test
@@ -108,7 +114,11 @@ class UpdateWarehouseUseCaseTest {
             longitude = null
         )
 
-        every { validator(request) } returns ValidationResult.Invalid(emptyList())
+        every { validator(request) } returns ValidationResult.Invalid(
+            listOf(
+                ValidationField.Blank(EntityField.WAREHOUSE_NAME)
+            )
+        )
 
         // When
         val exception = try {
