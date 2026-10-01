@@ -96,7 +96,7 @@ class WarehouseCreateValidatorTest {
         assertThat(errors.map { it::class })
             .containsExactly(ValidationField.OutOfRange::class)
         assertThat(errors.single().field)
-            .isEqualTo(EntityField.LATITUDE)
+            .isEqualTo(EntityField.LONGITUDE)
     }
 
     @Test

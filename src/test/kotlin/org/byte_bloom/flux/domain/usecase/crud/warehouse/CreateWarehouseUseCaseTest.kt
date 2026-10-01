@@ -64,11 +64,11 @@ class CreateWarehouseUseCaseTest {
 
         coVerify(exactly = 0) {
             repository.create(any())
+        }
 
         verify(exactly = 1) {
             validator(warehouse)
             }
-        }
     }
 
     @Test
