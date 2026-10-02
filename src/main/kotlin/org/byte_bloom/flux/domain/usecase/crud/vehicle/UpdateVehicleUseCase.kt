@@ -40,8 +40,14 @@ class UpdateVehicleUseCase(
         val existing = repository.getById(id).getOrElse { return Result.failure(it) }
         val warehousesById = warehouseRepository.getAll().associateBy { it.id }
 
+        val newHub = request.currentHubId?.let { hubId ->
+            warehousesById[hubId] ?: return Result.failure(
+                LogisticsException.EntityNotFoundException.WarehouseNotFoundException(hubId)
+            )
+        } ?: existing.currentHub
+
         val updated = existing.copy(
-            currentHub = request.currentHubId?.let { warehousesById[it] } ?: existing.currentHub,
+            currentHub = newHub,
             maxCapacityKg = request.maxCapacityKg ?: existing.maxCapacityKg,
             costPerKm = request.costPerKm ?: existing.costPerKm
         )
