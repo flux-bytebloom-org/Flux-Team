@@ -1,30 +1,28 @@
-package org.byte_bloom.flux.domain.usecase.CRUD.vehicle
+package org.byte_bloom.flux.domain.usecase.crud.vehicle
 
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.repository.VehicleRepository
-import org.byte_bloom.flux.domain.validation.EntityPrefixes
-import org.byte_bloom.flux.domain.validator.IdValidator
 import org.byte_bloom.flux.domain.validation.ValidationResult
+import org.byte_bloom.flux.domain.validator.vehicleValidation.VehicleCreateValidator
 
-class GetVehicleByIdUseCase(
+class CreateVehicleUseCase(
     private val repository: VehicleRepository,
-    private val validator: IdValidator = IdValidator(EntityPrefixes.VEHICLE)
-
+    private val validator: VehicleCreateValidator
 ) {
-
-    suspend operator fun invoke(id :String): Result<Vehicle>{
-        val validation = validator(id)
+    suspend operator fun invoke(vehicle: Vehicle) :  Result<Vehicle> {
+        val validation = validator(vehicle)
 
         if (validation is ValidationResult.Invalid) {
             return Result.failure(
                 LogisticsException.ValidationException.EntityValidationException(
-                    validation.errors.map{it.toString()}
+                    validation.errors.map{ it.toString()}
                 )
             )
         }
 
-        return repository.getById(id)
+
+        return repository.create(vehicle)
 
     }
 }
