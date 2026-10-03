@@ -35,9 +35,9 @@ class SplitAndRerouteShipmentsUseCase(
             )
         }
 
-        val (toReroute, toKeep) = matchedPackages
+        val toReroute = matchedPackages
             .sortedBy { it.priority }
-            .let { sorted -> sorted.take(packagesToMoveCount) to sorted.drop(packagesToMoveCount) }
+            .take(packagesToMoveCount)
 
         val reroutedSubset = toReroute.map { packageItem ->
             reroutePackageUseCase(origin, packageItem, destination)
@@ -49,7 +49,7 @@ class SplitAndRerouteShipmentsUseCase(
         val routePlanUpdates = toReroute.associate { it.id to newPath }
 
         return SplitRerouteResult(
-            reroutedPackages = unaffectedPackages + reroutedSubset + toKeep,
+            reroutedPackages = unaffectedPackages + reroutedSubset ,
             updatedRoutePlans = currentRoutePlans + routePlanUpdates
         )
     }
