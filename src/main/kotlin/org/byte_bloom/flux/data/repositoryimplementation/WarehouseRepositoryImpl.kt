@@ -3,8 +3,8 @@ package org.byte_bloom.flux.data.repositoryimplementation
 import org.byte_bloom.flux.data.csv.datasource.WarehouseDataSource as LocalWarehouseDataSource
 import org.byte_bloom.flux.data.csv.mapper.toDomain
 import org.byte_bloom.flux.data.remote.datasource.WarehouseDataSource as RemoteWarehouseDataSource
-import org.byte_bloom.flux.data.remote.dto.toDomain
-import org.byte_bloom.flux.data.remote.dto.toRequestDto
+import org.byte_bloom.flux.data.remote.mapper.toDomain
+import org.byte_bloom.flux.data.remote.mapper.toRequestDto
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
