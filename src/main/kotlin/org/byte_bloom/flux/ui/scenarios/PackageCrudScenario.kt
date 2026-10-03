@@ -7,7 +7,7 @@ import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
-import org.byte_bloom.flux.domain.usecase.crud.DeletePackageUseCase
+import org.byte_bloom.flux.domain.usecase.crud.pakage.DeletePackageUseCase
 import org.byte_bloom.flux.domain.usecase.crud.pakage.CreatePackageUseCase
 import org.byte_bloom.flux.domain.usecase.crud.pakage.GetPackageByIdUseCase
 import org.byte_bloom.flux.domain.usecase.crud.pakage.UpdatePackageUseCase
