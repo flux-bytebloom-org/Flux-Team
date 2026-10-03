@@ -27,7 +27,7 @@ class VehicleUpdateValidator : Validator<VehicleUpdateRequest> {
     private fun validateAtLeastOneField(
         request: VehicleUpdateRequest
     ): ValidationField? = with(request) {
-        val allBlank = currentHubId.isNullOrBlank() &&
+        val allBlank = currentHubId==null &&
                 maxCapacityKg == null  &&
                 costPerKm == null
         return if (allBlank) ValidationField.NoFieldUpdated() else null

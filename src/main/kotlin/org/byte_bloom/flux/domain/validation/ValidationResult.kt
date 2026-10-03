@@ -29,5 +29,7 @@ sealed class ValidationField(val field: EntityField) {
     class NoFieldUpdated (field : EntityField = EntityField.NONE):ValidationField(field= EntityField.NONE)
 
     class InvalidEnumValue(field: EntityField, val actualValue: String, val allowedValues: List<String>) : ValidationField(field)
+
+    override fun toString() = "${this::class.simpleName}(field=$field)"
 }
 

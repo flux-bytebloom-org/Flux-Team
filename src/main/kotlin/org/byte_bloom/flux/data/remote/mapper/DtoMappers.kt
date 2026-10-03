@@ -1,6 +1,13 @@
-package org.byte_bloom.flux.data.remote.dto
+package org.byte_bloom.flux.data.remote.mapper
 
-import org.byte_bloom.flux.domain.exception.LogisticsException
+import org.byte_bloom.flux.data.remote.dto.PackageRequestDto
+import org.byte_bloom.flux.data.remote.dto.PackageResponseDto
+import org.byte_bloom.flux.data.remote.dto.RouteRequestDto
+import org.byte_bloom.flux.data.remote.dto.RouteResponseDto
+import org.byte_bloom.flux.data.remote.dto.VehicleRequestDto
+import org.byte_bloom.flux.data.remote.dto.VehicleResponseDto
+import org.byte_bloom.flux.data.remote.dto.WarehouseRequestDto
+import org.byte_bloom.flux.data.remote.dto.WarehouseResponseDto
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.RegionalZone
