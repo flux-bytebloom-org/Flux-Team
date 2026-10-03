@@ -11,7 +11,7 @@ import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.response.DispatchedVehicle
 import org.byte_bloom.flux.domain.testdata.createTestPackage
-import org.byte_bloom.flux.domain.testdata.createTestVehicle
+import org.byte_bloom.flux.domain.testdata.aVehicle
 import org.byte_bloom.flux.domain.testdata.createTestWarehouse
 import org.junit.jupiter.api.Test
 
@@ -24,7 +24,7 @@ class DispatchVehicleUseCaseTest {
     private val hub = createTestWarehouse("WH-1")
     private val destA = createTestWarehouse("WH-2")
     private val destB = createTestWarehouse("WH-3")
-    private val vehicle = createTestVehicle(hub = hub, maxCapacityKg = 100.0)
+    private val vehicle = aVehicle(hub = hub, capacity = 100.0)
 
     init {
         justRun { packageRepo.removePackageFromHub(any(), any()) }

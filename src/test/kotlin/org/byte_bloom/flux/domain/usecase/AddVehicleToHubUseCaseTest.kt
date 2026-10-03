@@ -6,7 +6,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.repository.VehicleRepository
-import org.byte_bloom.flux.domain.testdata.createTestVehicle
+import org.byte_bloom.flux.domain.testdata.aVehicle
 import org.byte_bloom.flux.domain.testdata.createTestWarehouse
 import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
@@ -18,7 +18,7 @@ class AddVehicleToHubUseCaseTest {
 
     private val oldHub = createTestWarehouse("WH-1")
     private val newHub = createTestWarehouse("WH-2")
-    private val vehicle = createTestVehicle(hub = oldHub)
+    private val vehicle = aVehicle(hub = oldHub)
 
     @Test
     fun `given vehicle and hub when add then returns the vehicle updated by repository`() {

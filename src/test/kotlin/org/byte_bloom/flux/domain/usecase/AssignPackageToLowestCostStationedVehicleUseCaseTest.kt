@@ -6,7 +6,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.testdata.createTestPackage
-import org.byte_bloom.flux.domain.testdata.createTestVehicle
+import org.byte_bloom.flux.domain.testdata.aVehicle
 import org.byte_bloom.flux.domain.testdata.createTestWarehouse
 import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
@@ -21,9 +21,9 @@ class AssignPackageToLowestCostStationedVehicleUseCaseTest {
     @Test
     fun `given several eligible vehicles when assign then returns the one with lowest total cost`() {
         // Given
-        val expensive = createTestVehicle(id = "V-1", costPerKm = 3.0)
-        val cheapest = createTestVehicle(id = "V-2", costPerKm = 1.5)
-        val medium = createTestVehicle(id = "V-3", costPerKm = 2.0)
+        val expensive = aVehicle(id = "V-1", costPerKm = 3.0)
+        val cheapest = aVehicle(id = "V-2", costPerKm = 1.5)
+        val medium = aVehicle(id = "V-3", costPerKm = 2.0)
         every { findVehicles(warehouse, 50.0) } returns listOf(expensive, cheapest, medium)
         val pkg = createTestPackage(weight = 50.0)
 
@@ -64,7 +64,7 @@ class AssignPackageToLowestCostStationedVehicleUseCaseTest {
     @Test
     fun `given package weight when assign then asks finder with same warehouse and weight`() {
         // Given
-        every { findVehicles(any(), any()) } returns listOf(createTestVehicle())
+        every { findVehicles(any(), any()) } returns listOf(aVehicle())
         val pkg = createTestPackage(weight = 42.0)
 
         // When
