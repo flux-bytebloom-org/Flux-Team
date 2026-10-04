@@ -4,17 +4,20 @@ import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
-import org.byte_bloom.flux.domain.usecase.crud.warehouse.UpdateWarehouseUseCase
-import org.byte_bloom.flux.domain.usecase.crud.warehouse.CreateWarehouseUseCase
-import org.byte_bloom.flux.domain.usecase.crud.warehouse.DeleteWarehouseUseCase
-import org.byte_bloom.flux.domain.usecase.crud.warehouse.GetWarehouseByIdUseCase
+import org.byte_bloom.flux.domain.usecase.warehouse.UpdateWarehouseUseCase
+import org.byte_bloom.flux.domain.usecase.warehouse.CreateWarehouseUseCase
+import org.byte_bloom.flux.domain.usecase.warehouse.DeleteWarehouseUseCase
+import org.byte_bloom.flux.domain.usecase.warehouse.GetWarehouseByIdUseCase
 import org.byte_bloom.flux.domain.validator.warehouseValidations.WarehouseCreateValidator
 
 suspend fun testWarehouseCrudFlow(repository: WarehouseRepository) {
-    val createUC = CreateWarehouseUseCase(repository, WarehouseCreateValidator())
-    val getByIdUC = GetWarehouseByIdUseCase(repository)
-    val updateUC = UpdateWarehouseUseCase(repository)
-    val deleteUC = DeleteWarehouseUseCase(repository)
+    val createUC = _root_ide_package_.org.byte_bloom.flux.domain.usecase.warehouse.CreateWarehouseUseCase(
+        repository,
+        WarehouseCreateValidator()
+    )
+    val getByIdUC = _root_ide_package_.org.byte_bloom.flux.domain.usecase.warehouse.GetWarehouseByIdUseCase(repository)
+    val updateUC = _root_ide_package_.org.byte_bloom.flux.domain.usecase.warehouse.UpdateWarehouseUseCase(repository)
+    val deleteUC = _root_ide_package_.org.byte_bloom.flux.domain.usecase.warehouse.DeleteWarehouseUseCase(repository)
 
     println("--- Sub-Task 4: Warehouse Result-based error handling ---")
 

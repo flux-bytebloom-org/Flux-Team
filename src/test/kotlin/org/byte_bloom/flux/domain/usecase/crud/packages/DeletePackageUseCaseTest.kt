@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 class DeletePackageUseCaseTest {
 
     private val repository: PackageRepository = mockk()
-    private val useCase = DeletePackageUseCase(repository)
+    private val useCase = _root_ide_package_.org.byte_bloom.flux.domain.usecase.crud.DeletePackageUseCase(repository)
 
     @Test
     fun `given valid id when delete then returns success`() = runTest {

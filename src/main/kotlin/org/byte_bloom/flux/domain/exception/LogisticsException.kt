@@ -57,5 +57,8 @@ sealed class LogisticsException(message: String, cause: Throwable? = null) : Exc
 
         class CommandExecutionException(val packageId: String) :
             BusinessLogicException("Command execution failed for package: $packageId")
+
+        class IllegalStateTransitionException(val from: String, val to: String) :
+            BusinessLogicException("Illegal state transition: $from -> $to")
     }
 }

@@ -12,7 +12,8 @@ import kotlinx.coroutines.test.runTest
 class DeleteWarehouseUseCaseTest {
 
     private val repository = mockk<WarehouseRepository>()
-    private val useCase = DeleteWarehouseUseCase(repository)
+    private val useCase =
+        _root_ide_package_.org.byte_bloom.flux.domain.usecase.warehouse.DeleteWarehouseUseCase(repository)
 
     @Test
     fun `given valid id when delete then returns success`() = runTest {

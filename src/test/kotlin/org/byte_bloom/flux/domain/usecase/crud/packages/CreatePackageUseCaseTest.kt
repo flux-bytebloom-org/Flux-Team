@@ -8,14 +8,17 @@ import kotlinx.coroutines.test.runTest
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.testdata.createTestPackage
-import org.byte_bloom.flux.domain.usecase.crud.pakage.CreatePackageUseCase
+import org.byte_bloom.flux.domain.usecase.pakage.CreatePackageUseCase
 import org.byte_bloom.flux.domain.validator.packagevalidations.PackageCreateValidator
 import org.junit.jupiter.api.Test
 
 class CreatePackageUseCaseTest {
 
     private val repository: PackageRepository = mockk()
-    private val useCase = CreatePackageUseCase(repository, PackageCreateValidator())
+    private val useCase = _root_ide_package_.org.byte_bloom.flux.domain.usecase.pakage.CreatePackageUseCase(
+        repository,
+        PackageCreateValidator()
+    )
 
     @Test
     fun `given valid package when create then returns success from repository`() = runTest {

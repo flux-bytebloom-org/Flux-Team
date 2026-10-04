@@ -13,7 +13,7 @@ import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.request.PackageUpdateRequest
 import org.byte_bloom.flux.domain.testdata.createTestPackage
 import org.byte_bloom.flux.domain.testdata.createTestWarehouse
-import org.byte_bloom.flux.domain.usecase.crud.pakage.UpdatePackageUseCase
+import org.byte_bloom.flux.domain.usecase.pakage.UpdatePackageUseCase
 import org.byte_bloom.flux.domain.validator.packagevalidations.PackageUpdateValidator
 import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
@@ -22,7 +22,7 @@ class UpdatePackageUseCaseTest {
 
     private val repository: PackageRepository = mockk()
     private val warehouseRepository: WarehouseRepository = mockk()
-    private val useCase = UpdatePackageUseCase(
+    private val useCase = _root_ide_package_.org.byte_bloom.flux.domain.usecase.pakage.UpdatePackageUseCase(
         repository = repository,
         warehouseRepository = warehouseRepository,
         updateValidator = PackageUpdateValidator()

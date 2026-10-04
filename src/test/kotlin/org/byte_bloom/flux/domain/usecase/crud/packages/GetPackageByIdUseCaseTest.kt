@@ -8,13 +8,13 @@ import kotlinx.coroutines.test.runTest
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.testdata.createTestPackage
-import org.byte_bloom.flux.domain.usecase.crud.pakage.GetPackageByIdUseCase
+import org.byte_bloom.flux.domain.usecase.pakage.GetPackageByIdUseCase
 import org.junit.jupiter.api.Test
 
 class GetPackageByIdUseCaseTest {
 
     private val repository: PackageRepository = mockk()
-    private val useCase = GetPackageByIdUseCase(repository)
+    private val useCase = _root_ide_package_.org.byte_bloom.flux.domain.usecase.pakage.GetPackageByIdUseCase(repository)
 
     @Test
     fun `given existing id when get then returns the package`() = runTest {

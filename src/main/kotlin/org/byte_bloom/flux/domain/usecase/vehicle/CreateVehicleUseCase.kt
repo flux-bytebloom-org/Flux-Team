@@ -1,0 +1,28 @@
+package org.byte_bloom.flux.domain.usecase.CRUD.vehicle
+
+import org.byte_bloom.flux.domain.exception.LogisticsException
+import org.byte_bloom.flux.domain.model.Vehicle
+import org.byte_bloom.flux.domain.repository.VehicleRepository
+import org.byte_bloom.flux.domain.validation.ValidationResult
+import org.byte_bloom.flux.domain.validator.vehicleValidation.VehicleCreateValidator
+
+class CreateVehicleUseCase(
+    private val repository: VehicleRepository,
+    private val validator: VehicleCreateValidator
+) {
+    suspend operator fun invoke(vehicle: Vehicle) :  Result<Vehicle> {
+        val validation = validator(vehicle)
+
+        if (validation is ValidationResult.Invalid) {
+            return Result.failure(
+                LogisticsException.ValidationException.EntityValidationException(
+                    validation.errors.map{ it.toString()}
+                )
+            )
+        }
+
+
+        return repository.create(vehicle)
+
+    }
+}

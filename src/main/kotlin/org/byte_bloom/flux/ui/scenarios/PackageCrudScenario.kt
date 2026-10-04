@@ -8,9 +8,9 @@ import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.usecase.crud.DeletePackageUseCase
-import org.byte_bloom.flux.domain.usecase.crud.pakage.CreatePackageUseCase
-import org.byte_bloom.flux.domain.usecase.crud.pakage.GetPackageByIdUseCase
-import org.byte_bloom.flux.domain.usecase.crud.pakage.UpdatePackageUseCase
+import org.byte_bloom.flux.domain.usecase.pakage.CreatePackageUseCase
+import org.byte_bloom.flux.domain.usecase.pakage.GetPackageByIdUseCase
+import org.byte_bloom.flux.domain.usecase.pakage.UpdatePackageUseCase
 import org.byte_bloom.flux.domain.validator.packagevalidations.PackageCreateValidator
 import org.byte_bloom.flux.domain.validator.packagevalidations.PackageUpdateValidator
 
@@ -18,11 +18,19 @@ suspend fun testPackageCrudFlow(
     packageRepository: PackageRepository,
     warehouseRepository: WarehouseRepository
 ) {
-    val createUC = CreatePackageUseCase(packageRepository, PackageCreateValidator())
-    val getByIdUC = GetPackageByIdUseCase(packageRepository)
+    val createUC = _root_ide_package_.org.byte_bloom.flux.domain.usecase.pakage.CreatePackageUseCase(
+        packageRepository,
+        PackageCreateValidator()
+    )
+    val getByIdUC =
+        _root_ide_package_.org.byte_bloom.flux.domain.usecase.pakage.GetPackageByIdUseCase(packageRepository)
     val updateUC =
-        UpdatePackageUseCase(packageRepository, warehouseRepository, updateValidator = PackageUpdateValidator())
-    val deleteUC = DeletePackageUseCase(packageRepository)
+        _root_ide_package_.org.byte_bloom.flux.domain.usecase.pakage.UpdatePackageUseCase(
+            packageRepository,
+            warehouseRepository,
+            updateValidator = PackageUpdateValidator()
+        )
+    val deleteUC = _root_ide_package_.org.byte_bloom.flux.domain.usecase.crud.DeletePackageUseCase(packageRepository)
 
     println("--- Sub-Task 4: Package Result-based error handling ---")
 
