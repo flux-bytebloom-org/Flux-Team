@@ -91,8 +91,8 @@ fun main() = kotlinx.coroutines.runBlocking {
     println("Uncovered zones: ${greedyResult.uncoveredZones}")
 
         //comment this part until doing exception handling
-        runAllScenarios(init.warehouses, init.packages)
-        testCommandPattern()
+        //runAllScenarios(init.warehouses, init.packages)
+        //testCommandPattern()
 
 }
 
