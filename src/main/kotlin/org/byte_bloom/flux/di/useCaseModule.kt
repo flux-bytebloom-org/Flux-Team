@@ -1,8 +1,12 @@
 package org.byte_bloom.flux.di
 
+import org.byte_bloom.flux.domain.algorithm.pricing.DispatchStrategy
+import org.byte_bloom.flux.domain.algorithm.pricing.EcoStrategy
+import org.byte_bloom.flux.domain.algorithm.pricing.RoutePricingEngine
 import org.byte_bloom.flux.domain.algorithm.routing.BidirectionalBfsRouter
 import org.byte_bloom.flux.domain.algorithm.routing.BreadthFirstRouter
 import org.byte_bloom.flux.domain.algorithm.routing.DijkstraRouter
+import org.byte_bloom.flux.domain.builder.ShadowWarehouseGraphBuilder
 import org.byte_bloom.flux.domain.usecase.*
 import org.byte_bloom.flux.domain.usecase.crud.pakage.*
 import org.byte_bloom.flux.domain.usecase.crud.route.*
@@ -16,6 +20,9 @@ val useCaseModule = module {
     single<DijkstraRouter> { DijkstraRouter() }
     single<BreadthFirstRouter> { BreadthFirstRouter() }
     single<BidirectionalBfsRouter> { BidirectionalBfsRouter(emptyList()) }
+    single<DispatchStrategy> { EcoStrategy() }
+    single<RoutePricingEngine> { RoutePricingEngine(get()) }
+    single<ShadowWarehouseGraphBuilder> { ShadowWarehouseGraphBuilder() }
 
 
     // ===== Package CRUD =====
