@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 class CreatePackageUseCaseTest {
 
     private val repository: PackageRepository = mockk()
-    private val useCase = _root_ide_package_.org.byte_bloom.flux.domain.usecase.pakage.CreatePackageUseCase(
+    private val useCase = org.byte_bloom.flux.domain.usecase.pakage.CreatePackageUseCase(
         repository,
         PackageCreateValidator()
     )

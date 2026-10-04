@@ -13,6 +13,7 @@ import org.byte_bloom.flux.domain.request.RouteUpdateRequest
 import org.byte_bloom.flux.domain.testdata.createRouteTestWarehouse
 import org.byte_bloom.flux.domain.testdata.createTestRoute
 import org.junit.jupiter.api.Test
+import org.byte_bloom.flux.domain.usecase.route.UpdateRouteUseCase
 
 class UpdateRouteUseCaseTest {
 

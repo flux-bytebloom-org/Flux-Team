@@ -10,6 +10,7 @@ import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.byte_bloom.flux.domain.testdata.createTestRoute
 import org.byte_bloom.flux.domain.validation.EntityField
+import org.byte_bloom.flux.domain.usecase.route.CreateRouteUseCase
 import org.byte_bloom.flux.domain.validation.ValidationField
 import org.byte_bloom.flux.domain.validation.ValidationResult
 import org.byte_bloom.flux.domain.validator.routevalidation.RouteCreateValidator

@@ -11,13 +11,13 @@ import org.byte_bloom.flux.domain.usecase.warehouse.GetWarehouseByIdUseCase
 import org.byte_bloom.flux.domain.validator.warehouseValidations.WarehouseCreateValidator
 
 suspend fun testWarehouseCrudFlow(repository: WarehouseRepository) {
-    val createUC = _root_ide_package_.org.byte_bloom.flux.domain.usecase.warehouse.CreateWarehouseUseCase(
+    val createUC = org.byte_bloom.flux.domain.usecase.warehouse.CreateWarehouseUseCase(
         repository,
         WarehouseCreateValidator()
     )
-    val getByIdUC = _root_ide_package_.org.byte_bloom.flux.domain.usecase.warehouse.GetWarehouseByIdUseCase(repository)
-    val updateUC = _root_ide_package_.org.byte_bloom.flux.domain.usecase.warehouse.UpdateWarehouseUseCase(repository)
-    val deleteUC = _root_ide_package_.org.byte_bloom.flux.domain.usecase.warehouse.DeleteWarehouseUseCase(repository)
+    val getByIdUC = org.byte_bloom.flux.domain.usecase.warehouse.GetWarehouseByIdUseCase(repository)
+    val updateUC = org.byte_bloom.flux.domain.usecase.warehouse.UpdateWarehouseUseCase(repository)
+    val deleteUC = org.byte_bloom.flux.domain.usecase.warehouse.DeleteWarehouseUseCase(repository)
 
     println("--- Sub-Task 4: Warehouse Result-based error handling ---")
 

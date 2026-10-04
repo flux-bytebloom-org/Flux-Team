@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.usecase.CRUD.vehicle
+package org.byte_bloom.flux.domain.usecase.vehicle
 
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.repository.VehicleRepository

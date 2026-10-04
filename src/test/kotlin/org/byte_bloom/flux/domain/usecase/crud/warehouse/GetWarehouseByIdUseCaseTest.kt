@@ -14,7 +14,7 @@ class GetWarehouseByIdUseCaseTest {
 
     private val repository = mockk<WarehouseRepository>()
     private val useCase =
-        _root_ide_package_.org.byte_bloom.flux.domain.usecase.warehouse.GetWarehouseByIdUseCase(repository)
+        org.byte_bloom.flux.domain.usecase.warehouse.GetWarehouseByIdUseCase(repository)
 
     private val warehouse = createTestWarehouse()
     @Test

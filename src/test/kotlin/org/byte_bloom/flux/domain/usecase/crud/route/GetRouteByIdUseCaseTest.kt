@@ -9,6 +9,7 @@ import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.byte_bloom.flux.domain.testdata.createTestRoute
 import org.junit.jupiter.api.Test
+import org.byte_bloom.flux.domain.usecase.route.GetRouteByIdUseCase
 
 class GetRouteByIdUseCaseTest {
 

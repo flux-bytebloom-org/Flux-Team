@@ -7,7 +7,7 @@ import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
-import org.byte_bloom.flux.domain.usecase.crud.DeletePackageUseCase
+import org.byte_bloom.flux.domain.usecase.pakage.DeletePackageUseCase
 import org.byte_bloom.flux.domain.usecase.pakage.CreatePackageUseCase
 import org.byte_bloom.flux.domain.usecase.pakage.GetPackageByIdUseCase
 import org.byte_bloom.flux.domain.usecase.pakage.UpdatePackageUseCase
@@ -18,19 +18,19 @@ suspend fun testPackageCrudFlow(
     packageRepository: PackageRepository,
     warehouseRepository: WarehouseRepository
 ) {
-    val createUC = _root_ide_package_.org.byte_bloom.flux.domain.usecase.pakage.CreatePackageUseCase(
+    val createUC = org.byte_bloom.flux.domain.usecase.pakage.CreatePackageUseCase(
         packageRepository,
         PackageCreateValidator()
     )
     val getByIdUC =
-        _root_ide_package_.org.byte_bloom.flux.domain.usecase.pakage.GetPackageByIdUseCase(packageRepository)
+        org.byte_bloom.flux.domain.usecase.pakage.GetPackageByIdUseCase(packageRepository)
     val updateUC =
-        _root_ide_package_.org.byte_bloom.flux.domain.usecase.pakage.UpdatePackageUseCase(
+        org.byte_bloom.flux.domain.usecase.pakage.UpdatePackageUseCase(
             packageRepository,
             warehouseRepository,
             updateValidator = PackageUpdateValidator()
         )
-    val deleteUC = _root_ide_package_.org.byte_bloom.flux.domain.usecase.crud.DeletePackageUseCase(packageRepository)
+    val deleteUC = DeletePackageUseCase(packageRepository)
 
     println("--- Sub-Task 4: Package Result-based error handling ---")
 

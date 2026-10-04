@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 class GetPackageByIdUseCaseTest {
 
     private val repository: PackageRepository = mockk()
-    private val useCase = _root_ide_package_.org.byte_bloom.flux.domain.usecase.pakage.GetPackageByIdUseCase(repository)
+    private val useCase = org.byte_bloom.flux.domain.usecase.pakage.GetPackageByIdUseCase(repository)
 
     @Test
     fun `given existing id when get then returns the package`() = runTest {

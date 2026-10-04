@@ -8,6 +8,7 @@ import kotlinx.coroutines.runBlocking
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.junit.jupiter.api.Test
+import org.byte_bloom.flux.domain.usecase.route.DeleteRouteUseCase
 
 class DeleteRouteUseCaseTest {
 

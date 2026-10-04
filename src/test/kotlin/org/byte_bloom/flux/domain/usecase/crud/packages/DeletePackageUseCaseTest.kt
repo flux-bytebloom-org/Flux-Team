@@ -7,13 +7,13 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.repository.PackageRepository
-import org.byte_bloom.flux.domain.usecase.crud.DeletePackageUseCase
+import org.byte_bloom.flux.domain.usecase.pakage.DeletePackageUseCase
 import org.junit.jupiter.api.Test
 
 class DeletePackageUseCaseTest {
 
     private val repository: PackageRepository = mockk()
-    private val useCase = _root_ide_package_.org.byte_bloom.flux.domain.usecase.crud.DeletePackageUseCase(repository)
+    private val useCase = DeletePackageUseCase(repository)
 
     @Test
     fun `given valid id when delete then returns success`() = runTest {

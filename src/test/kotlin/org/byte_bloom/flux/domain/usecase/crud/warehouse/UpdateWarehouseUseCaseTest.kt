@@ -23,7 +23,7 @@ class UpdateWarehouseUseCaseTest {
     private val repository = mockk<WarehouseRepository>()
     private val validator = mockk<WarehouseUpdateValidator>()
 
-    private val useCase = _root_ide_package_.org.byte_bloom.flux.domain.usecase.warehouse.UpdateWarehouseUseCase(
+    private val useCase = org.byte_bloom.flux.domain.usecase.warehouse.UpdateWarehouseUseCase(
         repository = repository,
         validator = validator
     )
