@@ -1,32 +1,28 @@
 package org.byte_bloom.flux.ui.scenarios
 
-import org.byte_bloom.flux.domain.algorithm.routing.BreadthFirstRouter
 import org.byte_bloom.flux.domain.algorithm.tree.buildWarehouseTree
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
-import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.usecase.AddVehicleToHubUseCase
 import org.byte_bloom.flux.domain.usecase.AssignPackageToCargoQueueUseCase
 import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
 import org.byte_bloom.flux.domain.usecase.FindSmallestFitVehicleUseCase
 import org.byte_bloom.flux.domain.usecase.TraceHubLineageUseCase
-import org.byte_bloom.flux.domain.repository.VehicleRepository
+import org.koin.java.KoinJavaComponent.getKoin
 
 private const val TEST_VEHICLE_CAPACITY = 500.0
 private const val TEST_VEHICLE_COST_PER_KM = 3.0
 private const val TEST_PACKAGE_WEIGHT = 15.0
 
 fun runStandaloneUseCaseDemos(
-    warehouses: List<Warehouse>,
-    vehicleRepo: VehicleRepository,
-    packageRepo: PackageRepository
+    warehouses: List<Warehouse>
 ) {
     println("\n=== Standalone Use Case Demos ===")
 
-    testAddVehicleToHub(warehouses, vehicleRepo)
-    testAssignPackageToCargoQueue(warehouses, packageRepo)
+    testAddVehicleToHub(warehouses)
+    testAssignPackageToCargoQueue(warehouses)
     testFindOptimalVehicleForPackage(warehouses)
     testFindFewestHopsRoute(warehouses)
     testTraceHubLineage(warehouses)
@@ -34,8 +30,7 @@ fun runStandaloneUseCaseDemos(
 
 // 1) AddVehicleToHubUseCase — uses a real warehouse, guaranteed not to affect other scenarios
 private fun testAddVehicleToHub(
-    warehouses: List<Warehouse>,
-    vehicleRepository: VehicleRepository
+    warehouses: List<Warehouse>
 ) {
     println("\n[Standalone] AddVehicleToHubUseCase")
 
@@ -44,7 +39,7 @@ private fun testAddVehicleToHub(
         return
     }
 
-    val addVehicleToHubUseCase = AddVehicleToHubUseCase(vehicleRepository)
+    val addVehicleToHubUseCase : AddVehicleToHubUseCase = getKoin().get()
     val beforeCount = hub.getStationedVehicles().size
 
     val newVehicle = Vehicle(
@@ -63,8 +58,7 @@ private fun testAddVehicleToHub(
 
 // 2) AssignPackageToCargoQueueUseCase — verifies that addition + sorting happen correctly
 private fun testAssignPackageToCargoQueue(
-    warehouses: List<Warehouse>,
-    packageRepo: PackageRepository
+    warehouses: List<Warehouse>
 ) {
     println("\n[Standalone] AssignPackageToCargoQueueUseCase")
 
@@ -73,7 +67,7 @@ private fun testAssignPackageToCargoQueue(
         return
     }
 
-    val assignPackageToCargoQueueUseCase = AssignPackageToCargoQueueUseCase(packageRepo)
+    val assignPackageToCargoQueueUseCase : AssignPackageToCargoQueueUseCase = getKoin().get()
     val beforeCount = hub.getCargoQueue().size
 
     val newPackage = Package(
@@ -108,7 +102,7 @@ private fun testFindOptimalVehicleForPackage(warehouses: List<Warehouse>) {
         return
     }
 
-    val findSmallestFitVehicleUseCase = FindSmallestFitVehicleUseCase()
+    val findSmallestFitVehicleUseCase : FindSmallestFitVehicleUseCase = getKoin().get()
     val pkg = hub.getCargoQueue().first()
 
     val bestFitVehicle = findSmallestFitVehicleUseCase(hub, pkg)
@@ -126,7 +120,7 @@ private fun testFindFewestHopsRoute(warehouses: List<Warehouse>) {
         return
     }
 
-    val findFewestHopsRouteUseCase = FindFewestHopsRouteUseCase(BreadthFirstRouter())
+    val findFewestHopsRouteUseCase : FindFewestHopsRouteUseCase = getKoin().get()
     val start = warehouses.first()
     val destination = warehouses.last()
 
@@ -158,7 +152,7 @@ private fun testTraceHubLineage(warehouses: List<Warehouse>) {
         }
         else -> {
             val warehouseTree = buildWarehouseTree(warehouses, globalHub)
-            val traceHubLineageUseCase = TraceHubLineageUseCase()
+            val traceHubLineageUseCase : TraceHubLineageUseCase = getKoin().get()
             val leafNode = warehouseTree.findNode(leafWarehouse.id)
 
             if (leafNode == null) {

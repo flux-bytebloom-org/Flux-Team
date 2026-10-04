@@ -7,7 +7,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.repository.PackageRepository
-import org.byte_bloom.flux.domain.usecase.crud.DeletePackageUseCase
+import org.byte_bloom.flux.domain.usecase.crud.pakage.DeletePackageUseCase
 import org.junit.jupiter.api.Test
 
 class DeletePackageUseCaseTest {

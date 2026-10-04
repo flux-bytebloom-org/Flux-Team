@@ -1,8 +1,6 @@
 package org.byte_bloom.flux.ui.scenarios
 
-import org.byte_bloom.flux.domain.builder.ShadowWarehouseGraphBuilder
 import org.byte_bloom.flux.domain.exception.LogisticsException
-import org.byte_bloom.flux.domain.algorithm.routing.DijkstraRouter
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
@@ -17,32 +15,31 @@ import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
 import org.byte_bloom.flux.domain.usecase.GenerateWeightedShipmentPathsUseCase
 import org.byte_bloom.flux.domain.usecase.GetWarehouseLoadFactorUseCase
 import org.byte_bloom.flux.domain.usecase.PenalizeBottleneckRoutesUseCase
-import org.byte_bloom.flux.domain.usecase.ReroutePackageUseCase
 import org.byte_bloom.flux.domain.usecase.SplitAndRerouteShipmentsUseCase
+import org.koin.java.KoinJavaComponent.getKoin
 
 private const val DEFAULT_MIN_TRANSIT_LOAD = 1
 
-private class BottleneckUseCases (packageRepo : PackageRepository){
-    val extractUniqueShipmentRoutesUseCase = ExtractUniqueShipmentRoutesUseCase()
-    val findOptimalPathUseCase = FindOptimalPathUseCase(DijkstraRouter())
-    val generateWeightedShipmentPathsUseCase = GenerateWeightedShipmentPathsUseCase(findOptimalPathUseCase)
-    val findBottleneckWarehousesUseCase = FindBottleneckWarehousesUseCase()
-    val penalizeBottleneckRoutesUseCase = PenalizeBottleneckRoutesUseCase(ShadowWarehouseGraphBuilder())
-    val filterActualAlternativePathsUseCase = FilterActualAlternativePathsUseCase()
-    val getWarehouseLoadFactorUseCase = GetWarehouseLoadFactorUseCase()
-    val calculateRebalanceRatioUseCase = CalculateRebalanceRatioUseCase()
-    val splitAndRerouteShipmentsUseCase = SplitAndRerouteShipmentsUseCase(ReroutePackageUseCase(packageRepo))
+private class BottleneckUseCases() {
+    val extractUniqueShipmentRoutesUseCase : ExtractUniqueShipmentRoutesUseCase = getKoin().get()
+    val findOptimalPathUseCase : FindOptimalPathUseCase = getKoin().get()
+    val generateWeightedShipmentPathsUseCase : GenerateWeightedShipmentPathsUseCase = getKoin().get()
+    val findBottleneckWarehousesUseCase : FindBottleneckWarehousesUseCase = getKoin().get()
+    val penalizeBottleneckRoutesUseCase : PenalizeBottleneckRoutesUseCase = getKoin().get()
+    val filterActualAlternativePathsUseCase : FilterActualAlternativePathsUseCase = getKoin().get()
+    val getWarehouseLoadFactorUseCase : GetWarehouseLoadFactorUseCase = getKoin().get()
+    val calculateRebalanceRatioUseCase : CalculateRebalanceRatioUseCase = getKoin().get()
+    val splitAndRerouteShipmentsUseCase : SplitAndRerouteShipmentsUseCase = getKoin().get()
 }
 
 fun runBottleneckCheckScenario(
     warehouses: List<Warehouse>,
     packages: List<Package>,
-    packageRepo : PackageRepository,
     minTransitLoad: Int = DEFAULT_MIN_TRANSIT_LOAD
 ): BottleneckCheckResult {
 
     println("\n=== Scenario: Bottleneck Check ===")
-    val useCases = BottleneckUseCases(packageRepo)
+    val useCases = BottleneckUseCases()
     val warehousesById = warehouses.associateBy { it.id.uppercase() }
 
     val weightedPaths = computeWeightedPaths(packages, warehousesById, useCases)

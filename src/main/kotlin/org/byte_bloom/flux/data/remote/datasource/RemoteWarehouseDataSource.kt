@@ -3,7 +3,7 @@ package org.byte_bloom.flux.data.remote.datasource
 import org.byte_bloom.flux.data.remote.dto.WarehouseRequestDto
 import org.byte_bloom.flux.data.remote.dto.WarehouseResponseDto
 
-interface WarehouseDataSource {
+interface RemoteWarehouseDataSource {
     suspend fun getAll(): List<WarehouseResponseDto>
     suspend fun getById(id: String): WarehouseResponseDto?
     suspend fun create(dto: WarehouseRequestDto): WarehouseResponseDto

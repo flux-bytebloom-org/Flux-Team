@@ -5,7 +5,7 @@ import org.byte_bloom.flux.data.remote.client.SupabaseHttpClient
 import org.byte_bloom.flux.data.remote.datasource.RemotePackageDataSource
 import org.byte_bloom.flux.data.remote.datasource.RemoteRouteDataSource
 import org.byte_bloom.flux.data.remote.datasource.RemoteVehicleDataSource
-import org.byte_bloom.flux.data.remote.datasource.WarehouseDataSource
+import org.byte_bloom.flux.data.remote.datasource.RemoteWarehouseDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabasePackageDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseRouteDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseVehicleDataSource
@@ -36,7 +36,7 @@ val networkModule = module {
         )
     }
 
-    single<WarehouseDataSource> {
+    single<RemoteWarehouseDataSource> {
         SupabaseWarehouseDataSource(
             client = get()
         )

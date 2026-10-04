@@ -3,22 +3,22 @@ package org.byte_bloom.flux.domain.algorithm.routing
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
 import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
+import org.koin.java.KoinJavaComponent.getKoin
 
 fun testRoutingComparison(
-    warehouses: List<Warehouse>,
-    findFewestHopsRouteUseCase: FindFewestHopsRouteUseCase,
-    findOptimalPathUseCase: FindOptimalPathUseCase
+    warehouses: List<Warehouse>
 ) {
     val start = warehouses.first()
     val destination = warehouses.last()
 
     println("\n--- Routing Comparison: BFS vs Dijkstra ---")
-
+    val findFewestHopsRouteUseCase: FindFewestHopsRouteUseCase = getKoin().get()
     val bfsResult = findFewestHopsRouteUseCase(start, destination)
     val bfsPath = bfsResult.path
     val bfsDistance = calculatePathDistance(bfsPath)
     println("BFS (least hops): ${bfsPath.map { it.id }} — ${bfsPath.size - 1} hops, $bfsDistance km")
 
+    val findOptimalPathUseCase: FindOptimalPathUseCase = getKoin().get()
     val dijkstraPath = findOptimalPathUseCase(start, destination)
     val dijkstraDistance = calculatePathDistance(dijkstraPath)
     println("Dijkstra (shortest distance): ${dijkstraPath.map { it.id }} — " +

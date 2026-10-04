@@ -5,13 +5,13 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import org.byte_bloom.flux.data.remote.client.SupabaseHttpClient
-import org.byte_bloom.flux.data.remote.datasource.WarehouseDataSource
+import org.byte_bloom.flux.data.remote.datasource.RemoteWarehouseDataSource
 import org.byte_bloom.flux.data.remote.dto.WarehouseRequestDto
 import org.byte_bloom.flux.data.remote.dto.WarehouseResponseDto
 
 class SupabaseWarehouseDataSource(
     private val client: HttpClient = SupabaseHttpClient.client
-) : WarehouseDataSource {
+) : RemoteWarehouseDataSource {
     private val table = "warehouses"
 
     override suspend fun getAll(): List<WarehouseResponseDto> =

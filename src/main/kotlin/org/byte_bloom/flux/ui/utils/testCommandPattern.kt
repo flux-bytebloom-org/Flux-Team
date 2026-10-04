@@ -5,7 +5,6 @@ import org.byte_bloom.flux.domain.algorithm.command.AssignPackageToQueueCommand
 import org.byte_bloom.flux.domain.algorithm.command.CommandInvoker
 import org.byte_bloom.flux.domain.algorithm.command.DispatchVehicleCommand
 import org.byte_bloom.flux.domain.algorithm.command.ReroutePackageCommand
-import org.byte_bloom.flux.domain.algorithm.routing.DijkstraRouter
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.RegionalZone
@@ -19,6 +18,7 @@ import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
 import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
 import org.byte_bloom.flux.domain.usecase.RemovePackageFromQueueUseCase
 import org.byte_bloom.flux.domain.usecase.ReroutePackageUseCase
+import org.koin.java.KoinJavaComponent.getKoin
 
 
 private const val DEFAULT_LATITUDE = 0.0
@@ -64,23 +64,19 @@ private data class ScenarioContext(
  *  8. Final check confirms the domain state is back to its original empty state,
  *     proving undo/redo stayed consistent through the whole journey.
  */
-fun testCommandPattern(
-    vehicleRepo: VehicleRepository,
-    packageRepo: PackageRepository
-) {
+fun testCommandPattern() {
     println("\n--- Week 5 - Subtask 5 & Bonus Task 2 - Testing Command Pattern Dispatch Panel ---")
-    val context = buildScenarioContext(vehicleRepo, packageRepo)
+    val context = buildScenarioContext()
     runCommandTestScenario(context)
 }
 
-private fun buildScenarioContext(
-    vehicleRepo: VehicleRepository,
-    packageRepo: PackageRepository
-): ScenarioContext {
+private fun buildScenarioContext(): ScenarioContext {
+    val vehicleRepo: VehicleRepository = getKoin().get()
+    val packageRepo: PackageRepository = getKoin().get()
     val hubA = Warehouse("H1", "Main Hub", RegionalZone.NORTH, DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
     val hubB = Warehouse("H2", "Second Hub", RegionalZone.SOUTH, DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
     val vehicle = Vehicle("V1", hubA, VEHICLE_CAPACITY_KG, VEHICLE_COST_PER_KM)
-    val findOptimalUC = FindOptimalPathUseCase(DijkstraRouter())
+    val findOptimalUC : FindOptimalPathUseCase = getKoin().get()
     return ScenarioContext(
         hubA = hubA,
         hubB = hubB,
