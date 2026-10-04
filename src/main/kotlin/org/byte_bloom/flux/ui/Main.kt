@@ -1,15 +1,5 @@
 package org.byte_bloom.flux.ui
 
-import org.byte_bloom.flux.data.csv.datasource.CsvPackageDataSource
-import org.byte_bloom.flux.data.csv.datasource.CsvRouteDataSource
-import org.byte_bloom.flux.data.csv.datasource.CsvVehicleDataSource
-import org.byte_bloom.flux.data.csv.datasource.CsvWarehouseDataSource
-import org.byte_bloom.flux.data.remote.datasource.impl.SupabasePackageDataSource
-import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseWarehouseDataSource
-import org.byte_bloom.flux.data.repositoryimplementation.PackageRepositoryImpl
-import org.byte_bloom.flux.data.repositoryimplementation.RouteRepositoryImpl
-import org.byte_bloom.flux.data.repositoryimplementation.VehicleRepositoryImpl
-import org.byte_bloom.flux.data.repositoryimplementation.WarehouseRepositoryImpl
 import org.byte_bloom.flux.domain.algorithm.pricing.decorator.ColdChainDecorator
 import org.byte_bloom.flux.domain.algorithm.pricing.decorator.ExpressInsuranceDecorator
 import org.byte_bloom.flux.domain.algorithm.pricing.decorator.FragileHandlingDecorator
@@ -26,20 +16,25 @@ import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.repository.VehicleRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
-import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase
-import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
-import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseRouteDataSource
-import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseVehicleDataSource
+import org.byte_bloom.flux.di.networkModule
+import org.byte_bloom.flux.di.repositoryModule
+import org.byte_bloom.flux.di.useCaseModule
+import org.byte_bloom.flux.di.validatorModule
 import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.byte_bloom.flux.domain.request.GreedyDispatchRequest
 import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
 import org.byte_bloom.flux.domain.usecase.GreedyFleetDispatchUseCase
+import org.byte_bloom.flux.domain.usecase.crud.warehouse.GetWarehouseByIdUseCase
 import org.byte_bloom.flux.ui.scenarios.testPackageCrudFlow
 import org.byte_bloom.flux.ui.scenarios.testWarehouseCrudFlow
+import org.byte_bloom.flux.ui.utils.runAllScenarios
+import org.byte_bloom.flux.ui.utils.testCommandPattern
 import org.byte_bloom.flux.ui.utils.testGreedyFleetDispatchUseCase
+import org.koin.core.context.GlobalContext.startKoin
+import org.koin.java.KoinJavaComponent.getKoin
 
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 private const val DEFAULT_BASE_RATE = 100.0
@@ -51,30 +46,33 @@ private const val ROUTES_CSV_PATH = "src/main/resources/routes.csv"
 private const val FLEET_CSV_PATH = "src/main/resources/fleet.csv"
 
 fun main() = kotlinx.coroutines.runBlocking {
+    startKoin {
+        modules(networkModule, repositoryModule, validatorModule, useCaseModule)
+    }
+
     val init = initializeAndPrintGraph()
 
-        testBidirectionalIdentity(init.warehouses)
-        testWarehouseQuickSort(init.warehouses)
-        drowPackageAssignmentRing()
+    val useCase : GetWarehouseByIdUseCase = getKoin().get()
+    val hub = useCase("WH-010")
+    println(hub)
 
-        val bfsRouter = BreadthFirstRouter()
-        val dijkstraRouter = DijkstraRouter()
-        val findOptimalPathUseCase = FindOptimalPathUseCase(dijkstraRouter)
-        val findFewestHopsRouteUseCase = FindFewestHopsRouteUseCase(bfsRouter)
-        testRoutingComparison(init.warehouses, findFewestHopsRouteUseCase, findOptimalPathUseCase)
-        testDecoratorStacking(init.warehouses)
 
-        val allRoutes = init.warehouses.flatMap { it.getOutgoingRoutes() }
-        val bidirectionalRouter = BidirectionalBfsRouter(allRoutes)
-        benchmarkRouters(init.warehouses, bfsRouter, bidirectionalRouter)
+   testBidirectionalIdentity(init.warehouses)
+    testWarehouseQuickSort(init.warehouses)
+    drowPackageAssignmentRing()
+    testRoutingComparison(init.warehouses)
+    testDecoratorStacking(init.warehouses)
 
-    testWarehouseCrudFlow(init.warehouseRepository)
-    testPackageCrudFlow(init.packageRepository, init.warehouseRepository)
+    val allRoutes = init.warehouses.flatMap { it.getOutgoingRoutes() }
+    benchmarkRouters(init.warehouses)
+
+    testWarehouseCrudFlow()
+    testPackageCrudFlow()
 
     // ===== Sub-Task 5: Greedy Fleet Dispatcher =====
     testGreedyFleetDispatchUseCase()
 
-    val dispatchVehicleUseCase = DispatchVehicleUseCase(init.packageRepository, findOptimalPathUseCase)
+    val dispatchVehicleUseCase : DispatchVehicleUseCase = getKoin().get()
 
     val dispatchedVehicles = init.vehicleRepository.getAll().map { vehicle ->
         dispatchVehicleUseCase(vehicle.currentHub, vehicle)
@@ -92,13 +90,9 @@ fun main() = kotlinx.coroutines.runBlocking {
     println("Selected vehicles: ${greedyResult.selectedVehicles.map { it.id }}")
     println("Uncovered zones: ${greedyResult.uncoveredZones}")
 
-        /*comment this part until doing exception handling
-        runAllScenarios(
-            init.warehouses, init.packages,
-            init.vehicleRepository, init.warehouseRepository, init.packageRepository
-        )
-        testCommandPattern(init.vehicleRepository, init.warehouseRepository, init.packageRepository)
-        */
+        //comment this part until doing exception handling
+        runAllScenarios(init.warehouses, init.packages)
+        testCommandPattern()
 
 }
 
@@ -200,25 +194,11 @@ private fun testDecoratorStacking(warehouses: List<Warehouse>) {
 }
 
 private suspend fun initializeAndPrintGraph(): InitResult {
-    val warehouseRepository = WarehouseRepositoryImpl(
-        localDataSource = CsvWarehouseDataSource(WAREHOUSES_CSV_PATH),
-        remoteDataSource = SupabaseWarehouseDataSource()
-    )
-    val routeRepository = RouteRepositoryImpl(
-        localRouteDataSource = CsvRouteDataSource(ROUTES_CSV_PATH),
-        remoteRouteDataSource = SupabaseRouteDataSource(),
-        warehouseRepository = warehouseRepository
-    )
-    val vehicleRepository = VehicleRepositoryImpl(
-        localDataSource = CsvVehicleDataSource(FLEET_CSV_PATH),
-        remoteDataSource = SupabaseVehicleDataSource(),
-        warehouseRepository=warehouseRepository
-    )
-    val packageRepository = PackageRepositoryImpl(
-        pkgDataSource = CsvPackageDataSource(PACKAGES_CSV_PATH),
-        remoteDataSource = SupabasePackageDataSource(),
-        warehouseRepository = warehouseRepository
-    )
+    val warehouseRepository : WarehouseRepository = getKoin().get()
+    val routeRepository : RouteRepository = getKoin().get()
+    val vehicleRepository : VehicleRepository = getKoin().get()
+    val packageRepository : PackageRepository = getKoin().get()
+
     val packages = packageRepository.getAll()
     val warehouses = warehouseRepository.getAll()
     val routes = routeRepository.getAll()

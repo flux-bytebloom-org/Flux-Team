@@ -3,18 +3,17 @@ package org.byte_bloom.flux.ui.scenarios
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Warehouse
-import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.UpdateWarehouseUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.CreateWarehouseUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.DeleteWarehouseUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.GetWarehouseByIdUseCase
-import org.byte_bloom.flux.domain.validator.warehouseValidations.WarehouseCreateValidator
+import org.koin.java.KoinJavaComponent.getKoin
 
-suspend fun testWarehouseCrudFlow(repository: WarehouseRepository) {
-    val createUC = CreateWarehouseUseCase(repository, WarehouseCreateValidator())
-    val getByIdUC = GetWarehouseByIdUseCase(repository)
-    val updateUC = UpdateWarehouseUseCase(repository)
-    val deleteUC = DeleteWarehouseUseCase(repository)
+suspend fun testWarehouseCrudFlow() {
+    val createUC : CreateWarehouseUseCase = getKoin().get()
+    val getByIdUC : GetWarehouseByIdUseCase = getKoin().get()
+    val updateUC : UpdateWarehouseUseCase = getKoin().get()
+    val deleteUC : DeleteWarehouseUseCase = getKoin().get()
 
     println("--- Sub-Task 4: Warehouse Result-based error handling ---")
 

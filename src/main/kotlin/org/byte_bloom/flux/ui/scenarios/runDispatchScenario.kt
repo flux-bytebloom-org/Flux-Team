@@ -1,31 +1,22 @@
 package org.byte_bloom.flux.ui.scenarios
 
-import org.byte_bloom.flux.domain.algorithm.pricing.EcoStrategy
-import org.byte_bloom.flux.domain.algorithm.pricing.RoutePricingEngine
-import org.byte_bloom.flux.domain.algorithm.routing.DijkstraRouter
-import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Warehouse
-import org.byte_bloom.flux.domain.repository.PackageRepository
-import org.byte_bloom.flux.domain.repository.WarehouseRepository
+import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.usecase.AssignPackageToLowestCostStationedVehicleUseCase
 import org.byte_bloom.flux.domain.usecase.CalculatePricingUseCase
 import org.byte_bloom.flux.domain.usecase.ClassifyTripUrgencyUseCase
 import org.byte_bloom.flux.domain.usecase.DecideRoutingWayUseCase
 import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
-import org.byte_bloom.flux.domain.usecase.FindFastestPathUseCase
-import org.byte_bloom.flux.domain.usecase.FindOptimalPathUseCase
-import org.byte_bloom.flux.domain.usecase.FindStationedVehiclesByCapacityUseCase
+import org.koin.java.KoinJavaComponent.getKoin
 
 fun runDispatchScenario(
     hub: Warehouse,
     destination: Warehouse,
-    tripPackages: List<Package>,
-    packageRepo: PackageRepository,
-    warehouseRepo: WarehouseRepository
+    tripPackages: List<Package>
 ) {
     println("\n=== Scenario: Dispatch & Pricing ===")
 
-    val dispatchUseCases = DispatchUseCases(packageRepo,warehouseRepo)
+    val dispatchUseCases = DispatchUseCases()
 
 
     val isUrgent = dispatchUseCases.classifyTripUrgencyUseCase(tripPackages)
@@ -58,19 +49,15 @@ fun runDispatchScenario(
     println("Dispatched ${vehicle.id} with ${loadedPackages.size} packages: ${loadedPackages.map { it.id }}")
 }
 
-private class DispatchUseCases (packageRepo: PackageRepository,warehouseRepo: WarehouseRepository){
-    val classifyTripUrgencyUseCase = ClassifyTripUrgencyUseCase()
-    val dijkstraRouter = DijkstraRouter()
-    val findFastestPathUseCase = FindFastestPathUseCase(dijkstraRouter)
-    val findOptimalPathUseCase = FindOptimalPathUseCase(dijkstraRouter)
-    val decideRoutingWayUseCase = DecideRoutingWayUseCase(findFastestPathUseCase, findOptimalPathUseCase)
+private class DispatchUseCases() {
+    val classifyTripUrgencyUseCase : ClassifyTripUrgencyUseCase = getKoin().get()
 
-    val routePricingEngine = RoutePricingEngine(EcoStrategy())
-    val calculatePricingUseCase = CalculatePricingUseCase(routePricingEngine)
+    val decideRoutingWayUseCase : DecideRoutingWayUseCase = getKoin().get()
 
-    val findStationedVehiclesByCapacityUseCase = FindStationedVehiclesByCapacityUseCase()
-    val assignPackageToLowestCostStationedVehicleUseCase =
-        AssignPackageToLowestCostStationedVehicleUseCase(findStationedVehiclesByCapacityUseCase)
+    val calculatePricingUseCase : CalculatePricingUseCase = getKoin().get()
 
-    val dispatchVehicleUseCase = DispatchVehicleUseCase(packageRepo,findOptimalPathUseCase)
+    val assignPackageToLowestCostStationedVehicleUseCase :
+            AssignPackageToLowestCostStationedVehicleUseCase = getKoin().get()
+
+    val dispatchVehicleUseCase : DispatchVehicleUseCase = getKoin().get()
 }

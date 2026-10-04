@@ -5,24 +5,20 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.model.Warehouse
-import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.usecase.crud.pakage.DeletePackageUseCase
 import org.byte_bloom.flux.domain.usecase.crud.pakage.CreatePackageUseCase
 import org.byte_bloom.flux.domain.usecase.crud.pakage.GetPackageByIdUseCase
 import org.byte_bloom.flux.domain.usecase.crud.pakage.UpdatePackageUseCase
-import org.byte_bloom.flux.domain.validator.packagevalidations.PackageCreateValidator
-import org.byte_bloom.flux.domain.validator.packagevalidations.PackageUpdateValidator
+import org.koin.java.KoinJavaComponent.getKoin
 
-suspend fun testPackageCrudFlow(
-    packageRepository: PackageRepository,
-    warehouseRepository: WarehouseRepository
-) {
-    val createUC = CreatePackageUseCase(packageRepository, PackageCreateValidator())
-    val getByIdUC = GetPackageByIdUseCase(packageRepository)
-    val updateUC =
-        UpdatePackageUseCase(packageRepository, warehouseRepository, updateValidator = PackageUpdateValidator())
-    val deleteUC = DeletePackageUseCase(packageRepository)
+suspend fun testPackageCrudFlow() {
+    val createUC : CreatePackageUseCase = getKoin().get()
+    val getByIdUC : GetPackageByIdUseCase = getKoin().get()
+    val updateUC : UpdatePackageUseCase = getKoin().get()
+    val deleteUC : DeletePackageUseCase = getKoin().get()
+
+    val warehouseRepository : WarehouseRepository = getKoin().get()
 
     println("--- Sub-Task 4: Package Result-based error handling ---")
 

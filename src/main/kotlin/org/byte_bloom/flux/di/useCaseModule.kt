@@ -1,5 +1,6 @@
 package org.byte_bloom.flux.di
 
+import org.byte_bloom.flux.domain.algorithm.routing.BidirectionalBfsRouter
 import org.byte_bloom.flux.domain.algorithm.routing.BreadthFirstRouter
 import org.byte_bloom.flux.domain.algorithm.routing.DijkstraRouter
 import org.byte_bloom.flux.domain.usecase.*
@@ -10,6 +11,11 @@ import org.byte_bloom.flux.domain.usecase.crud.warehouse.*
 import org.koin.dsl.module
 
 val useCaseModule = module {
+
+    // === helpers =====
+    single<DijkstraRouter> { DijkstraRouter() }
+    single<BreadthFirstRouter> { BreadthFirstRouter() }
+    single<BidirectionalBfsRouter> { BidirectionalBfsRouter(emptyList()) }
 
 
     // ===== Package CRUD =====
