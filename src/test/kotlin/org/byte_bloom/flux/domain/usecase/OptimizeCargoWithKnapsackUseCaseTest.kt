@@ -31,4 +31,17 @@ class OptimizeCargoWithKnapsackUseCaseTest {
         // Then
         assertEquals(emptyList<Package>(), result)
     }
+
+    @Test
+    fun `selects a package when its weight exactly matches capacity`() {
+        // Given
+        val packageA = createPackage("PKG-A", weight = 10.0, priority = Priority.URGENT)
+
+        // When
+        val result = optimizeCargo(listOf(packageA), capacity = 10.0)
+
+        // Then
+        assertEquals(listOf(packageA), result)
+    }
 }
+
