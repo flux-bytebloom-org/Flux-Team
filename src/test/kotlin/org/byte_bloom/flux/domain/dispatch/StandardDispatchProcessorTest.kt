@@ -3,7 +3,7 @@ package org.byte_bloom.flux.domain.dispatch
 import com.google.common.truth.Truth.assertThat
 import org.byte_bloom.flux.domain.exception.LogisticsException.BusinessLogicException.IllegalStateTransitionException
 import org.byte_bloom.flux.domain.exception.LogisticsException.ValidationException.InvalidPackageWeightException
-import org.byte_bloom.flux.domain.exception.LogisticsException.ValidationException.InvalidTransitLoadException
+import org.byte_bloom.flux.domain.exception.LogisticsException.BusinessLogicException.VehicleCapacityExceededException
 import org.byte_bloom.flux.domain.state.CreatedState
 import org.byte_bloom.flux.domain.state.InTransitState
 import org.byte_bloom.flux.domain.state.Shipment
@@ -75,7 +75,7 @@ class StandardDispatchProcessorTest {
         val shipment = shipment(weight = OVERWEIGHT_PACKAGE_KG)
 
         // When
-        assertFailsWith<InvalidTransitLoadException> { processor.process(shipment, vehicle) }
+        assertFailsWith<VehicleCapacityExceededException> { processor.process(shipment, vehicle) }
 
         // Then
         assertThat(shipment.state).isEqualTo(CreatedState)
@@ -100,7 +100,7 @@ class StandardDispatchProcessorTest {
         val second = shipment(id = SECOND_PACKAGE_ID, weight = LIGHT_PACKAGE_KG)
 
         // When
-        assertFailsWith<InvalidTransitLoadException> { processor.process(second, vehicle) }
+        assertFailsWith<VehicleCapacityExceededException> { processor.process(second, vehicle) }
 
         // Then
         assertThat(second.state).isEqualTo(CreatedState)

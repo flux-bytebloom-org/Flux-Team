@@ -41,7 +41,7 @@ abstract class BaseDispatchProcessor {
 
         val remaining = vehicle.maxCapacityKg - (reservedKg[vehicle.id] ?: 0.0)
         if (weight > remaining) {
-            throw LogisticsException.ValidationException.InvalidTransitLoadException(
+            throw LogisticsException.BusinessLogicException.VehicleCapacityExceededException(
                 "package ${shipment.pkg.id} ($weight kg) exceeds remaining capacity ($remaining kg) of vehicle ${vehicle.id}"
             )
         }

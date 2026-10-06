@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.domain.dispatch
 
 import com.google.common.truth.Truth.assertThat
-import org.byte_bloom.flux.domain.exception.LogisticsException.ValidationException.InvalidTransitLoadException
+import org.byte_bloom.flux.domain.exception.LogisticsException.BusinessLogicException.VehicleCapacityExceededException
 import org.byte_bloom.flux.domain.state.CreatedState
 import org.byte_bloom.flux.domain.state.InTransitState
 import org.byte_bloom.flux.domain.state.Shipment
@@ -72,7 +72,7 @@ class ExpressDispatchProcessorTest {
 
         // When
         val output = captureOutput {
-            assertFailsWith<InvalidTransitLoadException> { processor.process(shipment, vehicle) }
+            assertFailsWith<VehicleCapacityExceededException> { processor.process(shipment, vehicle) }
         }
 
         // Then
