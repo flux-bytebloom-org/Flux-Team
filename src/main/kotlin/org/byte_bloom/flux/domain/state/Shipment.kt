@@ -7,8 +7,16 @@ class Shipment(val pkg: Package) {
     var state: ShipmentState = CreatedState
         private set
 
-    fun assignToVehicle() { state = state.assignToVehicle() }
-    fun startTransit() { state = state.startTransit() }
-    fun markDelivered() { state = state.markDelivered() }
-    fun markFailed() { state = state.markFailed() }
+    private val log = mutableListOf<String>()
+    val history: List<String> get() = log.toList()
+
+    fun assignToVehicle() = moveTo(state.assignToVehicle())
+    fun startTransit() = moveTo(state.startTransit())
+    fun markDelivered() = moveTo(state.markDelivered())
+    fun markFailed() = moveTo(state.markFailed())
+
+    private fun moveTo(next: ShipmentState) {
+        log += "${state.name} -> ${next.name}"   // reached only if the state call didn't throw
+        state = next
+    }
 }
