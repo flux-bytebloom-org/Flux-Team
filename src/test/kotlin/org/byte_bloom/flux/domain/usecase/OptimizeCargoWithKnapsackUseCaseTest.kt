@@ -96,5 +96,18 @@ class OptimizeCargoWithKnapsackUseCaseTest {
         // Then
         assertEquals(listOf(packageA, packageC), result)
     }
+
+    @Test
+    fun `ignores a package with negative weight`() {
+        // Given
+        val negative = createPackage("PKG-NEG", weight = -2.0, priority = Priority.URGENT)
+        val valid = createPackage("PKG-OK", weight = 3.0, priority = Priority.LOW)
+
+        // When
+        val result = optimizeCargo(listOf(negative, valid), capacity = 10.0)
+
+        // Then
+        assertEquals(listOf(valid), result)
+    }
 }
 
