@@ -157,4 +157,38 @@ class ShipmentStateTest {
         // Then
         assertThat(exception).hasMessageThat().isEqualTo("$ILLEGAL_TRANSITION_PREFIX$CREATED -> $DELIVERY_FAILED")
     }
+
+    //complete state machine test to ensure all states and actions are covered
+    @Test
+    fun `every state and action pair either follows the lifecycle or is rejected`() {
+        val states = listOf<ShipmentState>(
+            CreatedState, AssignedToVehicleState, InTransitState, DeliveredState, DeliveryFailedState
+        )
+
+        states.forEach { state ->
+            actions.forEach { (actionName, action) ->
+                val expected = legal[state to actionName]
+                if (expected != null) {
+                    assertThat(action(state)).isEqualTo(expected)
+                } else {
+                    assertFailsWith<IllegalStateTransitionException>("${state.name}.$actionName") { action(state) }
+                }
+            }
+        }
+    }
+
+    private val actions: Map<String, (ShipmentState) -> ShipmentState> = mapOf(
+        "assignToVehicle" to { it.assignToVehicle() },
+        "startTransit" to { it.startTransit() },
+        "markDelivered" to { it.markDelivered() },
+        "markFailed" to { it.markFailed() }
+    )
+
+    private val legal: Map<Pair<ShipmentState, String>, ShipmentState> = mapOf(
+        (CreatedState to "assignToVehicle") to AssignedToVehicleState,
+        (AssignedToVehicleState to "startTransit") to InTransitState,
+        (InTransitState to "markDelivered") to DeliveredState,
+        (InTransitState to "markFailed") to DeliveryFailedState
+    )
+
 }
