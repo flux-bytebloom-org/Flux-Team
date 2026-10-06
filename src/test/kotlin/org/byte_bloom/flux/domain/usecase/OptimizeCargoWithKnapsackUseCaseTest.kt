@@ -68,5 +68,19 @@ class OptimizeCargoWithKnapsackUseCaseTest {
         // Then
         assertEquals(listOf(packageA), result)
     }
+
+    @Test
+    fun `chooses the combination with the highest total priority instead of greedy first fit`() {
+        // Given
+        val packageA = createPackage("PKG-A", weight = 6.0, priority = Priority.URGENT)
+        val packageB = createPackage("PKG-B", weight = 5.0, priority = Priority.STANDARD)
+        val packageC = createPackage("PKG-C", weight = 5.0, priority = Priority.URGENT)
+
+        // When
+        val result = optimizeCargo(listOf(packageA, packageB, packageC), capacity = 10.0)
+
+        // Then
+        assertEquals(listOf(packageB, packageC), result)
+    }
 }
 
