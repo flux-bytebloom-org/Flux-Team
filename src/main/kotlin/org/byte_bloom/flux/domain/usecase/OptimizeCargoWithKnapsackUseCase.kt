@@ -10,9 +10,10 @@ private const val LOW_VALUE = 1
 class OptimizeCargoWithKnapsackUseCase {
 
     operator fun invoke(packages: List<Package>, capacity: Double): List<Package> {
+        val usable = packages.filter { it.weight != null }
         val capacityUnits = capacity.toInt()
-        val grid = buildDpTable(packages, capacityUnits)
-        return backtrack(packages, grid, capacityUnits)
+        val grid = buildDpTable(usable, capacityUnits)
+        return backtrack(usable, grid, capacityUnits)
     }
 
     private fun buildDpTable(packages: List<Package>, capacity: Int): Array<IntArray> {
