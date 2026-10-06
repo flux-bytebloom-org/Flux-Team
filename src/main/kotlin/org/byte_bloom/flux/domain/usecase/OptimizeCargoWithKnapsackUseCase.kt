@@ -2,6 +2,8 @@ package org.byte_bloom.flux.domain.usecase
 
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Priority
+import kotlin.math.ceil
+import kotlin.math.floor
 
 private const val URGENT_VALUE = 3
 private const val STANDARD_VALUE = 2
@@ -11,7 +13,7 @@ class OptimizeCargoWithKnapsackUseCase {
 
     operator fun invoke(packages: List<Package>, capacity: Double): List<Package> {
         val usable = packages.filter { (it.weight ?: -1.0) >= 0.0 }
-        val capacityUnits = capacity.toInt()
+        val capacityUnits = floor(capacity).toInt()
         val grid = buildDpTable(usable, capacityUnits)
         return backtrack(usable, grid, capacityUnits)
     }
@@ -45,7 +47,7 @@ class OptimizeCargoWithKnapsackUseCase {
         return selected.reversed()
     }
 
-    private fun weightOf(pkg: Package): Int = (pkg.weight ?: 0.0).toInt()
+    private fun weightOf(pkg: Package): Int = ceil(pkg.weight ?: 0.0).toInt()
 
     private fun valueOf(priority: Priority): Int = when (priority) {
         Priority.URGENT -> URGENT_VALUE
