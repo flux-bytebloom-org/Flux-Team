@@ -82,5 +82,19 @@ class OptimizeCargoWithKnapsackUseCaseTest {
         // Then
         assertEquals(listOf(packageB, packageC), result)
     }
+
+    @Test
+    fun `ignores a package with missing weight without affecting the other selections`() {
+        // Given
+        val packageA = createPackage("PKG-A", weight = 5.0, priority = Priority.URGENT)
+        val missingWeight = createPackage("PKG-NULL", weight = null, priority = Priority.URGENT)
+        val packageC = createPackage("PKG-C", weight = 5.0, priority = Priority.URGENT)
+
+        // When
+        val result = optimizeCargo(listOf(packageA, missingWeight, packageC), capacity = 10.0)
+
+        // Then
+        assertEquals(listOf(packageA, packageC), result)
+    }
 }
 
