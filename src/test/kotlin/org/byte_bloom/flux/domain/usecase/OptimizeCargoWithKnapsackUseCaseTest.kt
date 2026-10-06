@@ -109,5 +109,18 @@ class OptimizeCargoWithKnapsackUseCaseTest {
         // Then
         assertEquals(listOf(valid), result)
     }
+
+    @Test
+    fun `never exceeds capacity when weights are fractional`() {
+        // Given: 5.5 + 4.6 = 10.1 kg, more than the 10 kg capacity
+        val packageA = createPackage("PKG-1", weight = 5.5, priority = Priority.URGENT)
+        val packageB = createPackage("PKG-2", weight = 4.6, priority = Priority.STANDARD)
+
+        // When
+        val result = optimizeCargo(listOf(packageA, packageB), capacity = 10.0)
+
+        // Then
+        assertEquals(listOf(packageA), result)
+    }
 }
 
