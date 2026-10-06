@@ -144,4 +144,31 @@ class StandardDispatchProcessorTest {
         // Then
         assertThat(output).isEmpty()
     }
+
+    @Test
+    fun `given a rejected second dispatch when next package is processed then capacity was not consumed twice`() {
+        // Given
+        val first = shipment(id = FIRST_PACKAGE_ID, weight = LIGHT_PACKAGE_KG)      // 40 reserved
+        processor.process(first, vehicle)
+        assertFailsWith<IllegalStateTransitionException> { processor.process(first, vehicle) }
+        val second = shipment(id = SECOND_PACKAGE_ID, weight = 50.0)                // 40 + 50 <= 100
+
+        // When
+        processor.process(second, vehicle)
+
+        // Then
+        assertThat(second.state).isEqualTo(InTransitState)
+    }
+
+    @Test
+    fun `given negative weight when process then throws InvalidPackageWeightException`() {
+        // Given: -1.0 is what the CSV parser produces for an unreadable weight
+        val shipment = shipment(weight = -1.0)
+
+        // When
+        assertFailsWith<InvalidPackageWeightException> { processor.process(shipment, vehicle) }
+
+        // Then
+        assertThat(shipment.state).isEqualTo(CreatedState)
+    }
 }
