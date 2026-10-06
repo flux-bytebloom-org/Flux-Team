@@ -122,5 +122,29 @@ class OptimizeCargoWithKnapsackUseCaseTest {
         // Then
         assertEquals(listOf(packageA), result)
     }
+
+    @Test
+    fun `returns empty list when capacity is negative`() {
+        // Given
+        val packageA = createPackage("PKG-A", weight = 5.0, priority = Priority.URGENT)
+
+        // When
+        val result = optimizeCargo(listOf(packageA), capacity = -3.0)
+
+        // Then
+        assertEquals(emptyList<Package>(), result)
+    }
+
+    @Test
+    fun `returns empty list when capacity is zero and the package has weight`() {
+        // Given
+        val packageA = createPackage("PKG-A", weight = 5.0, priority = Priority.URGENT)
+
+        // When
+        val result = optimizeCargo(listOf(packageA), capacity = 0.0)
+
+        // Then
+        assertEquals(emptyList<Package>(), result)
+    }
 }
 
