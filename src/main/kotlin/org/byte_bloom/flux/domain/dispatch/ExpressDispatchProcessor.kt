@@ -6,7 +6,7 @@ import org.byte_bloom.flux.domain.state.Shipment
 class ExpressDispatchProcessor : BaseDispatchProcessor() {
 
     override fun validateCargo(shipment: Shipment, vehicle: Vehicle) =
-        ensureCargoFits(shipment, vehicle)
+        ensureCanDispatch(shipment, vehicle)
 
     override fun reserveVehicleCapacity(shipment: Shipment, vehicle: Vehicle) =
         reserveCapacity(shipment, vehicle)

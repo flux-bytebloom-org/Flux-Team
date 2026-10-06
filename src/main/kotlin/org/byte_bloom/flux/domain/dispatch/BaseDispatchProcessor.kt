@@ -2,6 +2,7 @@ package org.byte_bloom.flux.domain.dispatch
 
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Vehicle
+import org.byte_bloom.flux.domain.state.CreatedState
 import org.byte_bloom.flux.domain.state.Shipment
 
 abstract class BaseDispatchProcessor {
@@ -23,11 +24,21 @@ abstract class BaseDispatchProcessor {
     // Hook: optional step, empty by default
     protected open fun notifyDispatchStatus(shipment: Shipment, vehicle: Vehicle) {}
 
-    protected fun ensureCargoFits(shipment: Shipment, vehicle: Vehicle) {
-        val weight = shipment.pkg.weight
-            ?: throw LogisticsException.ValidationException.InvalidPackageWeightException(
-                "package ${shipment.pkg.id} has no weight"
+    protected fun ensureCanDispatch(shipment: Shipment, vehicle: Vehicle) {
+
+       if (shipment.state != CreatedState) {
+            throw LogisticsException.BusinessLogicException.IllegalStateTransitionException(
+                shipment.state.name, "AssignedToVehicleState"
             )
+        }
+
+        val weight = shipment.pkg.weight
+        if (weight == null || !weight.isFinite() || weight <= 0.0) {
+            throw LogisticsException.ValidationException.InvalidPackageWeightException(
+                "package ${shipment.pkg.id} has invalid weight: $weight"
+            )
+        }
+
         val remaining = vehicle.maxCapacityKg - (reservedKg[vehicle.id] ?: 0.0)
         if (weight > remaining) {
             throw LogisticsException.ValidationException.InvalidTransitLoadException(
