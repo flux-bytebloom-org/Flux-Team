@@ -146,5 +146,19 @@ class OptimizeCargoWithKnapsackUseCaseTest {
         // Then
         assertEquals(emptyList<Package>(), result)
     }
+
+    // Red test first
+    @Test
+    fun `ignores a package with zero weight`() {
+        // Given
+        val zero = createPackage("PKG-ZERO", weight = 0.0, priority = Priority.URGENT)
+        val valid = createPackage("PKG-OK", weight = 3.0, priority = Priority.LOW)
+
+        // When
+        val result = optimizeCargo(listOf(zero, valid), capacity = 10.0)
+
+        // Then
+        assertEquals(listOf(valid), result)
+    }
 }
 
