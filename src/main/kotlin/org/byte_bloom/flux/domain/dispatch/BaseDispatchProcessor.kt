@@ -5,7 +5,9 @@ import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.state.CreatedState
 import org.byte_bloom.flux.domain.state.Shipment
 
-abstract class BaseDispatchProcessor {
+abstract class BaseDispatchProcessor(
+    private val ledger: VehicleCapacityLedger = VehicleCapacityLedger()
+) {
 
     private val reservedKg = mutableMapOf<String, Double>()
 
@@ -38,8 +40,7 @@ abstract class BaseDispatchProcessor {
                 "package ${shipment.pkg.id} has invalid weight: $weight"
             )
         }
-
-        val remaining = vehicle.maxCapacityKg - (reservedKg[vehicle.id] ?: 0.0)
+        val remaining = ledger.remainingKg(vehicle)
         if (weight > remaining) {
             throw LogisticsException.BusinessLogicException.VehicleCapacityExceededException(
                 "package ${shipment.pkg.id} ($weight kg) exceeds remaining capacity ($remaining kg) of vehicle ${vehicle.id}"
@@ -48,7 +49,6 @@ abstract class BaseDispatchProcessor {
     }
 
     protected fun reserveCapacity(shipment: Shipment, vehicle: Vehicle) {
-        val weight = shipment.pkg.weight ?: 0.0
-        reservedKg[vehicle.id] = (reservedKg[vehicle.id] ?: 0.0) + weight
+        ledger.reserve(vehicle, shipment.pkg.weight ?: 0.0)
     }
 }
