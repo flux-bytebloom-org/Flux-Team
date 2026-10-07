@@ -22,7 +22,7 @@ class OptimizeCargoWithKnapsackUseCase {
     }
 
     private fun hasValidWeight(pkg: Package): Boolean =
-        (pkg.weight ?: -1.0) >= MIN_VALID_WEIGHT_KG
+        (pkg.weight ?: -1.0) > MIN_VALID_WEIGHT_KG
 
     private fun buildDpTable(packages: List<Package>, capacity: Int): Array<IntArray> {
         val grid = Array(packages.size + 1) { IntArray(capacity + 1) }
