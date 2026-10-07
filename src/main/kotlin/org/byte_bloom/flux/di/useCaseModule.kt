@@ -22,7 +22,7 @@ val useCaseModule = module {
     // === helpers =====
     single<DijkstraRouter> { DijkstraRouter() }
     single<BreadthFirstRouter> { BreadthFirstRouter() }
-    single<BidirectionalBfsRouter> { BidirectionalBfsRouter(emptyList()) }
+    single<BidirectionalBfsRouter> { BidirectionalBfsRouter(get()) }
     single<DispatchStrategy> { EcoStrategy() }
     single<RoutePricingEngine> { RoutePricingEngine(get()) }
     single<ShadowWarehouseGraphBuilder> { ShadowWarehouseGraphBuilder() }
