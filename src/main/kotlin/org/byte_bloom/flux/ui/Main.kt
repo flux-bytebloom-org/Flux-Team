@@ -8,7 +8,6 @@ import org.byte_bloom.flux.domain.algorithm.routing.BreadthFirstRouter
 import org.byte_bloom.flux.domain.algorithm.routing.DijkstraRouter
 import org.byte_bloom.flux.domain.algorithm.routing.benchmarkRouters
 import org.byte_bloom.flux.domain.algorithm.routing.testRoutingComparison
-import org.byte_bloom.flux.domain.algorithm.sorting.sortByPriorityAndWeightDescending
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
@@ -27,6 +26,8 @@ import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.byte_bloom.flux.domain.request.GreedyDispatchRequest
 import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
 import org.byte_bloom.flux.domain.usecase.GreedyFleetDispatchUseCase
+import org.byte_bloom.flux.domain.usecase.SortCargoByWeightUseCase
+import org.byte_bloom.flux.domain.usecase.SortPackagesByPriorityAndWeightUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.GetWarehouseByIdUseCase
 import org.byte_bloom.flux.ui.scenarios.runKnapsackDispatchScenario
 import org.byte_bloom.flux.ui.scenarios.testPackageCrudFlow
@@ -122,7 +123,8 @@ private fun printParsingSummary(
 }
 
 private fun printTopPriorityPackages(packages: List<Package>) {
-    val sortedPackages = sortByPriorityAndWeightDescending(packages)
+    val sortPackages: SortPackagesByPriorityAndWeightUseCase = getKoin().get()
+    val sortedPackages = sortPackages(packages)
 
     println("\n--- Top 3 Urgent & Heaviest Packages ---")
     val topPackages = sortedPackages.take(TOP_PACKAGES_DISPLAY_COUNT)
@@ -170,15 +172,16 @@ private fun testWarehouseQuickSort(warehouses: List<Warehouse>) {
         return
     }
 
+    val sortCargoByWeight: SortCargoByWeightUseCase = getKoin().get()
+    val cargoQueue = warehouse.getCargoQueue()
+
     println("Warehouse: ${warehouse.name}")
-    println("Before sorting: ${warehouse.getCargoQueue().map { it.id to it.weight }}")
+    println("Before sorting: ${cargoQueue.map { it.id to it.weight }}")
 
-    warehouse.sortCargoQueue()
+    val sortedCargo = sortCargoByWeight(cargoQueue)
 
-    println("After sorting:  ${warehouse.getCargoQueue().map { it.id to it.weight }}")
+    println("After sorting:  ${sortedCargo.map { it.id to it.weight }}")
 }
-
-
 
 private fun testDecoratorStacking(warehouses: List<Warehouse>) {
     println("\n--- Testing Decorator Stacking ---")

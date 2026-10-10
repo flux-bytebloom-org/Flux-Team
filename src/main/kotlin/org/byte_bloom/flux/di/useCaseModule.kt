@@ -92,4 +92,9 @@ val useCaseModule = module {
     // ===== Tree / Analytics =====
     factory { AnalyzeTreePerformanceUseCase() }
     factory { TraceHubLineageUseCase() }
+
+    // ===== Sorting =====
+    factory { OptimizeCargoWithKnapsackUseCase() }
+    factory { SortPackagesByPriorityAndWeightUseCase() }
+
 }

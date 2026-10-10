@@ -1,7 +1,5 @@
 package org.byte_bloom.flux.domain.model
 
-import org.byte_bloom.flux.domain.algorithm.sorting.sortCargoByWeightDescending
-
 data class Warehouse(
     val id: String,
     val name: String,
@@ -43,10 +41,6 @@ data class Warehouse(
 
     fun getStationedVehicles(): List<Vehicle> {
         return stationedVehicles.toList()
-    }
-
-    fun sortCargoQueue() {
-        sortCargoByWeightDescending(cargoQueue)
     }
 
     fun removeVehicle(vehicle: Vehicle) {
