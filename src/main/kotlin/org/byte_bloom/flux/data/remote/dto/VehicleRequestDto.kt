@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class VehicleRequestDto(
+    val id: String,
     @SerialName("current_hub_id")
     val currentHubId: String,
     @SerialName("max_capacity_kg")

@@ -56,6 +56,7 @@ fun WarehouseResponseDto.toDomain(): Warehouse {
 
 fun Warehouse.toRequestDto(): WarehouseRequestDto {
     return WarehouseRequestDto(
+        id = id,
         name = name,
         regionalZone = regionalZone.name,
         latitude = latitude,
@@ -83,6 +84,7 @@ fun PackageResponseDto.toDomain(warehousesById: Map<String, Warehouse>): Package
 
 fun Package.toRequestDto(): PackageRequestDto {
     return PackageRequestDto(
+        id = id,
         weight = weight,
         originHubId = originHub.id,
         destinationHubId = destinationHub.id,
@@ -105,6 +107,7 @@ fun VehicleResponseDto.toDomain(warehousesById: Map<String, Warehouse>): Vehicle
 
 fun Vehicle.toRequestDto(): VehicleRequestDto {
     return VehicleRequestDto(
+        id = id,
         currentHubId = currentHub.id,
         maxCapacityKg = maxCapacityKg,
         costPerKm = costPerKm
@@ -129,6 +132,7 @@ fun RouteResponseDto.toDomain(warehousesById: Map<String, Warehouse>): Route? {
 
 fun Route.toRequestDto(): RouteRequestDto {
     return RouteRequestDto(
+        id = id,
         originHubId = originHub.id,
         destinationHubId = destinationHub.id,
         distanceKm = distanceKm,
