@@ -8,5 +8,5 @@ interface RemoteWarehouseDataSource {
     suspend fun getById(id: String): WarehouseResponseDto?
     suspend fun create(dto: WarehouseRequestDto): WarehouseResponseDto
     suspend fun update(id: String, dto: WarehouseRequestDto): WarehouseResponseDto
-    suspend fun delete(id: String)
+    suspend fun delete(id: String) : WarehouseResponseDto?
 }

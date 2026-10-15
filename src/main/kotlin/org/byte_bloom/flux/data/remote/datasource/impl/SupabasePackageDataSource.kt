@@ -46,10 +46,11 @@ class SupabasePackageDataSource(
             setBody(dto)
         }.requireSuccess().body<List<PackageResponseDto>>().first()
 
-    override suspend fun delete(id: String) {
+    // SupabasePackageDataSource
+    override suspend fun delete(id: String): PackageResponseDto? =
         client.delete(table) {
-            parameter("id", "eq.$id")
-        }.requireSuccess()
-    }
+            url { parameters.append("id", "eq.$id") }
+            header("Prefer", "return=representation")
+        }.requireSuccess().body<List<PackageResponseDto>>().firstOrNull()
 }
 

@@ -39,7 +39,10 @@ class SupabaseVehicleDataSource(
             setBody(dto)
         }.requireSuccess().body<List<VehicleResponseDto>>().first()
 
-    override suspend fun delete(id: String) {
-        client.delete(table) { url { parameters.append("id", "eq.$id") } }.requireSuccess()
-    }
+    override suspend fun delete(id: String): VehicleResponseDto? =
+        client.delete(table) {
+            url { parameters.append("id", "eq.$id") }
+            header("Prefer", "return=representation")
+        }.requireSuccess().body<List<VehicleResponseDto>>().firstOrNull()
+
 }

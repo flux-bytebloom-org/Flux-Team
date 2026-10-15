@@ -37,7 +37,9 @@ class SupabaseWarehouseDataSource(
             setBody(dto)
         }.requireSuccess().body<List<WarehouseResponseDto>>().first()
 
-    override suspend fun delete(id: String) {
-        client.delete(table) { url { parameters.append("id", "eq.$id") } }.requireSuccess()
-    }
+    override suspend fun delete(id: String): WarehouseResponseDto? =
+        client.delete(table) {
+            url { parameters.append("id", "eq.$id") }
+            header("Prefer", "return=representation")
+        }.requireSuccess().body<List<WarehouseResponseDto>>().firstOrNull()
 }

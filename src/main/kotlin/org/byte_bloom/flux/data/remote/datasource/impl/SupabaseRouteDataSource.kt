@@ -45,9 +45,9 @@ class SupabaseRouteDataSource (
         }.requireSuccess().body<List<RouteResponseDto>>().first()
     }
 
-    override suspend fun delete(id: String) {
+    override suspend fun delete(id: String): RouteResponseDto? =
         client.delete(table) {
             parameter("id", "eq.$id")
-        }
-    }
+            header(HttpHeaders.Prefer, "return=representation")
+        }.requireSuccess().body<List<RouteResponseDto>>().firstOrNull()
 }
