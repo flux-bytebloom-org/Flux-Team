@@ -2,7 +2,7 @@ package org.byte_bloom.flux.domain.validation
 
 object EntityPrefixes {
     const val WAREHOUSE = "WH-"
-    const val VEHICLE = "V-"
+    const val VEHICLE = "TRK-"
     const val ROUTE = "RT-"
     const val PACKAGE = "PKG-"
 }

@@ -3,11 +3,6 @@ package org.byte_bloom.flux.ui
 import org.byte_bloom.flux.domain.algorithm.pricing.decorator.ColdChainDecorator
 import org.byte_bloom.flux.domain.algorithm.pricing.decorator.ExpressInsuranceDecorator
 import org.byte_bloom.flux.domain.algorithm.pricing.decorator.FragileHandlingDecorator
-import org.byte_bloom.flux.domain.algorithm.routing.BidirectionalBfsRouter
-import org.byte_bloom.flux.domain.algorithm.routing.BreadthFirstRouter
-import org.byte_bloom.flux.domain.algorithm.routing.DijkstraRouter
-import org.byte_bloom.flux.domain.algorithm.routing.benchmarkRouters
-import org.byte_bloom.flux.domain.algorithm.routing.testRoutingComparison
 import org.byte_bloom.flux.domain.algorithm.sorting.sortByPriorityAndWeightDescending
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Route
@@ -16,18 +11,34 @@ import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.repository.VehicleRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
-import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 import org.byte_bloom.flux.di.networkModule
 import org.byte_bloom.flux.di.repositoryModule
 import org.byte_bloom.flux.di.useCaseModule
 import org.byte_bloom.flux.di.validatorModule
+import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.repository.RouteRepository
-import org.byte_bloom.flux.domain.request.GreedyDispatchRequest
-import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
-import org.byte_bloom.flux.domain.usecase.GreedyFleetDispatchUseCase
+import org.byte_bloom.flux.domain.request.PackageUpdateRequest
+import org.byte_bloom.flux.domain.request.RouteUpdateRequest
+import org.byte_bloom.flux.domain.request.VehicleUpdateRequest
+import org.byte_bloom.flux.domain.request.WarehouseUpdateRequest
+import org.byte_bloom.flux.domain.usecase.crud.pakage.CreatePackageUseCase
+import org.byte_bloom.flux.domain.usecase.crud.pakage.DeletePackageUseCase
+import org.byte_bloom.flux.domain.usecase.crud.pakage.GetPackageByIdUseCase
+import org.byte_bloom.flux.domain.usecase.crud.pakage.UpdatePackageUseCase
+import org.byte_bloom.flux.domain.usecase.crud.route.CreateRouteUseCase
+import org.byte_bloom.flux.domain.usecase.crud.route.DeleteRouteUseCase
+import org.byte_bloom.flux.domain.usecase.crud.route.GetRouteByIdUseCase
+import org.byte_bloom.flux.domain.usecase.crud.route.UpdateRouteUseCase
+import org.byte_bloom.flux.domain.usecase.crud.vehicle.CreateVehicleUseCase
+import org.byte_bloom.flux.domain.usecase.crud.vehicle.DeleteVehicleUseCase
+import org.byte_bloom.flux.domain.usecase.crud.vehicle.GetVehicleByIdUseCase
+import org.byte_bloom.flux.domain.usecase.crud.vehicle.UpdateVehicleUseCase
+import org.byte_bloom.flux.domain.usecase.crud.warehouse.CreateWarehouseUseCase
+import org.byte_bloom.flux.domain.usecase.crud.warehouse.DeleteWarehouseUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.GetWarehouseByIdUseCase
+import org.byte_bloom.flux.domain.usecase.crud.warehouse.UpdateWarehouseUseCase
 import org.byte_bloom.flux.ui.scenarios.runKnapsackDispatchScenario
 import org.byte_bloom.flux.ui.scenarios.testPackageCrudFlow
 import org.byte_bloom.flux.ui.scenarios.testWarehouseCrudFlow
@@ -53,44 +64,42 @@ fun main() = kotlinx.coroutines.runBlocking {
 
     val init = initializeAndPrintGraph()
 
-    val useCase : GetWarehouseByIdUseCase = getKoin().get()
-    val hub = useCase("WH-010")
-    println(hub)
+    testCrudOperations(init.warehouses)
 
+    
+       testBidirectionalIdentity(init.warehouses)
+        testWarehouseQuickSort(init.warehouses)
+        drowPackageAssignmentRing()
+        testRoutingComparison(init.warehouses)
+        testDecoratorStacking(init.warehouses)
 
-   testBidirectionalIdentity(init.warehouses)
-    testWarehouseQuickSort(init.warehouses)
-    drowPackageAssignmentRing()
-    testRoutingComparison(init.warehouses)
-    testDecoratorStacking(init.warehouses)
+        val allRoutes = init.warehouses.flatMap { it.getOutgoingRoutes() }
+        benchmarkRouters(init.warehouses)
 
-    val allRoutes = init.warehouses.flatMap { it.getOutgoingRoutes() }
-    benchmarkRouters(init.warehouses)
+        testWarehouseCrudFlow()
+        testPackageCrudFlow()
 
-    testWarehouseCrudFlow()
-    testPackageCrudFlow()
+        // ===== Sub-Task 5: Greedy Fleet Dispatcher =====
+        testGreedyFleetDispatchUseCase()
 
-    // ===== Sub-Task 5: Greedy Fleet Dispatcher =====
-    testGreedyFleetDispatchUseCase()
+        val dispatchVehicleUseCase : DispatchVehicleUseCase = getKoin().get()
 
-    val dispatchVehicleUseCase : DispatchVehicleUseCase = getKoin().get()
+        val dispatchedVehicles = init.vehicleRepository.getAll().map { vehicle ->
+            dispatchVehicleUseCase(vehicle.currentHub, vehicle)
+        }
 
-    val dispatchedVehicles = init.vehicleRepository.getAll().map { vehicle ->
-        dispatchVehicleUseCase(vehicle.currentHub, vehicle)
-    }
+        val targetZones = init.warehouses
+            .map { it.regionalZone }
+            .filter { it != RegionalZone.UnKNOWN }
+            .toSet()
 
-    val targetZones = init.warehouses
-        .map { it.regionalZone }
-        .filter { it != RegionalZone.UnKNOWN }
-        .toSet()
+        val greedyResult = GreedyFleetDispatchUseCase()(GreedyDispatchRequest(targetZones, dispatchedVehicles))
 
-    val greedyResult = GreedyFleetDispatchUseCase()(GreedyDispatchRequest(targetZones, dispatchedVehicles))
-
-    println("\n--- Sub-Task 5: Greedy Fleet Dispatcher ---")
-    println("Target zones: $targetZones")
-    println("Selected vehicles: ${greedyResult.selectedVehicles.map { it.id }}")
-    println("Uncovered zones: ${greedyResult.uncoveredZones}")
-
+        println("\n--- Sub-Task 5: Greedy Fleet Dispatcher ---")
+        println("Target zones: $targetZones")
+        println("Selected vehicles: ${greedyResult.selectedVehicles.map { it.id }}")
+        println("Uncovered zones: ${greedyResult.uncoveredZones}")
+    
         //comment this part until doing exception handling
         //runAllScenarios(init.warehouses, init.packages)
         //testCommandPattern()
@@ -203,6 +212,87 @@ private fun testDecoratorStacking(warehouses: List<Warehouse>) {
 
     val fullyStacked = ExpressInsuranceDecorator(fragileAndCold)
     println("+ ExpressInsurance: ${fullyStacked.getDescription()} → ${fullyStacked.calculateTransitRate(baseRate)}")
+}
+
+private suspend fun testCrudOperations(warehouses: List<Warehouse>) {
+    println("\n--- Testing Warehouse CRUD Flow ---")
+    val getWarehouseUseCase : GetWarehouseByIdUseCase = getKoin().get()
+    val gotHub = getWarehouseUseCase("WH-010")
+    println(gotHub)
+
+    val createWarehouseUseCase : CreateWarehouseUseCase = getKoin().get()
+    val hubToCreate = Warehouse("WH-ZZZ", "Warehouse ZZ", RegionalZone.NORTH,1.5,16.1)
+    val createdHub = createWarehouseUseCase(hubToCreate)
+    println(createdHub)
+
+    val updateWarehouseUseCase : UpdateWarehouseUseCase = getKoin().get()
+    val hub3re = WarehouseUpdateRequest( "Warehouse ZZ Updated", "NORTH",20.5,16.1)
+    val updatedHub = updateWarehouseUseCase("WH-ZZZ", hub3re)
+    println(updatedHub)
+
+    val deleteWarehouseUseCase : DeleteWarehouseUseCase = getKoin().get()
+    val deletedHub = deleteWarehouseUseCase("WH-ZZZ")
+    println(deletedHub)
+
+
+    println("\n--- Testing Package CRUD Flow ---")
+    val getPackageUseCase : GetPackageByIdUseCase = getKoin().get()
+    val gotPackage = getPackageUseCase("PKG-009993")
+    println(gotPackage)
+
+    val createPackageUseCase : CreatePackageUseCase = getKoin().get()
+    val packageToCreate = Package("PKG-ZZZ", 10.0, warehouses[0], warehouses[1], Priority.STANDARD)
+    val createdPackage = createPackageUseCase(packageToCreate)
+    println(createdPackage)
+
+    val updatePackageUseCase : UpdatePackageUseCase = getKoin().get()
+    val package3re = PackageUpdateRequest( 15.0, "W-ZZZ", "W-AAA", "URGENT")
+    val updatedPackage = updatePackageUseCase("PKG-ZZZ", package3re)
+    println(updatedPackage)
+
+    val deletePackageUseCase : DeletePackageUseCase = getKoin().get()
+    val deletedPackage = deletePackageUseCase("PKG-ZZZ")
+    println(deletedPackage)
+
+    println("\n--- Testing Vehicle CRUD Flow ---")
+    val getVehicleUseCase : GetVehicleByIdUseCase = getKoin().get()
+    val gotVehicle = getVehicleUseCase("TRK-0005")
+    println(gotVehicle)
+
+    val createVehicleUseCase : CreateVehicleUseCase = getKoin().get()
+    val vehicleToCreate = Vehicle("TRK-ZZZ", warehouses[0], 100.0, 50.0)
+    val createdVehicle = createVehicleUseCase(vehicleToCreate)
+    println(createdVehicle)
+
+    val updateVehicleUseCase : UpdateVehicleUseCase = getKoin().get()
+    val vehicle3re = VehicleUpdateRequest(warehouses[5].id,120.0, 60.0)
+    val updatedVehicle = updateVehicleUseCase("TRK-ZZZ", vehicle3re)
+    println(updatedVehicle)
+
+    val deleteVehicleUseCase : DeleteVehicleUseCase = getKoin().get()
+    val deletedVehicle = deleteVehicleUseCase("TRK-ZZZ")
+    println(deletedVehicle)
+
+
+    println("\n--- Testing Route CRUD Flow ---")
+    val getRouteUseCase : GetRouteByIdUseCase = getKoin().get()
+    val gotRoute = getRouteUseCase("RT-01496")
+    println(gotRoute)
+
+    val createRouteUseCase : CreateRouteUseCase = getKoin().get()
+    val routeToCreate = Route("RT-ZZZ", warehouses[0],warehouses[1], 10.0, 5.0)
+    val createdRoute = createRouteUseCase(routeToCreate)
+    println(createdRoute)
+
+    val updateRouteUseCase : UpdateRouteUseCase = getKoin().get()
+    val route3re = RouteUpdateRequest(warehouses[1].id, warehouses[0].id, 15.0, 7.0)
+    val updatedRoute = updateRouteUseCase("RT-ZZZ", route3re)
+    println(updatedRoute)
+
+    val deleteRouteUseCase : DeleteRouteUseCase = getKoin().get()
+    val deletedRoute = deleteRouteUseCase("RT-ZZZ")
+    println(deletedRoute)
+
 }
 
 private suspend fun initializeAndPrintGraph(): InitResult {

@@ -43,5 +43,7 @@ class RouteRepositoryImpl(
 
     override suspend fun delete(id: String): Result<Unit> = runCatching {
         remoteRouteDataSource.delete(id)
+            ?: throw LogisticsException.EntityNotFoundException.RouteNotFoundException(id)
+        Unit
     }
 }

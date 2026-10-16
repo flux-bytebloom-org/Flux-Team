@@ -9,5 +9,5 @@ interface RemoteRouteDataSource {
     suspend fun getById(id: String): RouteResponseDto?
     suspend fun create(dto: RouteRequestDto): RouteResponseDto
     suspend fun update(id: String, dto: RouteRequestDto): RouteResponseDto
-    suspend fun delete(id: String)
+    suspend fun delete(id: String) : RouteResponseDto?
 }

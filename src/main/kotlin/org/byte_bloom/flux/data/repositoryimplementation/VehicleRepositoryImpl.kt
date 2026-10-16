@@ -45,8 +45,11 @@ class VehicleRepositoryImpl(
             ?: throw LogisticsException.EntityNotFoundException.VehicleNotFoundException(response.currentHubId)
     }
 
-    override suspend fun delete(id: String) : Result<Unit> =runCatching {  remoteDataSource.delete(id)}
-
+    override suspend fun delete(id: String): Result<Unit> = runCatching {
+        remoteDataSource.delete(id)
+            ?: throw LogisticsException.EntityNotFoundException.VehicleNotFoundException(id)
+        Unit
+    }
 
 
     override fun updateVehicleCurrentHub(vehicle: Vehicle, newHub: Warehouse): Vehicle {

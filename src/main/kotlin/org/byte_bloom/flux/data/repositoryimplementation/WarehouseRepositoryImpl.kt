@@ -32,5 +32,8 @@ class WarehouseRepositoryImpl(
         remoteDataSource.update(id, warehouse.toRequestDto()).toDomain()}
 
     override suspend fun delete(id: String): Result<Unit> = runCatching {
-        remoteDataSource.delete(id)}
+        remoteDataSource.delete(id)
+            ?: throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(id)
+        Unit
+    }
 }
