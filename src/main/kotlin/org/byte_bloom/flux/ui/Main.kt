@@ -39,6 +39,12 @@ import org.byte_bloom.flux.domain.usecase.crud.warehouse.CreateWarehouseUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.DeleteWarehouseUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.GetWarehouseByIdUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.UpdateWarehouseUseCase
+import org.byte_bloom.flux.ui.scenarios.runKnapsackDispatchScenario
+import org.byte_bloom.flux.ui.scenarios.testPackageCrudFlow
+import org.byte_bloom.flux.ui.scenarios.testWarehouseCrudFlow
+import org.byte_bloom.flux.ui.utils.runAllScenarios
+import org.byte_bloom.flux.ui.utils.testCommandPattern
+import org.byte_bloom.flux.ui.utils.testGreedyFleetDispatchUseCase
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.java.KoinJavaComponent.getKoin
 
@@ -97,6 +103,17 @@ fun main() = kotlinx.coroutines.runBlocking {
         //comment this part until doing exception handling
         //runAllScenarios(init.warehouses, init.packages)
         //testCommandPattern()
+
+
+    // ===== Week7 - Sub-Task 5: Knapsack + Dispatch Pipeline =====
+
+    val hub1 = init.warehouses.first()
+    val packagePool = hub1.getCargoQueue()
+    val knapsackVehicle = hub1.getStationedVehicles().first().copy(maxCapacityKg = 1500.5)
+        // hub1.getStationedVehicles().first() just to pick a vehicle,
+        // but we can modify its capacity for a smaller test
+    hub1.getStationedVehicles().forEach { println(it) }
+    runKnapsackDispatchScenario(packagePool, knapsackVehicle)
 
 }
 

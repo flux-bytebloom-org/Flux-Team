@@ -7,6 +7,9 @@ import org.byte_bloom.flux.domain.algorithm.routing.BidirectionalBfsRouter
 import org.byte_bloom.flux.domain.algorithm.routing.BreadthFirstRouter
 import org.byte_bloom.flux.domain.algorithm.routing.DijkstraRouter
 import org.byte_bloom.flux.domain.builder.ShadowWarehouseGraphBuilder
+import org.byte_bloom.flux.domain.dispatch.ExpressDispatchProcessor
+import org.byte_bloom.flux.domain.dispatch.StandardDispatchProcessor
+import org.byte_bloom.flux.domain.dispatch.VehicleCapacityLedger
 import org.byte_bloom.flux.domain.usecase.*
 import org.byte_bloom.flux.domain.usecase.crud.pakage.*
 import org.byte_bloom.flux.domain.usecase.crud.route.*
@@ -19,10 +22,13 @@ val useCaseModule = module {
     // === helpers =====
     single<DijkstraRouter> { DijkstraRouter() }
     single<BreadthFirstRouter> { BreadthFirstRouter() }
-    single<BidirectionalBfsRouter> { BidirectionalBfsRouter(emptyList()) }
+    single<BidirectionalBfsRouter> { BidirectionalBfsRouter(get()) }
     single<DispatchStrategy> { EcoStrategy() }
     single<RoutePricingEngine> { RoutePricingEngine(get()) }
     single<ShadowWarehouseGraphBuilder> { ShadowWarehouseGraphBuilder() }
+    single { VehicleCapacityLedger() }
+    factory { StandardDispatchProcessor(get()) }
+    factory { ExpressDispatchProcessor(get()) }
 
 
     // ===== Package CRUD =====
@@ -63,6 +69,7 @@ val useCaseModule = module {
     factory { RemovePackageFromQueueUseCase(get()) }
     factory { ReroutePackageUseCase(get()) }
     factory { SplitAndRerouteShipmentsUseCase(get()) }
+    factory { OptimizeCargoWithKnapsackUseCase() }
 
     // ===== Vehicle/Package Matching =====
     factory { FindSmallestFitVehicleUseCase() }

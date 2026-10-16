@@ -62,6 +62,6 @@ sealed class LogisticsException(message: String, cause: Throwable? = null) : Exc
             BusinessLogicException("Illegal state transition: $from -> $to")
 
         class VehicleCapacityExceededException(val reason: String) :
-            ValidationException("Invalid vehicle capacity: $reason")
+            BusinessLogicException("Invalid vehicle capacity: $reason")
     }
 }
