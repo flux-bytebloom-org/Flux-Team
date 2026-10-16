@@ -1,5 +1,7 @@
 package org.byte_bloom.flux.data.repositoryimplementation
 
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.byte_bloom.flux.data.csv.datasource.WarehouseDataSource as LocalWarehouseDataSource
 import org.byte_bloom.flux.data.csv.mapper.toDomain
 import org.byte_bloom.flux.data.remote.datasource.RemoteWarehouseDataSource
@@ -14,12 +16,14 @@ class WarehouseRepositoryImpl(
     private val remoteDataSource: RemoteWarehouseDataSource
 ) : WarehouseRepository {
 
+    private val mutex = Mutex()
+
     private var cachedWarehouses: List<Warehouse>? = null
 
-    override suspend fun getAll(): List<Warehouse> = cachedWarehouses ?:
-         localDataSource.getAll().map { it.toDomain() }
+    override suspend fun getAll(): List<Warehouse> = mutex.withLock {
+        cachedWarehouses ?: localDataSource.getAll().map { it.toDomain() }
             .also { cachedWarehouses = it }
-
+    }
 
     override suspend fun getById(id: String): Result<Warehouse> = runCatching {
     remoteDataSource.getById(id)?.toDomain()
