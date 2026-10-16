@@ -4,6 +4,7 @@ import org.byte_bloom.flux.data.remote.datasource.RemoteVehicleDataSource
 import org.byte_bloom.flux.data.remote.mapper.toDomain
 import org.byte_bloom.flux.data.remote.mapper.toRequestDto
 import org.byte_bloom.flux.domain.exception.LogisticsException
+import org.byte_bloom.flux.domain.exception.suspendRunCatching
 import org.byte_bloom.flux.data.csv.datasource.VehicleDataSource as LocalVehicleDataSource
 import org.byte_bloom.flux.data.csv.mapper.toDomain as toDomainLocal
 import org.byte_bloom.flux.domain.model.Vehicle
@@ -24,28 +25,28 @@ class VehicleRepositoryImpl(
             .onEach { vehicle -> vehicle.currentHub.addVehicle(vehicle) }
     }
 
-    override suspend fun getById(id: String): Result<Vehicle> = runCatching{
+    override suspend fun getById(id: String): Result<Vehicle> = suspendRunCatching{
         val warehousesById = warehouseRepository.getAll().associateBy { it.id }
         remoteDataSource.getById(id)?.toDomain(warehousesById)
             ?:throw LogisticsException.EntityNotFoundException.VehicleNotFoundException(id)
 
     }
 
-    override suspend fun create(vehicle: Vehicle): Result<Vehicle> = runCatching {
+    override suspend fun create(vehicle: Vehicle): Result<Vehicle> = suspendRunCatching {
         val warehousesById = warehouseRepository.getAll().associateBy { it.id }
         val response  = remoteDataSource.create(vehicle.toRequestDto())
         response.toDomain(warehousesById)
             ?: throw LogisticsException.EntityNotFoundException.VehicleNotFoundException(response.currentHubId)
     }
 
-    override suspend fun update(id: String, vehicle: Vehicle): Result<Vehicle> = runCatching {
+    override suspend fun update(id: String, vehicle: Vehicle): Result<Vehicle> = suspendRunCatching {
         val warehousesById = warehouseRepository.getAll().associateBy { it.id }
         val response  = remoteDataSource.update(id, vehicle.toRequestDto())
         response.toDomain(warehousesById)
             ?: throw LogisticsException.EntityNotFoundException.VehicleNotFoundException(response.currentHubId)
     }
 
-    override suspend fun delete(id: String): Result<Unit> = runCatching {
+    override suspend fun delete(id: String): Result<Unit> = suspendRunCatching {
         remoteDataSource.delete(id)
             ?: throw LogisticsException.EntityNotFoundException.VehicleNotFoundException(id)
         Unit

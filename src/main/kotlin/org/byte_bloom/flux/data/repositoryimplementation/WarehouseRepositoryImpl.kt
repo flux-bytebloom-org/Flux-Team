@@ -8,6 +8,7 @@ import org.byte_bloom.flux.data.remote.datasource.RemoteWarehouseDataSource
 import org.byte_bloom.flux.data.remote.mapper.toDomain
 import org.byte_bloom.flux.data.remote.mapper.toRequestDto
 import org.byte_bloom.flux.domain.exception.LogisticsException
+import org.byte_bloom.flux.domain.exception.suspendRunCatching
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 
@@ -25,17 +26,17 @@ class WarehouseRepositoryImpl(
             .also { cachedWarehouses = it }
     }
 
-    override suspend fun getById(id: String): Result<Warehouse> = runCatching {
+    override suspend fun getById(id: String): Result<Warehouse> = suspendRunCatching {
     remoteDataSource.getById(id)?.toDomain()
         ?: throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(id)}
 
-    override suspend fun create(warehouse: Warehouse): Result<Warehouse> = runCatching {
+    override suspend fun create(warehouse: Warehouse): Result<Warehouse> = suspendRunCatching {
         remoteDataSource.create(warehouse.toRequestDto()).toDomain()}
 
-    override suspend fun update(id: String, warehouse: Warehouse): Result<Warehouse> = runCatching {
+    override suspend fun update(id: String, warehouse: Warehouse): Result<Warehouse> = suspendRunCatching {
         remoteDataSource.update(id, warehouse.toRequestDto()).toDomain()}
 
-    override suspend fun delete(id: String): Result<Unit> = runCatching {
+    override suspend fun delete(id: String): Result<Unit> = suspendRunCatching {
         remoteDataSource.delete(id)
             ?: throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(id)
         Unit

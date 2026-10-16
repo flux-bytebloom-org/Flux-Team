@@ -6,6 +6,7 @@ import org.byte_bloom.flux.data.remote.datasource.RemoteRouteDataSource
 import org.byte_bloom.flux.data.remote.mapper.toDomain
 import org.byte_bloom.flux.data.remote.mapper.toRequestDto
 import org.byte_bloom.flux.domain.exception.LogisticsException
+import org.byte_bloom.flux.domain.exception.suspendRunCatching
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
@@ -23,25 +24,25 @@ class RouteRepositoryImpl(
             .onEach { route -> route.originHub.addRoute(route) }
     }
 
-    override suspend fun getById(id: String): Result<Route> = runCatching {
+    override suspend fun getById(id: String): Result<Route> = suspendRunCatching {
         val warehousesById = warehouseRepository.getAll().associateBy { it.id }
         remoteRouteDataSource.getById(id)?.toDomain(warehousesById)
             ?: throw LogisticsException.EntityNotFoundException.RouteNotFoundException(id)
     }
 
-    override suspend fun create(route: Route): Result<Route> = runCatching {
+    override suspend fun create(route: Route): Result<Route> = suspendRunCatching {
         val warehousesById = warehouseRepository.getAll().associateBy { it.id }
         remoteRouteDataSource.create(route.toRequestDto()).toDomain(warehousesById)
             ?: throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(route.originHub.id)
     }
 
-    override suspend fun update(id: String, route: Route): Result<Route> = runCatching {
+    override suspend fun update(id: String, route: Route): Result<Route> = suspendRunCatching {
         val warehousesById = warehouseRepository.getAll().associateBy { it.id }
         remoteRouteDataSource.update(id, route.toRequestDto()).toDomain(warehousesById)
             ?: throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(route.originHub.id)
     }
 
-    override suspend fun delete(id: String): Result<Unit> = runCatching {
+    override suspend fun delete(id: String): Result<Unit> = suspendRunCatching {
         remoteRouteDataSource.delete(id)
             ?: throw LogisticsException.EntityNotFoundException.RouteNotFoundException(id)
         Unit
