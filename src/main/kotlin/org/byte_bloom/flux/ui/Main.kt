@@ -41,6 +41,12 @@ import org.byte_bloom.flux.domain.usecase.crud.warehouse.CreateWarehouseUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.DeleteWarehouseUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.GetWarehouseByIdUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.UpdateWarehouseUseCase
+import org.byte_bloom.flux.ui.scenarios.runKnapsackDispatchScenario
+import org.byte_bloom.flux.ui.scenarios.testPackageCrudFlow
+import org.byte_bloom.flux.ui.scenarios.testWarehouseCrudFlow
+import org.byte_bloom.flux.ui.utils.runAllScenarios
+import org.byte_bloom.flux.ui.utils.testCommandPattern
+import org.byte_bloom.flux.ui.utils.testGreedyFleetDispatchUseCase
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.java.KoinJavaComponent.getKoin
 
@@ -62,7 +68,7 @@ fun main() = kotlinx.coroutines.runBlocking {
 
     testCrudOperations(init.warehouses)
 
-    /*
+    
        testBidirectionalIdentity(init.warehouses)
         testWarehouseQuickSort(init.warehouses)
         drowPackageAssignmentRing()
@@ -95,7 +101,7 @@ fun main() = kotlinx.coroutines.runBlocking {
         println("Target zones: $targetZones")
         println("Selected vehicles: ${greedyResult.selectedVehicles.map { it.id }}")
         println("Uncovered zones: ${greedyResult.uncoveredZones}")
-    */
+    
         //comment this part until doing exception handling
         //runAllScenarios(init.warehouses, init.packages)
         //testCommandPattern()
