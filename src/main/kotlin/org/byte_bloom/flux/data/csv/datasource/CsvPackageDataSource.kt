@@ -8,7 +8,7 @@ import org.byte_bloom.flux.data.csv.readers.readCsv
 class CsvPackageDataSource(
     private val filePath: String
 ) : PackageDataSource {
-    override fun getAll(): List<PackageRaw> {
+    override suspend fun getAll(): List<PackageRaw> {
         val lines = readCsv(filePath)
         val cleanedLines = cleanLines(lines)
         return parsePackages(cleanedLines)

@@ -8,7 +8,7 @@ import org.byte_bloom.flux.data.csv.readers.readCsv
 class CsvWarehouseDataSource(
     private val filePath: String
 ) : WarehouseDataSource {
-    override fun getAll(): List<WarehouseRaw> {
+    override suspend fun getAll(): List<WarehouseRaw> {
         val lines = readCsv(filePath)
         val cleanedLines = cleanLines(lines)
         return parseWarehouses(cleanedLines)

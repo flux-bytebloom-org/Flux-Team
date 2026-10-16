@@ -3,7 +3,7 @@ package org.byte_bloom.flux.data.csv.datasource
 import org.byte_bloom.flux.data.csv.dataholders.PackageRaw
 
 interface PackageDataSource {
-    fun getAll(): List<PackageRaw>
+     suspend fun getAll(): List<PackageRaw>
 
     /** Updates the package's origin hub AND places it in that hub's cargo sorted queue — two steps, one call. */
     fun updateOriginHub(packageId: String, hubId: String)

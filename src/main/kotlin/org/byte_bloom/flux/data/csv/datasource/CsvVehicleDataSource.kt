@@ -9,7 +9,7 @@ class CsvVehicleDataSource(
     private val filePath: String
 ) : VehicleDataSource {
 
-    override fun getAll(): List<VehicleRaw> {
+    override suspend fun getAll(): List<VehicleRaw> {
         val lines = readCsv(filePath)
         val cleanedLines = cleanLines(lines)
         return parseFleet(cleanedLines)
