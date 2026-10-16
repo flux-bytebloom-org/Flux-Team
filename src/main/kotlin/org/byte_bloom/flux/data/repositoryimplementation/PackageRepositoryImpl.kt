@@ -46,6 +46,8 @@ class PackageRepositoryImpl(
 
     override suspend fun delete(id: String): Result<Unit> = runCatching {
         remoteDataSource.delete(id)
+            ?: throw LogisticsException.EntityNotFoundException.PackageNotFoundException(id)
+        Unit
     }
 
     override fun updatePackageOriginHub(pkg: Package, hub: Warehouse): Package {

@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PackageRequestDto(
+    val id: String,
     val weight: Double?,
     @SerialName("origin_hub_id")
     val originHubId: String,

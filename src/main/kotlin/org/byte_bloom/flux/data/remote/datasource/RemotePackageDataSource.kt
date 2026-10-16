@@ -8,5 +8,5 @@ interface RemotePackageDataSource {
     suspend fun getById(id: String): PackageResponseDto?
     suspend fun create(dto: PackageRequestDto): PackageResponseDto
     suspend fun update(id: String, dto: PackageRequestDto): PackageResponseDto
-    suspend fun delete(id: String)
+    suspend fun delete(id: String) : PackageResponseDto?
 }

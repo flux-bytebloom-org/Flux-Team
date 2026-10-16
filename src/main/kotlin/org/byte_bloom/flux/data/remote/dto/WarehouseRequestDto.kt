@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class WarehouseRequestDto(
+    val id: String,
     val name: String,
     @SerialName("regional_zone")
     val regionalZone: String,
