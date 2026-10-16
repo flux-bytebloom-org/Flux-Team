@@ -66,7 +66,7 @@ fun main() = kotlinx.coroutines.runBlocking {
 
     testCrudOperations(init.warehouses)
 
-    /*
+    
        testBidirectionalIdentity(init.warehouses)
         testWarehouseQuickSort(init.warehouses)
         drowPackageAssignmentRing()
@@ -99,7 +99,7 @@ fun main() = kotlinx.coroutines.runBlocking {
         println("Target zones: $targetZones")
         println("Selected vehicles: ${greedyResult.selectedVehicles.map { it.id }}")
         println("Uncovered zones: ${greedyResult.uncoveredZones}")
-    */
+    
         //comment this part until doing exception handling
         //runAllScenarios(init.warehouses, init.packages)
         //testCommandPattern()
