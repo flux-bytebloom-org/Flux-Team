@@ -1,5 +1,7 @@
 package org.byte_bloom.flux.data.csv.datasource
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.byte_bloom.flux.data.csv.dataholders.VehicleRaw
 import org.byte_bloom.flux.data.csv.parsers.cleanLines
 import org.byte_bloom.flux.data.csv.parsers.parseFleet
@@ -9,10 +11,10 @@ class CsvVehicleDataSource(
     private val filePath: String
 ) : VehicleDataSource {
 
-    override suspend fun getAll(): List<VehicleRaw> {
+    override suspend fun getAll(): List<VehicleRaw> = withContext(Dispatchers.IO) {
         val lines = readCsv(filePath)
         val cleanedLines = cleanLines(lines)
-        return parseFleet(cleanedLines)
+        parseFleet(cleanedLines)
     }
 
     override fun updateCurrentHub(vehicleId: String, oldHubId: String, newHubId: String) {

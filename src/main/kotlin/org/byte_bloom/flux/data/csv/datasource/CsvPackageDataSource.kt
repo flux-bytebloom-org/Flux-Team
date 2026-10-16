@@ -1,5 +1,7 @@
 package org.byte_bloom.flux.data.csv.datasource
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.byte_bloom.flux.data.csv.dataholders.PackageRaw
 import org.byte_bloom.flux.data.csv.parsers.cleanLines
 import org.byte_bloom.flux.data.csv.parsers.parsePackages
@@ -8,10 +10,10 @@ import org.byte_bloom.flux.data.csv.readers.readCsv
 class CsvPackageDataSource(
     private val filePath: String
 ) : PackageDataSource {
-    override suspend fun getAll(): List<PackageRaw> {
+    override suspend fun getAll(): List<PackageRaw> = withContext(Dispatchers.IO) {
         val lines = readCsv(filePath)
         val cleanedLines = cleanLines(lines)
-        return parsePackages(cleanedLines)
+        parsePackages(cleanedLines)
     }
 
     override fun updateOriginHub(packageId: String, hubId: String) {

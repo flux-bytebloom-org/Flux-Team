@@ -11,6 +11,8 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.HttpHeaders
 import io.ktor.http.isSuccess
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.byte_bloom.flux.data.remote.client.SupabaseHttpClient
 import org.byte_bloom.flux.data.remote.client.requireSuccess
 import org.byte_bloom.flux.data.remote.datasource.RemoteRouteDataSource
@@ -22,32 +24,35 @@ class SupabaseRouteDataSource (
 ) : RemoteRouteDataSource {
     private val table = "routes"
 
-    override suspend fun getAll(): List<RouteResponseDto> =
+    override suspend fun getAll(): List<RouteResponseDto> = withContext(Dispatchers.IO) {
         client.get(table).requireSuccess().body()
+    }
 
-    override suspend fun getById(id: String): RouteResponseDto? =
+    override suspend fun getById(id: String): RouteResponseDto? = withContext(Dispatchers.IO) {
         client.get(table) {
             parameter("id", "eq.$id")
         }.requireSuccess().body<List<RouteResponseDto>>().firstOrNull()
+    }
 
-    override suspend fun create(dto: RouteRequestDto): RouteResponseDto {
-        return client.post(table) {
+    override suspend fun create(dto: RouteRequestDto): RouteResponseDto = withContext(Dispatchers.IO) {
+        client.post(table) {
             header(HttpHeaders.Prefer, "return=representation")
             setBody(dto)
         }.requireSuccess().body<List<RouteResponseDto>>().first()
     }
 
-    override suspend fun update(id: String, dto: RouteRequestDto): RouteResponseDto {
-        return client.patch(table) {
+    override suspend fun update(id: String, dto: RouteRequestDto): RouteResponseDto = withContext(Dispatchers.IO) {
+        client.patch(table) {
             parameter("id", "eq.$id")
             header(HttpHeaders.Prefer, "return=representation")
             setBody(dto)
         }.requireSuccess().body<List<RouteResponseDto>>().first()
     }
 
-    override suspend fun delete(id: String): RouteResponseDto? =
+    override suspend fun delete(id: String): RouteResponseDto? = withContext(Dispatchers.IO) {
         client.delete(table) {
             parameter("id", "eq.$id")
             header(HttpHeaders.Prefer, "return=representation")
         }.requireSuccess().body<List<RouteResponseDto>>().firstOrNull()
+    }
 }

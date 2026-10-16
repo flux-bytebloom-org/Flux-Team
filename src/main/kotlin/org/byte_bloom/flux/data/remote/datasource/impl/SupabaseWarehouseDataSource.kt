@@ -9,37 +9,45 @@ import org.byte_bloom.flux.data.remote.client.requireSuccess
 import org.byte_bloom.flux.data.remote.datasource.RemoteWarehouseDataSource
 import org.byte_bloom.flux.data.remote.dto.WarehouseRequestDto
 import org.byte_bloom.flux.data.remote.dto.WarehouseResponseDto
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
 
 class SupabaseWarehouseDataSource(
     private val client: HttpClient = SupabaseHttpClient.client
 ) : RemoteWarehouseDataSource {
     private val table = "warehouses"
 
-    override suspend fun getAll(): List<WarehouseResponseDto> =
+    override suspend fun getAll(): List<WarehouseResponseDto> = withContext(Dispatchers.IO) {
         client.get(table).requireSuccess().body()
+    }
 
-    override suspend fun getById(id: String): WarehouseResponseDto? =
+    override suspend fun getById(id: String): WarehouseResponseDto? = withContext(Dispatchers.IO) {
         client.get(table) { url { parameters.append("id", "eq.$id") } }
             .requireSuccess().body<List<WarehouseResponseDto>>().firstOrNull()
+    }
 
-    override suspend fun create(dto: WarehouseRequestDto): WarehouseResponseDto =
+    override suspend fun create(dto: WarehouseRequestDto): WarehouseResponseDto = withContext(Dispatchers.IO) {
         client.post(table) {
             header("Prefer", "return=representation")
             contentType(ContentType.Application.Json)
             setBody(dto)
         }.requireSuccess().body<List<WarehouseResponseDto>>().first()
+    }
 
-    override suspend fun update(id: String, dto: WarehouseRequestDto): WarehouseResponseDto =
+    override suspend fun update(id: String, dto: WarehouseRequestDto): WarehouseResponseDto = withContext(Dispatchers.IO) {
         client.patch(table) {
             url { parameters.append("id", "eq.$id") }
             header("Prefer", "return=representation")
             contentType(ContentType.Application.Json)
             setBody(dto)
         }.requireSuccess().body<List<WarehouseResponseDto>>().first()
+    }
 
-    override suspend fun delete(id: String): WarehouseResponseDto? =
+    override suspend fun delete(id: String): WarehouseResponseDto? = withContext(Dispatchers.IO) {
         client.delete(table) {
             url { parameters.append("id", "eq.$id") }
             header("Prefer", "return=representation")
         }.requireSuccess().body<List<WarehouseResponseDto>>().firstOrNull()
+    }
 }

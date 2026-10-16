@@ -11,6 +11,8 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.byte_bloom.flux.data.remote.client.SupabaseHttpClient
 import org.byte_bloom.flux.data.remote.client.requireSuccess
 import org.byte_bloom.flux.data.remote.datasource.RemotePackageDataSource
@@ -23,34 +25,37 @@ class SupabasePackageDataSource(
 ) : RemotePackageDataSource {
     private val table = "packages"
 
-    override suspend fun getAll(): List<PackageResponseDto> =
-        client.get(table).requireSuccess().body()
+    override suspend fun getAll(): List<PackageResponseDto>  =
+        withContext(Dispatchers.IO) { client.get(table).requireSuccess().body() }
 
-    override suspend fun getById(id: String): PackageResponseDto? =
+    override suspend fun getById(id: String): PackageResponseDto? = withContext(Dispatchers.IO) {
         client.get(table) {
             parameter("id", "eq.$id")
         }.requireSuccess().body<List<PackageResponseDto>>().firstOrNull()
+    }
 
-    override suspend fun create(dto: PackageRequestDto): PackageResponseDto =
+    override suspend fun create(dto: PackageRequestDto): PackageResponseDto = withContext(Dispatchers.IO) {
         client.post(table) {
             header("Prefer", "return=representation")
             contentType(ContentType.Application.Json)
             setBody(dto)
         }.requireSuccess().body<List<PackageResponseDto>>().first()
+    }
 
-    override suspend fun update(id: String, dto: PackageRequestDto): PackageResponseDto =
+    override suspend fun update(id: String, dto: PackageRequestDto): PackageResponseDto = withContext(Dispatchers.IO) {
         client.patch(table) {
             parameter("id", "eq.$id")
             header("Prefer", "return=representation")
             contentType(ContentType.Application.Json)
             setBody(dto)
         }.requireSuccess().body<List<PackageResponseDto>>().first()
+    }
 
-    // SupabasePackageDataSource
-    override suspend fun delete(id: String): PackageResponseDto? =
+    override suspend fun delete(id: String): PackageResponseDto? = withContext(Dispatchers.IO) {
         client.delete(table) {
             url { parameters.append("id", "eq.$id") }
             header("Prefer", "return=representation")
         }.requireSuccess().body<List<PackageResponseDto>>().firstOrNull()
+    }
 }
 
