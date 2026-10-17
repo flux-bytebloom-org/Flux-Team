@@ -3,7 +3,7 @@ package org.byte_bloom.flux.data.csv.datasource
 import org.byte_bloom.flux.data.csv.dataholders.VehicleRaw
 
 interface VehicleDataSource {
-    fun getAll(): List<VehicleRaw>
+     suspend fun getAll(): List<VehicleRaw>
 
     /** Updates the vehicle's currentHub, moving it out of the old hub's fleet
      *  and into the new hub's fleet. */

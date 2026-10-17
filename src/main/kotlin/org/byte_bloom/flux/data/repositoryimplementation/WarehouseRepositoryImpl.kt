@@ -1,11 +1,14 @@
 package org.byte_bloom.flux.data.repositoryimplementation
 
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.byte_bloom.flux.data.csv.datasource.WarehouseDataSource as LocalWarehouseDataSource
 import org.byte_bloom.flux.data.csv.mapper.toDomain
 import org.byte_bloom.flux.data.remote.datasource.RemoteWarehouseDataSource
 import org.byte_bloom.flux.data.remote.mapper.toDomain
 import org.byte_bloom.flux.data.remote.mapper.toRequestDto
 import org.byte_bloom.flux.domain.exception.LogisticsException
+import org.byte_bloom.flux.domain.exception.suspendRunCatching
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 
@@ -14,24 +17,26 @@ class WarehouseRepositoryImpl(
     private val remoteDataSource: RemoteWarehouseDataSource
 ) : WarehouseRepository {
 
+    private val mutex = Mutex()
+
     private var cachedWarehouses: List<Warehouse>? = null
 
-    override suspend fun getAll(): List<Warehouse> = cachedWarehouses ?:
-         localDataSource.getAll().map { it.toDomain() }
+    override suspend fun getAll(): List<Warehouse> = mutex.withLock {
+        cachedWarehouses ?: localDataSource.getAll().map { it.toDomain() }
             .also { cachedWarehouses = it }
+    }
 
-
-    override suspend fun getById(id: String): Result<Warehouse> = runCatching {
+    override suspend fun getById(id: String): Result<Warehouse> = suspendRunCatching {
     remoteDataSource.getById(id)?.toDomain()
         ?: throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(id)}
 
-    override suspend fun create(warehouse: Warehouse): Result<Warehouse> = runCatching {
+    override suspend fun create(warehouse: Warehouse): Result<Warehouse> = suspendRunCatching {
         remoteDataSource.create(warehouse.toRequestDto()).toDomain()}
 
-    override suspend fun update(id: String, warehouse: Warehouse): Result<Warehouse> = runCatching {
+    override suspend fun update(id: String, warehouse: Warehouse): Result<Warehouse> = suspendRunCatching {
         remoteDataSource.update(id, warehouse.toRequestDto()).toDomain()}
 
-    override suspend fun delete(id: String): Result<Unit> = runCatching {
+    override suspend fun delete(id: String): Result<Unit> = suspendRunCatching {
         remoteDataSource.delete(id)
             ?: throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(id)
         Unit

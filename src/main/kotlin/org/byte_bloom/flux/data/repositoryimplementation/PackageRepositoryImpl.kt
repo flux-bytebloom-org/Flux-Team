@@ -6,6 +6,7 @@ import org.byte_bloom.flux.data.remote.datasource.RemotePackageDataSource
 import org.byte_bloom.flux.data.remote.mapper.toDomain
 import org.byte_bloom.flux.data.remote.mapper.toRequestDto
 import org.byte_bloom.flux.domain.exception.LogisticsException
+import org.byte_bloom.flux.domain.exception.suspendRunCatching
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.PackageRepository
@@ -24,27 +25,27 @@ class PackageRepositoryImpl(
             .onEach { pkg -> pkg.originHub.addPackage(pkg) }
     }
 
-    override suspend fun getById(id: String): Result<Package> = runCatching {
+    override suspend fun getById(id: String): Result<Package> = suspendRunCatching {
         val warehousesById = warehouseRepository.getAll().associateBy { it.id }
         remoteDataSource.getById(id)?.toDomain(warehousesById)
         ?: throw LogisticsException.EntityNotFoundException.PackageNotFoundException(id)
     }
 
-    override suspend fun create(pkg: Package): Result<Package> = runCatching {
+    override suspend fun create(pkg: Package): Result<Package> = suspendRunCatching {
         val warehousesById = warehouseRepository.getAll().associateBy { it.id }
         val response = remoteDataSource.create(pkg.toRequestDto())
        response.toDomain(warehousesById)
            ?: throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(response.originHubId)
     }
 
-    override suspend fun update(id: String, pkg: Package): Result<Package> = runCatching {
+    override suspend fun update(id: String, pkg: Package): Result<Package> = suspendRunCatching {
         val warehousesById = warehouseRepository.getAll().associateBy { it.id }
         val response = remoteDataSource.update(id, pkg.toRequestDto())
         response.toDomain(warehousesById)
             ?: throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(response.originHubId)
     }
 
-    override suspend fun delete(id: String): Result<Unit> = runCatching {
+    override suspend fun delete(id: String): Result<Unit> = suspendRunCatching {
         remoteDataSource.delete(id)
             ?: throw LogisticsException.EntityNotFoundException.PackageNotFoundException(id)
         Unit

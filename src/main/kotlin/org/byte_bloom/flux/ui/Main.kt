@@ -1,5 +1,7 @@
 package org.byte_bloom.flux.ui
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import org.byte_bloom.flux.domain.algorithm.pricing.decorator.ColdChainDecorator
 import org.byte_bloom.flux.domain.algorithm.pricing.decorator.ExpressInsuranceDecorator
 import org.byte_bloom.flux.domain.algorithm.pricing.decorator.FragileHandlingDecorator
@@ -103,17 +105,6 @@ fun main() = kotlinx.coroutines.runBlocking {
         //comment this part until doing exception handling
         //runAllScenarios(init.warehouses, init.packages)
         //testCommandPattern()
-
-
-    // ===== Week7 - Sub-Task 5: Knapsack + Dispatch Pipeline =====
-
-    val hub1 = init.warehouses.first()
-    val packagePool = hub1.getCargoQueue()
-    val knapsackVehicle = hub1.getStationedVehicles().first().copy(maxCapacityKg = 1500.5)
-        // hub1.getStationedVehicles().first() just to pick a vehicle,
-        // but we can modify its capacity for a smaller test
-    hub1.getStationedVehicles().forEach { println(it) }
-    runKnapsackDispatchScenario(packagePool, knapsackVehicle)
 
 }
 
@@ -301,10 +292,21 @@ private suspend fun initializeAndPrintGraph(): InitResult {
     val vehicleRepository : VehicleRepository = getKoin().get()
     val packageRepository : PackageRepository = getKoin().get()
 
-    val packages = packageRepository.getAll()
     val warehouses = warehouseRepository.getAll()
-    val routes = routeRepository.getAll()
-    val fleet = vehicleRepository.getAll()
+
+    val packages: List<Package>
+    val routes: List<Route>
+    val fleet: List<Vehicle>
+
+    coroutineScope {
+        val packagesDeferred = async { packageRepository.getAll() }
+        val routesDeferred   = async { routeRepository.getAll() }
+        val fleetDeferred    = async { vehicleRepository.getAll() }
+
+        packages = packagesDeferred.await()
+        routes   = routesDeferred.await()
+        fleet    = fleetDeferred.await()
+    }
 
     printParsingSummary(packages, warehouses, routes, fleet)
     printTopPriorityPackages(packages)

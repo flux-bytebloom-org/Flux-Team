@@ -3,7 +3,7 @@ package org.byte_bloom.flux.data.csv.datasource
 import org.byte_bloom.flux.data.csv.dataholders.WarehouseRaw
 
 interface WarehouseDataSource {
-    fun getAll(): List<WarehouseRaw>
+    suspend fun getAll(): List<WarehouseRaw>
 
     // LATER: methods for managing fleet/cargo queue persistence, e.g.:
     // fun addVehicleToFleet(hubId: String, vehicleId: String)
