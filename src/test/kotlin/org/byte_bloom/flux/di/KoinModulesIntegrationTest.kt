@@ -1,5 +1,6 @@
 package org.byte_bloom.flux.di
 
+import org.byte_bloom.flux.domain.telemetry.TelemetryStreamingService
 import org.byte_bloom.flux.domain.usecase.*
 import org.byte_bloom.flux.domain.usecase.crud.pakage.*
 import org.byte_bloom.flux.domain.usecase.crud.route.*
@@ -86,6 +87,10 @@ class KoinModulesIntegrationTest {
             // ===== Tree / Analytics =====
             val analyzeTreePerformance: AnalyzeTreePerformanceUseCase = getKoin().get()
             val traceHubLineage: TraceHubLineageUseCase = getKoin().get()
+
+            // ===== Telemetry =====
+            val telemetryStreamingService: TelemetryStreamingService = getKoin().get()
+            val trackActiveFleet: TrackActiveFleetUseCase = getKoin().get()
         }
     }
 }
