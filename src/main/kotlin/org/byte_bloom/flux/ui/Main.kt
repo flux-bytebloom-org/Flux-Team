@@ -18,13 +18,18 @@ import org.byte_bloom.flux.di.networkModule
 import org.byte_bloom.flux.di.repositoryModule
 import org.byte_bloom.flux.di.useCaseModule
 import org.byte_bloom.flux.di.validatorModule
+import org.byte_bloom.flux.domain.algorithm.routing.benchmarkRouters
+import org.byte_bloom.flux.domain.algorithm.routing.testRoutingComparison
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.repository.RouteRepository
+import org.byte_bloom.flux.domain.request.GreedyDispatchRequest
 import org.byte_bloom.flux.domain.request.PackageUpdateRequest
 import org.byte_bloom.flux.domain.request.RouteUpdateRequest
 import org.byte_bloom.flux.domain.request.VehicleUpdateRequest
 import org.byte_bloom.flux.domain.request.WarehouseUpdateRequest
+import org.byte_bloom.flux.domain.usecase.DispatchVehicleUseCase
+import org.byte_bloom.flux.domain.usecase.GreedyFleetDispatchUseCase
 import org.byte_bloom.flux.domain.usecase.crud.pakage.CreatePackageUseCase
 import org.byte_bloom.flux.domain.usecase.crud.pakage.DeletePackageUseCase
 import org.byte_bloom.flux.domain.usecase.crud.pakage.GetPackageByIdUseCase
@@ -42,8 +47,10 @@ import org.byte_bloom.flux.domain.usecase.crud.warehouse.DeleteWarehouseUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.GetWarehouseByIdUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.UpdateWarehouseUseCase
 import org.byte_bloom.flux.ui.scenarios.runKnapsackDispatchScenario
+import org.byte_bloom.flux.ui.scenarios.runTelemetryScenario
 import org.byte_bloom.flux.ui.scenarios.testPackageCrudFlow
 import org.byte_bloom.flux.ui.scenarios.testWarehouseCrudFlow
+import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.runAllScenarios
 import org.byte_bloom.flux.ui.utils.testCommandPattern
 import org.byte_bloom.flux.ui.utils.testGreedyFleetDispatchUseCase
@@ -74,6 +81,7 @@ fun main() = kotlinx.coroutines.runBlocking {
         drowPackageAssignmentRing()
         testRoutingComparison(init.warehouses)
         testDecoratorStacking(init.warehouses)
+        runTelemetryScenario(init.vehicleRepository.getAll())
 
         val allRoutes = init.warehouses.flatMap { it.getOutgoingRoutes() }
         benchmarkRouters(init.warehouses)
