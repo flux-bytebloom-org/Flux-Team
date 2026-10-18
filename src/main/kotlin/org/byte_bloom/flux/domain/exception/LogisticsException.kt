@@ -63,5 +63,8 @@ sealed class LogisticsException(message: String, cause: Throwable? = null) : Exc
 
         class VehicleCapacityExceededException(val reason: String) :
             BusinessLogicException("Invalid vehicle capacity: $reason")
+
+        class InsufficientTrainingDataException :
+            BusinessLogicException("Cannot classify a package without training data")
     }
 }

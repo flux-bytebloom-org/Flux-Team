@@ -92,4 +92,8 @@ val useCaseModule = module {
     // ===== Tree / Analytics =====
     factory { AnalyzeTreePerformanceUseCase() }
     factory { TraceHubLineageUseCase() }
+
+    // ===== Classification (KNN) =====
+    factory { ClassifyPackageSectorUseCase() }
+    factory { ClassifyPackageByIdUseCase(get()) }
 }
