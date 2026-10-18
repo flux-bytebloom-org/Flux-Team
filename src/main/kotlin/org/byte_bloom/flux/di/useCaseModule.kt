@@ -96,5 +96,5 @@ val useCaseModule = module {
     factory { TraceHubLineageUseCase() }
 
     // ---- telemetry ----
-    single<TelemetryStreamingService> { SimulatedTelemetryStreamingService() }
+    factory { TrackActiveFleetUseCase(get()) }
 }
