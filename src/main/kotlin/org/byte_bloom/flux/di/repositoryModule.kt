@@ -12,10 +12,12 @@ import org.byte_bloom.flux.data.repositoryimplementation.PackageRepositoryImpl
 import org.byte_bloom.flux.data.repositoryimplementation.RouteRepositoryImpl
 import org.byte_bloom.flux.data.repositoryimplementation.VehicleRepositoryImpl
 import org.byte_bloom.flux.data.repositoryimplementation.WarehouseRepositoryImpl
+import org.byte_bloom.flux.data.telemetry.SimulatedTelemetryStreamingService
 import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.byte_bloom.flux.domain.repository.VehicleRepository
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
+import org.byte_bloom.flux.domain.telemetry.TelemetryStreamingService
 import org.koin.dsl.module
 
 private const val WAREHOUSES_CSV_PATH = "src/main/resources/warehouses.csv"
@@ -71,4 +73,7 @@ val repositoryModule = module {
             warehouseRepository = get()
         )
     }
+
+    // ---- telemetry ----
+    single<TelemetryStreamingService> { SimulatedTelemetryStreamingService() }
 }
