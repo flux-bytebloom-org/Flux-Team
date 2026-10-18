@@ -97,4 +97,7 @@ val useCaseModule = module {
 
     // ---- telemetry ----
     factory { TrackActiveFleetUseCase(get()) }
+    // ===== Classification (KNN) =====
+    factory { ClassifyPackageSectorUseCase() }
+    factory { ClassifyPackageByIdUseCase(get()) }
 }
