@@ -13,18 +13,16 @@ fun benchmarkRouters(
 
     val bfsRouter: BreadthFirstRouter = getKoin().get()
     val bidirectionalRouter: BidirectionalBfsRouter = getKoin().get()
+    val routes = warehouses.flatMap { it.getOutgoingRoutes() }
 
     val (start, destination) = findLongDistancePair(warehouses, bfsRouter)
     println("\n\nfarthest pair of warehouses: ${start.id} → ${destination.id}")
-
-
-
 
     println("\n--- Benchmark: Standard BFS vs Bidirectional BFS ---")
     println("Route: ${start.id} → ${destination.id}")
 
     val bfsResult = bfsRouter.findLeastHopPath(start, destination)
-    val bidirectionalResult = bidirectionalRouter.findPath(start, destination)
+    val bidirectionalResult = bidirectionalRouter.findPath(start, destination, routes)
 
     if (bfsResult.path.isEmpty() || bidirectionalResult.path.isEmpty()) {
         println("⚠️ No path found between ${start.id} and ${destination.id} — skipping benchmark.")
@@ -60,5 +58,3 @@ private fun printBenchmarkVerdict(
         println("\nNote: no reduction observed — try a longer-distance warehouse pair.")
     }
 }
-
-

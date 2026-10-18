@@ -7,20 +7,18 @@ private const val SINGLE_NODE_PATH_SIZE = 1
 private const val INITIAL_NODES_EXPLORED = 0
 private const val EXPLORED_NODE_INCREMENT = 1
 
-class BidirectionalBfsRouter(
-    private val routes: List<Route>
-) {
-    private val incomingRoutes: Map<String, List<Warehouse>> by lazy {
-        routes.groupBy { it.destinationHub.id }
-            .mapValues { entry -> entry.value.map { it.originHub } }
-    }
+class BidirectionalBfsRouter {
 
-    fun findPath(start: Warehouse, destination: Warehouse): RoutingSearchResult {
+    fun findPath(start: Warehouse, destination: Warehouse, routes: List<Route>): RoutingSearchResult {
         if (start.id == destination.id) {
             return RoutingSearchResult(path = listOf(start), nodesExplored = SINGLE_NODE_PATH_SIZE)
         }
 
-        return executeSearch(SearchState(start, destination))
+        val incomingRoutes = routes
+            .groupBy { it.destinationHub.id }
+            .mapValues { entry -> entry.value.map { it.originHub } }
+
+        return executeSearch(SearchState(start, destination, incomingRoutes))
     }
 
     private fun executeSearch(state: SearchState): RoutingSearchResult {
@@ -51,14 +49,14 @@ class BidirectionalBfsRouter(
         return expandFrontier(
             queue = state.forwardQueue,
             directionState = DirectionState(state.forwardVisited, state.backwardVisited, state.forwardParents)
-        ) { warehouse -> warehouse.getOutgoingRoutes().map { it.destinationHub } }   // 🔧 getOutgoingRoutes()
+        ) { warehouse -> warehouse.getOutgoingRoutes().map { it.destinationHub } }
     }
 
     private fun stepBackward(state: SearchState): StepResult {
         return expandFrontier(
             queue = state.backwardQueue,
             directionState = DirectionState(state.backwardVisited, state.forwardVisited, state.backwardParents)
-        ) { warehouse -> incomingRoutes[warehouse.id] ?: emptyList() }
+        ) { warehouse -> state.incomingRoutes[warehouse.id] ?: emptyList() }
     }
 
     private fun expandFrontier(
@@ -137,7 +135,8 @@ class BidirectionalBfsRouter(
 
     private class SearchState(
         val start: Warehouse,
-        val destination: Warehouse
+        val destination: Warehouse,
+        val incomingRoutes: Map<String, List<Warehouse>>
     ) {
         val forwardQueue = ArrayDeque<Warehouse>().apply { add(start) }
         val backwardQueue = ArrayDeque<Warehouse>().apply { add(destination) }
@@ -147,4 +146,3 @@ class BidirectionalBfsRouter(
         val backwardParents = mutableMapOf<String, Warehouse>()
     }
 }
-
