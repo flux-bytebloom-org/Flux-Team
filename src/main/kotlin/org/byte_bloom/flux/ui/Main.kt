@@ -91,8 +91,7 @@ fun main() = kotlinx.coroutines.runBlocking {
         testDecoratorStacking(network.warehouses)
         runTelemetryScenario(network.fleet)
 
-        val allRoutes = network.warehouses.flatMap { it.getOutgoingRoutes() }
-        //benchmarkRouters(init.warehouses)
+        benchmarkRouters(network.warehouses,network.routes)
 
         testWarehouseCrudFlow()
         testPackageCrudFlow()

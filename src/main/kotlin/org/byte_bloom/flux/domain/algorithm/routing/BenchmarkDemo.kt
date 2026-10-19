@@ -1,5 +1,6 @@
 package org.byte_bloom.flux.domain.algorithm.routing
 
+import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.koin.java.KoinJavaComponent.getKoin
 
@@ -8,12 +9,12 @@ private const val PERCENT_MULTIPLIER = 100.0
 
 
 fun benchmarkRouters(
-    warehouses: List<Warehouse>
+    warehouses: List<Warehouse>,
+    routes : List<Route>
 ) {
 
     val bfsRouter: BreadthFirstRouter = getKoin().get()
     val bidirectionalRouter: BidirectionalBfsRouter = getKoin().get()
-    val routes = warehouses.flatMap { it.getOutgoingRoutes() }
 
     val (start, destination) = findLongDistancePair(warehouses, bfsRouter)
     println("\n\nfarthest pair of warehouses: ${start.id} → ${destination.id}")
