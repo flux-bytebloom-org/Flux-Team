@@ -89,6 +89,9 @@ class KoinModulesIntegrationTest {
             val analyzeTreePerformance: AnalyzeTreePerformanceUseCase = getKoin().get()
             val traceHubLineage: TraceHubLineageUseCase = getKoin().get()
 
+            // ===== KNN Classification =====
+            val classifyPackageSector: ClassifyPackageSectorUseCase = getKoin().get()
+
             // ===== Telemetry =====
             val telemetryStreamingService: TelemetryStreamingService = getKoin().get()
             val trackActiveFleet: TrackActiveFleetUseCase = getKoin().get()

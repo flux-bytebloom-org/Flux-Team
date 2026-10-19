@@ -18,12 +18,13 @@ import org.byte_bloom.flux.di.networkModule
 import org.byte_bloom.flux.di.repositoryModule
 import org.byte_bloom.flux.di.useCaseModule
 import org.byte_bloom.flux.di.validatorModule
+import org.byte_bloom.flux.domain.algorithm.routing.testRoutingComparison
 import org.byte_bloom.flux.domain.algorithm.routing.benchmarkRouters
 import org.byte_bloom.flux.domain.algorithm.routing.testRoutingComparison
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.RegionalZone
-import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.byte_bloom.flux.domain.request.GreedyDispatchRequest
+import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.byte_bloom.flux.domain.request.PackageUpdateRequest
 import org.byte_bloom.flux.domain.request.RouteUpdateRequest
 import org.byte_bloom.flux.domain.request.VehicleUpdateRequest
@@ -53,6 +54,8 @@ import org.byte_bloom.flux.ui.scenarios.testWarehouseCrudFlow
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.runAllScenarios
 import org.byte_bloom.flux.ui.utils.testCommandPattern
+import org.byte_bloom.flux.ui.utils.NetworkLoader
+import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.testGreedyFleetDispatchUseCase
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.java.KoinJavaComponent.getKoin
@@ -71,20 +74,25 @@ fun main() = kotlinx.coroutines.runBlocking {
         modules(networkModule, repositoryModule, validatorModule, useCaseModule)
     }
 
-    val init = initializeAndPrintGraph()
+    val networkLoader : NetworkLoader = getKoin().get()
+    val network = networkLoader.load()
 
-    testCrudOperations(init.warehouses)
+    printParsingSummary(network.packages, network.warehouses, network.routes, network.fleet)
+    printTopPriorityPackages(network.packages)
+    printWarehouseGraph(network.warehouses)
 
-    
-       testBidirectionalIdentity(init.warehouses)
-        testWarehouseQuickSort(init.warehouses)
+    testCrudOperations(network.warehouses)
+
+
+       testBidirectionalIdentity(network.warehouses)
+        testWarehouseQuickSort(network.warehouses)
         drowPackageAssignmentRing()
-        testRoutingComparison(init.warehouses)
-        testDecoratorStacking(init.warehouses)
-        runTelemetryScenario(init.vehicleRepository.getAll())
+        testRoutingComparison(network.warehouses)
+        testDecoratorStacking(network.warehouses)
+        runTelemetryScenario(network.fleet)
 
-        val allRoutes = init.warehouses.flatMap { it.getOutgoingRoutes() }
-        benchmarkRouters(init.warehouses)
+        val allRoutes = network.warehouses.flatMap { it.getOutgoingRoutes() }
+        //benchmarkRouters(init.warehouses)
 
         testWarehouseCrudFlow()
         testPackageCrudFlow()
@@ -94,11 +102,11 @@ fun main() = kotlinx.coroutines.runBlocking {
 
         val dispatchVehicleUseCase : DispatchVehicleUseCase = getKoin().get()
 
-        val dispatchedVehicles = init.vehicleRepository.getAll().map { vehicle ->
+        val dispatchedVehicles = network.fleet.map { vehicle ->
             dispatchVehicleUseCase(vehicle.currentHub, vehicle)
         }
 
-        val targetZones = init.warehouses
+        val targetZones = network.warehouses
             .map { it.regionalZone }
             .filter { it != RegionalZone.UnKNOWN }
             .toSet()
@@ -293,41 +301,3 @@ private suspend fun testCrudOperations(warehouses: List<Warehouse>) {
     println(deletedRoute)
 
 }
-
-private suspend fun initializeAndPrintGraph(): InitResult {
-    val warehouseRepository : WarehouseRepository = getKoin().get()
-    val routeRepository : RouteRepository = getKoin().get()
-    val vehicleRepository : VehicleRepository = getKoin().get()
-    val packageRepository : PackageRepository = getKoin().get()
-
-    val warehouses = warehouseRepository.getAll()
-
-    val packages: List<Package>
-    val routes: List<Route>
-    val fleet: List<Vehicle>
-
-    coroutineScope {
-        val packagesDeferred = async { packageRepository.getAll() }
-        val routesDeferred   = async { routeRepository.getAll() }
-        val fleetDeferred    = async { vehicleRepository.getAll() }
-
-        packages = packagesDeferred.await()
-        routes   = routesDeferred.await()
-        fleet    = fleetDeferred.await()
-    }
-
-    printParsingSummary(packages, warehouses, routes, fleet)
-    printTopPriorityPackages(packages)
-    printWarehouseGraph(warehouses)
-
-    return InitResult(warehouses, packages, vehicleRepository, warehouseRepository, packageRepository, routeRepository)
-}
-
-private data class InitResult(
-    val warehouses: List<Warehouse>,
-    val packages: List<Package>,
-    val vehicleRepository: VehicleRepository,
-    val warehouseRepository: WarehouseRepository,
-    val packageRepository: PackageRepository,
-    val routeRepository: RouteRepository
-)

@@ -17,6 +17,7 @@ import org.byte_bloom.flux.domain.usecase.crud.pakage.*
 import org.byte_bloom.flux.domain.usecase.crud.route.*
 import org.byte_bloom.flux.domain.usecase.crud.vehicle.*
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.*
+import org.byte_bloom.flux.ui.utils.NetworkLoader
 import org.koin.dsl.module
 
 val useCaseModule = module {
@@ -31,6 +32,7 @@ val useCaseModule = module {
     single { VehicleCapacityLedger() }
     factory { StandardDispatchProcessor(get()) }
     factory { ExpressDispatchProcessor(get()) }
+    single { NetworkLoader(get(), get(), get(), get()) }
 
 
     // ===== Package CRUD =====
@@ -100,4 +102,8 @@ val useCaseModule = module {
     // ===== Classification (KNN) =====
     factory { ClassifyPackageSectorUseCase() }
     factory { ClassifyPackageByIdUseCase(get()) }
+
+    // ===== KNN Classification =====
+    factory { ClassifyPackageSectorUseCase() }
+
 }
