@@ -12,6 +12,8 @@ import org.byte_bloom.flux.di.networkModule
 import org.byte_bloom.flux.di.repositoryModule
 import org.byte_bloom.flux.di.useCaseModule
 import org.byte_bloom.flux.di.validatorModule
+import org.byte_bloom.flux.domain.repository.RouteRepository
+import org.byte_bloom.flux.ui.utils.NetworkLoader
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.java.KoinJavaComponent.getKoin
@@ -20,6 +22,10 @@ fun main() = runBlocking<Unit> {
     startKoin {
         modules(networkModule, repositoryModule, validatorModule, useCaseModule, cliModule)
     }
+
+    val networkLoader : NetworkLoader = getKoin().get()
+    val network = networkLoader.load()
+
     val shell: CliShell = getKoin().get()
     val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
