@@ -96,4 +96,8 @@ val useCaseModule = module {
     // ===== Classification (KNN) =====
     factory { ClassifyPackageSectorUseCase() }
     factory { ClassifyPackageByIdUseCase(get()) }
+
+    // ===== KNN Classification =====
+    factory { ClassifyPackageSectorUseCase() }
+
 }

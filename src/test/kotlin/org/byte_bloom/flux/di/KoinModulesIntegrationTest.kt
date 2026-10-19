@@ -86,6 +86,9 @@ class KoinModulesIntegrationTest {
             // ===== Tree / Analytics =====
             val analyzeTreePerformance: AnalyzeTreePerformanceUseCase = getKoin().get()
             val traceHubLineage: TraceHubLineageUseCase = getKoin().get()
+
+            // ===== KNN Classification =====
+            val classifyPackageSector: ClassifyPackageSectorUseCase = getKoin().get()
         }
     }
 }
