@@ -6,6 +6,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.job
 import kotlinx.coroutines.runBlocking
 import org.byte_bloom.flux.di.cliModule
 import org.byte_bloom.flux.di.networkModule
@@ -23,21 +25,20 @@ fun main() = runBlocking<Unit> {
         modules(networkModule, repositoryModule, validatorModule, useCaseModule, cliModule)
     }
 
-    val networkLoader : NetworkLoader = getKoin().get()
-    val network = networkLoader.load()
-
-    val shell: CliShell = getKoin().get()
-    val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-
     try {
-        applicationScope.async { shell.run() }.await()
+        getKoin().get<LoadingIndicator>().whileLoading("Loading network data...") {
+            getKoin().get<NetworkLoader>().load()
+        }
+        getKoin().get<CliShell>().run()
+    } catch (e: Exception) {
+        println("Fatal error: ${e.message}")
     } finally {
-        shutDown(applicationScope)
+        shutDown()
     }
 }
 
-private fun shutDown(applicationScope: CoroutineScope) {
-    applicationScope.cancel()
+private suspend fun shutDown() {
+    getKoin().get<CoroutineScope>().coroutineContext.job.cancelAndJoin()
     getKoin().get<HttpClient>().close()
     stopKoin()
 }

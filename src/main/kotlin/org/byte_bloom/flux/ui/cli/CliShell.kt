@@ -1,6 +1,7 @@
 package org.byte_bloom.flux.ui.cli
 
 import org.byte_bloom.flux.domain.exception.LogisticsException
+import kotlin.coroutines.cancellation.CancellationException
 
 private const val EXIT_OPTION = "0"
 private const val FIRST_MENU_NUMBER = 1
@@ -52,8 +53,12 @@ class CliShell(
     private suspend fun executeSafely(command: CliCommand) {
         try {
             command.execute()
+        } catch (e: CancellationException) {
+            throw e
         } catch (exception: LogisticsException) {
             terminal.writeLine("Error: ${exception.message}")
+        } catch (e: Exception) {
+            terminal.writeLine("Unexpected error: ${e.message}")
         }
     }
 }
