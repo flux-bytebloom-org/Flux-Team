@@ -5,9 +5,11 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.junit.jupiter.api.Test
+import kotlin.test.assertFailsWith
 
 private const val EXIT_OPTION = "0"
 private const val FIRST_COMMAND_OPTION = "1"
@@ -62,5 +64,27 @@ class CliShellTest {
         CliShell(terminal, listOf(command)).run()
 
         assertThat(terminal.output()).contains("Warehouse not found with id: $MISSING_WAREHOUSE_ID")
+    }
+
+    @Test
+    fun `given command fails with an unexpected error when run then prints it and keeps running`() = runBlocking<Unit> {
+        val terminal = FakeTerminal(FIRST_COMMAND_OPTION, EXIT_OPTION)
+        coEvery { command.execute() } throws IllegalStateException("boom")
+
+        CliShell(terminal, listOf(command)).run()
+
+        assertThat(terminal.output()).contains("Unexpected error: boom")
+        assertThat(terminal.output()).contains("Goodbye!")
+    }
+
+    @Test
+    fun `given command is cancelled when run then the cancellation is not swallowed`() = runBlocking<Unit> {
+        val terminal = FakeTerminal(FIRST_COMMAND_OPTION, EXIT_OPTION)
+        coEvery { command.execute() } throws CancellationException("cancelled")
+
+        assertFailsWith<CancellationException> {
+            CliShell(terminal, listOf(command)).run()
+        }
+        assertThat(terminal.output()).doesNotContain("Unexpected error")
     }
 }
