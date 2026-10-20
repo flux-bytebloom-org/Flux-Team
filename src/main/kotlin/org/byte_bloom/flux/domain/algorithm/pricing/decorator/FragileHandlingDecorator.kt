@@ -1,7 +1,5 @@
 package org.byte_bloom.flux.domain.algorithm.pricing.decorator
 
-private const val FRAGILE_PROTECTIVE_FEE = 50.0
-
 class FragileHandlingDecorator(
     packageComponent: PackageComponent
 ) : PackageDecorator(packageComponent) {
@@ -13,6 +11,10 @@ class FragileHandlingDecorator(
     override fun calculateTransitRate(baseRate: Double): Double {
         return super.calculateTransitRate(baseRate) +
                 FRAGILE_PROTECTIVE_FEE
+    }
+
+    private companion object {
+        const val FRAGILE_PROTECTIVE_FEE = 50.0
     }
 }
 

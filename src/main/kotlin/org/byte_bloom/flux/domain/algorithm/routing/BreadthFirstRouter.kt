@@ -2,8 +2,6 @@ package org.byte_bloom.flux.domain.algorithm.routing
 
 import org.byte_bloom.flux.domain.model.Warehouse
 
-private const val SINGLE_NODE_COUNT = 1
-
 class BreadthFirstRouter {
 
     fun findLeastHopPath(
@@ -67,6 +65,10 @@ class BreadthFirstRouter {
         }
 
         return null
+    }
+
+    private companion object {
+        const val SINGLE_NODE_COUNT = 1
     }
 
 }

@@ -3,10 +3,6 @@ package org.byte_bloom.flux.domain.algorithm.routing
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Warehouse
 
-private const val SINGLE_NODE_PATH_SIZE = 1
-private const val INITIAL_NODES_EXPLORED = 0
-private const val EXPLORED_NODE_INCREMENT = 1
-
 class BidirectionalBfsRouter {
 
     fun findPath(start: Warehouse, destination: Warehouse, routes: List<Route>): RoutingSearchResult {
@@ -144,5 +140,11 @@ class BidirectionalBfsRouter {
         val backwardVisited = mutableSetOf(destination.id)
         val forwardParents = mutableMapOf<String, Warehouse>()
         val backwardParents = mutableMapOf<String, Warehouse>()
+    }
+
+    private companion object {
+        const val SINGLE_NODE_PATH_SIZE = 1
+        const val INITIAL_NODES_EXPLORED = 0
+        const val EXPLORED_NODE_INCREMENT = 1
     }
 }
