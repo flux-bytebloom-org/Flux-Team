@@ -22,6 +22,8 @@ class RouteCalculationCommand(
     override val label = "Calculate a route between two warehouses"
 
     override suspend fun execute() {
+        printDescription()
+
         val originId = terminal.readTrimmed("Origin warehouse id: ")
         val destinationId = terminal.readTrimmed("Destination warehouse id: ")
         val isTripUrgent = terminal.readYesNo("Is the trip urgent? (y/n): ")
@@ -54,4 +56,11 @@ class RouteCalculationCommand(
 
     private fun Map<String, Warehouse>.findOrThrow(id: String): Warehouse =
         this[id] ?: throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(id)
+
+    private fun printDescription() {
+        terminal.writeSection("Route calculation")
+        terminal.writeIndented("Finds the best path between two warehouses.")
+        terminal.writeIndented("Urgent trips use the fastest path, others the shortest distance.")
+        terminal.writeLine()
+    }
 }
