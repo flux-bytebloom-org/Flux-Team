@@ -1,5 +1,6 @@
 package org.byte_bloom.flux.di
 
+import org.byte_bloom.flux.data.telemetry.SimulatedTelemetryStreamingService
 import org.byte_bloom.flux.domain.algorithm.pricing.DispatchStrategy
 import org.byte_bloom.flux.domain.algorithm.pricing.EcoStrategy
 import org.byte_bloom.flux.domain.algorithm.pricing.RoutePricingEngine
@@ -10,6 +11,7 @@ import org.byte_bloom.flux.domain.builder.ShadowWarehouseGraphBuilder
 import org.byte_bloom.flux.domain.dispatch.ExpressDispatchProcessor
 import org.byte_bloom.flux.domain.dispatch.StandardDispatchProcessor
 import org.byte_bloom.flux.domain.dispatch.VehicleCapacityLedger
+import org.byte_bloom.flux.domain.telemetry.TelemetryStreamingService
 import org.byte_bloom.flux.domain.usecase.*
 import org.byte_bloom.flux.domain.usecase.crud.pakage.*
 import org.byte_bloom.flux.domain.usecase.crud.route.*
@@ -23,7 +25,7 @@ val useCaseModule = module {
     // === helpers =====
     single<DijkstraRouter> { DijkstraRouter() }
     single<BreadthFirstRouter> { BreadthFirstRouter() }
-    single<BidirectionalBfsRouter> { BidirectionalBfsRouter(get()) }
+    single<BidirectionalBfsRouter> { BidirectionalBfsRouter() }
     single<DispatchStrategy> { EcoStrategy() }
     single<RoutePricingEngine> { RoutePricingEngine(get()) }
     single<ShadowWarehouseGraphBuilder> { ShadowWarehouseGraphBuilder() }
@@ -95,6 +97,8 @@ val useCaseModule = module {
     factory { AnalyzeTreePerformanceUseCase() }
     factory { TraceHubLineageUseCase() }
 
+    // ---- telemetry ----
+    factory { TrackActiveFleetUseCase(get()) }
     // ===== Classification (KNN) =====
     factory { ClassifyPackageSectorUseCase() }
     factory { ClassifyPackageByIdUseCase(get()) }

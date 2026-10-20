@@ -1,5 +1,6 @@
 package org.byte_bloom.flux.domain.algorithm.routing
 
+import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.koin.java.KoinJavaComponent.getKoin
 
@@ -8,7 +9,8 @@ private const val PERCENT_MULTIPLIER = 100.0
 
 
 fun benchmarkRouters(
-    warehouses: List<Warehouse>
+    warehouses: List<Warehouse>,
+    routes : List<Route>
 ) {
 
     val bfsRouter: BreadthFirstRouter = getKoin().get()
@@ -17,14 +19,11 @@ fun benchmarkRouters(
     val (start, destination) = findLongDistancePair(warehouses, bfsRouter)
     println("\n\nfarthest pair of warehouses: ${start.id} → ${destination.id}")
 
-
-
-
     println("\n--- Benchmark: Standard BFS vs Bidirectional BFS ---")
     println("Route: ${start.id} → ${destination.id}")
 
     val bfsResult = bfsRouter.findLeastHopPath(start, destination)
-    val bidirectionalResult = bidirectionalRouter.findPath(start, destination)
+    val bidirectionalResult = bidirectionalRouter.findPath(start, destination, routes)
 
     if (bfsResult.path.isEmpty() || bidirectionalResult.path.isEmpty()) {
         println("⚠️ No path found between ${start.id} and ${destination.id} — skipping benchmark.")
@@ -60,5 +59,3 @@ private fun printBenchmarkVerdict(
         println("\nNote: no reduction observed — try a longer-distance warehouse pair.")
     }
 }
-
-
