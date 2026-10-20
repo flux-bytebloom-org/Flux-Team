@@ -7,6 +7,7 @@ import org.byte_bloom.flux.domain.mapper.toCargoRecords
 import org.byte_bloom.flux.domain.model.CargoQuery
 import org.byte_bloom.flux.domain.usecase.ClassifyPackageSectorUseCase
 import org.byte_bloom.flux.ui.utils.NetworkLoader
+import org.byte_bloom.flux.ui.utils.NetworkSnapshot
 
 
 class ClassifyPackageCommand(
@@ -19,7 +20,7 @@ class ClassifyPackageCommand(
 
     override suspend fun execute() {
         val network = networkLoader.load()
-        //printDescription(network)
+        printDescription(network)
 
         val latitude = terminal.readDouble("Destination latitude in range [-90.0,90,0] : ")
         if (latitude > 90 || latitude <-90) {
@@ -46,5 +47,12 @@ class ClassifyPackageCommand(
         }
 
         terminal.writeLine("Predicted sector: $sector (trained on ${trainingRecords.size} known packages)")
+    }
+
+    private fun printDescription(network: NetworkSnapshot) {
+        terminal.writeLine("Predicts the delivery sector of a new package from its destination coordinates and weight.")
+        network.warehouses.firstOrNull()?.let {
+            terminal.writeLine("Tip: ${it.id} is located at (${it.latitude}, ${it.longitude})")
+        }
     }
 }
