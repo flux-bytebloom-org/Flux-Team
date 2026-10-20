@@ -4,10 +4,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Warehouse
-import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.usecase.DecideRoutingWayUseCase
 import org.byte_bloom.flux.ui.utils.NetworkLoader
-import org.byte_bloom.flux.ui.utils.NetworkSnapshot
 
 class RouteCalculationCommand(
     private val terminal: Terminal,

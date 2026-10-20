@@ -3,7 +3,6 @@ package org.byte_bloom.flux.ui.scenarios
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Warehouse
-import org.byte_bloom.flux.domain.repository.PackageRepository
 import org.byte_bloom.flux.domain.response.BottleneckCheckResult
 import org.byte_bloom.flux.domain.response.RebalanceSummaryEntry
 import org.byte_bloom.flux.domain.response.WeightedPath
