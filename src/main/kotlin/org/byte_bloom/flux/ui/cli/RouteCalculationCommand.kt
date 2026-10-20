@@ -9,9 +9,6 @@ import org.byte_bloom.flux.domain.usecase.DecideRoutingWayUseCase
 import org.byte_bloom.flux.ui.utils.NetworkLoader
 import org.byte_bloom.flux.ui.utils.NetworkSnapshot
 
-private const val LOADING_MESSAGE = "Calculating route..."
-private const val ROUTE_SEPARATOR = " -> "
-
 class RouteCalculationCommand(
     private val terminal: Terminal,
     private val networkLoader: NetworkLoader,
@@ -63,4 +60,11 @@ class RouteCalculationCommand(
         terminal.writeIndented("Urgent trips use the fastest path, others the shortest distance.")
         terminal.writeLine()
     }
+
+    private companion object {
+        const val LOADING_MESSAGE = "Calculating route..."
+        const val ROUTE_SEPARATOR = " -> "
+    }
 }
+
+

@@ -9,11 +9,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-private const val SPINNER_FRAMES = "|/-\\"
-private const val FRAME_INTERVAL_MILLIS = 100L
-private const val CARRIAGE_RETURN = "\r"
-private const val FRAME_PREFIX_LENGTH = 2
-
 class LoadingIndicator(private val terminal: Terminal) {
 
     suspend fun <T> whileLoading(message: String, task: suspend () -> T): T = coroutineScope {
@@ -40,5 +35,12 @@ class LoadingIndicator(private val terminal: Terminal) {
     private fun clearLine(message: String) {
         val blankLine = " ".repeat(message.length + FRAME_PREFIX_LENGTH)
         terminal.write("$CARRIAGE_RETURN$blankLine$CARRIAGE_RETURN")
+    }
+
+    private companion object {
+        const val SPINNER_FRAMES = "|/-\\"
+        const val FRAME_INTERVAL_MILLIS = 100L
+        const val CARRIAGE_RETURN = "\r"
+        const val FRAME_PREFIX_LENGTH = 2
     }
 }
