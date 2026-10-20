@@ -45,10 +45,10 @@ class TelemetryCommand(
         printDescription()
         telemetryJob = scope.launch {
             trackActiveFleet(fleet)
-                .catch { error -> terminal.writeLine("Telemetry error: ${error.message}") }
-                .collect { alert -> terminal.writeLine(" ===>"+alert.toDisplayLine()) }
+                .catch { error -> terminal.writeIndented("Telemetry error: ${error.message}") }
+                .collect { alert -> terminal.writeIndented(" ===>"+alert.toDisplayLine()) }
         }
-        terminal.writeLine("Telemetry started. Delay alerts will appear here.")
+        terminal.writeIndented("Telemetry started. Delay alerts will appear here.")
     }
 
     private suspend fun stop() {
@@ -56,8 +56,10 @@ class TelemetryCommand(
         terminal.writeLine("Telemetry stopped")
     }
     private fun printDescription() {
-        terminal.writeLine("Streams live vehicle readings in the background.")
-        terminal.writeLine("A delay alert appears when a vehicle keeps moving slowly for several readings in a row.")
-        terminal.writeLine("Choose this option again to stop.")
+        terminal.writeSection("Fleet telemetry")
+        terminal.writeIndented("Streams live vehicle readings in the background.")
+        terminal.writeIndented("A delay alert appears when a vehicle keeps moving slowly for several readings in a row.")
+        terminal.writeIndented("Choose this option again to stop.")
+        terminal.writeLine()
     }
 }

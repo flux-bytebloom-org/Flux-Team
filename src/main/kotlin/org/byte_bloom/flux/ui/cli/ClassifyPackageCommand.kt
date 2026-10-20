@@ -50,9 +50,11 @@ class ClassifyPackageCommand(
     }
 
     private fun printDescription(network: NetworkSnapshot) {
-        terminal.writeLine("Predicts the delivery sector of a new package from its destination coordinates and weight.")
+        terminal.writeSection("Predicts regional sector")
+        terminal.writeIndented("Predicts the delivery sector of a new package from its destination coordinates and weight.")
         network.warehouses.firstOrNull()?.let {
-            terminal.writeLine("Tip: ${it.id} is located at (${it.latitude}, ${it.longitude})")
+            terminal.writeIndented("Tip: ${it.id} is located at (${it.latitude}, ${it.longitude})")
         }
+        terminal.writeLine()
     }
 }

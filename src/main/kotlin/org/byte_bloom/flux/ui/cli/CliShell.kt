@@ -6,7 +6,7 @@ import kotlin.coroutines.cancellation.CancellationException
 private const val EXIT_OPTION = "0"
 private const val FIRST_MENU_NUMBER = 1
 private const val CHOICE_PROMPT = "Choose an option: "
-private const val WELCOME_MESSAGE = "=== Flux Logistics Shell ==="
+private const val WELCOME_MESSAGE = "Flux Logistics Shell"
 private const val GOODBYE_MESSAGE = "Goodbye!"
 private const val UNKNOWN_OPTION_MESSAGE = "Unknown option, please choose a number from the menu."
 
@@ -16,7 +16,7 @@ class CliShell(
 ) {
 
     suspend fun run() {
-        terminal.writeLine(WELCOME_MESSAGE)
+        terminal.writeBanner(WELCOME_MESSAGE)
         var choice = promptChoice()
         while (choice != EXIT_OPTION) {
             runChoice(choice)
@@ -33,9 +33,10 @@ class CliShell(
     private fun printMenu() {
         terminal.writeLine()
         commands.forEachIndexed { index, command ->
-            terminal.writeLine("${index + FIRST_MENU_NUMBER}. ${command.label}")
+            terminal.writeIndented("${index + FIRST_MENU_NUMBER}. ${command.label}")
         }
-        terminal.writeLine("$EXIT_OPTION. Exit")
+        terminal.writeIndented("$EXIT_OPTION. Exit")
+        terminal.writeLine()
     }
 
     private suspend fun runChoice(choice: String) {
@@ -56,9 +57,9 @@ class CliShell(
         } catch (e: CancellationException) {
             throw e
         } catch (exception: LogisticsException) {
-            terminal.writeLine("Error: ${exception.message}")
+            terminal.writeIndented("Error: ${exception.message}")
         } catch (e: Exception) {
-            terminal.writeLine("Unexpected error: ${e.message}")
+            terminal.writeIndented("Unexpected error: ${e.message}")
         }
     }
 }

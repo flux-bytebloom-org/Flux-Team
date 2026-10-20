@@ -58,7 +58,9 @@ class RouteCalculationCommand(
         this[id] ?: throw LogisticsException.EntityNotFoundException.WarehouseNotFoundException(id)
 
     private fun printDescription() {
-        terminal.writeLine("Finds the best path between two warehouses.")
-        terminal.writeLine("Urgent trips use the fastest path, others the shortest distance.")
+        terminal.writeSection("Route calculation")
+        terminal.writeIndented("Finds the best path between two warehouses.")
+        terminal.writeIndented("Urgent trips use the fastest path, others the shortest distance.")
+        terminal.writeLine()
     }
 }
