@@ -52,11 +52,10 @@ class VehicleRepositoryImpl(
         Unit
     }
 
-
     override fun updateVehicleCurrentHub(vehicle: Vehicle, newHub: Warehouse): Vehicle {
         val oldHubId = vehicle.currentHub.id
         localDataSource.updateCurrentHub(vehicle.id,oldHubId,newHub.id)
-        val newVehicle = vehicle.copy(currentHub = newHub ) // TODO(delete)
+        val newVehicle = vehicle.copy(currentHub = newHub )
         return newVehicle
     }
 }

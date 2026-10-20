@@ -17,7 +17,7 @@ import org.byte_bloom.flux.domain.model.Warehouse
  * allowing it to optimize paths based on different metrics such as distance (distanceKm)
  * or time delay (typicalDelayMin) dynamically.
  *
- * See testRoutingComparison() in Main.kt for a live example using
+ * See testRoutingComparison() in RoutingComparisonDemo.kt for a live example using
  * real warehouse data where the algorithms compare routing strategies.
  */
 

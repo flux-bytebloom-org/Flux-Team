@@ -63,12 +63,6 @@ import org.koin.java.KoinJavaComponent.getKoin
 private const val TOP_PACKAGES_DISPLAY_COUNT = 3
 private const val DEFAULT_BASE_RATE = 100.0
 
-
-private const val WAREHOUSES_CSV_PATH = "src/main/resources/warehouses.csv"
-private const val PACKAGES_CSV_PATH = "src/main/resources/packages.csv"
-private const val ROUTES_CSV_PATH = "src/main/resources/routes.csv"
-private const val FLEET_CSV_PATH = "src/main/resources/fleet.csv"
-
 fun main() = kotlinx.coroutines.runBlocking {
     startKoin {
         modules(networkModule, repositoryModule, validatorModule, useCaseModule)
@@ -118,8 +112,6 @@ fun main() = kotlinx.coroutines.runBlocking {
         println("Uncovered zones: ${greedyResult.uncoveredZones}")
     
         //comment this part until doing exception handling
-        //runAllScenarios(init.warehouses, init.packages)
-        //testCommandPattern()
 
 }
 

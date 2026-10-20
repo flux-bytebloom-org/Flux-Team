@@ -10,10 +10,6 @@ class AssignPackageToCargoQueueUseCase(
 
     operator fun invoke(hub: Warehouse, pkg: Package) {
         packageRepo.updatePackageOriginHub(pkg, hub)
-        /* old code
-        hub.addPackage(pkg)
-        hub.sortCargoQueue() // to do
-         */
     }
 }
 
