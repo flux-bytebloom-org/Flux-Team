@@ -1,11 +1,7 @@
 /**
- * WHY THIS IMPLEMENTATION:
- * 1. In-Place Sorting: Modifies list directly to
- *    minimize memory allocations.
- * 2. Tailrec Partitioning: Eliminates stack overflow
- *    risks during deep recursive sorting.
- * 3. Safe Null Handling: Defaults missing weights to 0.0
- *    to push invalid entries to the end safely.
+ * Sorts packages by descending effective weight and preserves their
+ * original order when their effective weights are equal.
+ * Missing weights are treated as -1.0.
  */
 package org.byte_bloom.flux.domain.algorithm.sorting
 
@@ -16,7 +12,6 @@ private const val MIN_PACKAGES_TO_SORT = 1
 private const val FIRST_INDEX = 0
 private const val INDEX_OFFSET = 1
 
-//added a new data class to hold the original index of each package to save the stability
 private data class IndexedPackage(val originalIndex: Int, val pkg: Package)
 
 fun sortCargoByWeightDescending(cargoQueue: MutableList<Package>) {

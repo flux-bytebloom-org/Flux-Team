@@ -1,7 +1,5 @@
 package org.byte_bloom.flux.domain.algorithm.pricing.decorator
 
-private const val EXPRESS_INSURANCE_PREMIUM = 25.0
-
 class ExpressInsuranceDecorator(
     packageComponent: PackageComponent
 ) : PackageDecorator(packageComponent) {
@@ -13,6 +11,9 @@ class ExpressInsuranceDecorator(
     override fun calculateTransitRate(baseRate: Double): Double {
         return super.calculateTransitRate(baseRate) +
                 EXPRESS_INSURANCE_PREMIUM
+    }
+    private companion object {
+        const val EXPRESS_INSURANCE_PREMIUM = 25.0
     }
 }
 

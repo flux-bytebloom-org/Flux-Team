@@ -6,8 +6,6 @@ import org.byte_bloom.flux.domain.validation.EntityPrefixes
 import org.byte_bloom.flux.domain.validator.IdValidator
 import org.byte_bloom.flux.domain.validation.ValidationResult
 
-private const val PACKAGE_ID_PREFIX = "PKG-"
-
 class DeletePackageUseCase(
     private val repository: PackageRepository,
     private val validator: IdValidator = IdValidator(EntityPrefixes.PACKAGE)

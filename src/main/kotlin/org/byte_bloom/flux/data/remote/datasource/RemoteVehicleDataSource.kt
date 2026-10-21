@@ -1,6 +1,5 @@
 package org.byte_bloom.flux.data.remote.datasource
 
-import org.byte_bloom.flux.data.remote.dto.RouteResponseDto
 import org.byte_bloom.flux.data.remote.dto.VehicleRequestDto
 import org.byte_bloom.flux.data.remote.dto.VehicleResponseDto
 

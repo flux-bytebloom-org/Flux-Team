@@ -23,7 +23,7 @@ class CleanArchitectureTest {
     }
 
     @Test
-    fun `domain layer should not import data layer or external libraries`() {
+    fun `domain layer should only import Kotlin, coroutines and domain packages`() {
         Konsist.scopeFromProduction().files.withPackage("..domain..")
             .assertFalse { file ->
                 file.imports.any { import ->isForbiddenImport(import.name) }
@@ -69,6 +69,7 @@ class CleanArchitectureTest {
     private fun isForbiddenImport(importName: String): Boolean{
         val allowedPrefixes = listOf(
             "kotlin.",
+            "kotlinx.coroutines.",
             "org.byte_bloom.flux.domain."
         )
         return allowedPrefixes.none{allowed -> importName.startsWith(allowed)}

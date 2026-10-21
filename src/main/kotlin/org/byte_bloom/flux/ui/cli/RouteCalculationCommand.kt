@@ -6,15 +6,10 @@ import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.domain.usecase.DecideRoutingWayUseCase
-import org.byte_bloom.flux.ui.utils.NetworkLoader
-import org.byte_bloom.flux.ui.utils.NetworkSnapshot
-
-private const val LOADING_MESSAGE = "Calculating route..."
-private const val ROUTE_SEPARATOR = " -> "
 
 class RouteCalculationCommand(
     private val terminal: Terminal,
-    private val networkLoader: NetworkLoader,
+    private val warehouseRepository: WarehouseRepository,
     private val decideRoutingWay: DecideRoutingWayUseCase,
     private val loadingIndicator: LoadingIndicator
 ) : CliCommand {
@@ -39,7 +34,7 @@ class RouteCalculationCommand(
         destinationId: String,
         isTripUrgent: Boolean
     ): List<Warehouse> {
-        val warehousesById = networkLoader.load().warehouses.associateBy { it.id }
+        val warehousesById = warehouseRepository.getAll().associateBy { it.id }
         val origin = warehousesById.findOrThrow(originId)
         val destination = warehousesById.findOrThrow(destinationId)
         return withContext(Dispatchers.Default) {
@@ -63,4 +58,11 @@ class RouteCalculationCommand(
         terminal.writeIndented("Urgent trips use the fastest path, others the shortest distance.")
         terminal.writeLine()
     }
+
+    private companion object {
+        const val LOADING_MESSAGE = "Calculating route..."
+        const val ROUTE_SEPARATOR = " -> "
+    }
 }
+
+

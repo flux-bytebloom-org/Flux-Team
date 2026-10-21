@@ -5,11 +5,6 @@ import org.byte_bloom.flux.domain.model.Priority
 import kotlin.math.ceil
 import kotlin.math.floor
 
-private const val URGENT_VALUE = 3
-private const val STANDARD_VALUE = 2
-private const val LOW_VALUE = 1
-private const val MIN_VALID_WEIGHT_KG = 0.0
-
 class OptimizeCargoWithKnapsackUseCase {
 
     operator fun invoke(packages: List<Package>, capacity: Double): List<Package> {
@@ -59,5 +54,12 @@ class OptimizeCargoWithKnapsackUseCase {
         Priority.URGENT -> URGENT_VALUE
         Priority.STANDARD -> STANDARD_VALUE
         Priority.LOW -> LOW_VALUE
+    }
+
+    private companion object {
+        const val URGENT_VALUE = 3
+        const val STANDARD_VALUE = 2
+        const val LOW_VALUE = 1
+        const val MIN_VALID_WEIGHT_KG = 0.0
     }
 }

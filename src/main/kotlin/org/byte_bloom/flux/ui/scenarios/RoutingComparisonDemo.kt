@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.algorithm.routing
+package org.byte_bloom.flux.ui.scenarios
 
 import org.byte_bloom.flux.domain.model.Warehouse
 import org.byte_bloom.flux.domain.usecase.FindFewestHopsRouteUseCase

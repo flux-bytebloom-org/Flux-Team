@@ -66,8 +66,6 @@ fun Warehouse.toRequestDto(): WarehouseRequestDto {
 
 // ---------- Package ----------
 
-// ---------- Package ----------
-
 fun PackageResponseDto.toDomain(warehousesById: Map<String, Warehouse>): Package? {
     val origin = warehousesById[originHubId]
     val destination = warehousesById[destinationHubId]

@@ -17,7 +17,7 @@ import org.byte_bloom.flux.domain.model.Warehouse
  * allowing it to optimize paths based on different metrics such as distance (distanceKm)
  * or time delay (typicalDelayMin) dynamically.
  *
- * See testRoutingComparison() in Main.kt for a live example using
+ * See testRoutingComparison() in RoutingComparisonDemo.kt for a live example using
  * real warehouse data where the algorithms compare routing strategies.
  */
 
@@ -25,9 +25,6 @@ enum class RoutingCriterion {
     DISTANCE,
     TIME_DELAY
 }
-
-private const val START_INDEX = 0
-private const val INITIAL_COST = 0.0
 
 class DijkstraRouter {
 
@@ -132,6 +129,11 @@ class DijkstraRouter {
         }
 
         return path
+    }
+
+    private companion object {
+        const val START_INDEX = 0
+        const val INITIAL_COST = 0.0
     }
 
 }

@@ -31,7 +31,7 @@ class DispatchVehicleUseCase(
 
         selectedPackages.forEach { pkg ->
             packageRepo.removePackageFromHub(pkg, hub)
-            hub.removePackage(pkg)//TODO must be deleted
+            hub.removePackage(pkg)
         }
 
         return DispatchedVehicle(

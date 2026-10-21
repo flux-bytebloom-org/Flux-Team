@@ -8,10 +8,6 @@ import kotlinx.coroutines.launch
 import org.byte_bloom.flux.domain.usecase.TrackActiveFleetUseCase
 import org.byte_bloom.flux.ui.utils.NetworkLoader
 import org.byte_bloom.flux.ui.utils.toDisplayLine
-
-private const val START_LABEL = "Start telemetry logs"
-private const val STOP_LABEL = "Stop telemetry logs"
-
 /**
  * Toggles live delay alerts. The stream runs in [scope] (the application scope),
  * so the menu stays usable while alerts keep printing, and closing the application
@@ -62,4 +58,10 @@ class TelemetryCommand(
         terminal.writeIndented("Choose this option again to stop.")
         terminal.writeLine()
     }
+
+    private companion object {
+        const val START_LABEL = "Start telemetry logs"
+        const val STOP_LABEL = "Stop telemetry logs"
+    }
+
 }

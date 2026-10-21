@@ -3,8 +3,6 @@ package org.byte_bloom.flux.ui.cli
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 
-private const val INPUT_CLOSED_MESSAGE = "Standard input was closed"
-
 class SystemTerminal : Terminal {
 
     override fun write(text: String) {
@@ -21,5 +19,9 @@ class SystemTerminal : Terminal {
         write(prompt)
         val line = runInterruptible(Dispatchers.IO) { readlnOrNull() }
         return line ?: error(INPUT_CLOSED_MESSAGE)
+    }
+
+    private companion object {
+        const val INPUT_CLOSED_MESSAGE = "Standard input was closed"
     }
 }
