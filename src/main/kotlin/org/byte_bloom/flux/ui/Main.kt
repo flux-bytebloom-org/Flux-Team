@@ -1,7 +1,5 @@
 package org.byte_bloom.flux.ui
 
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import org.byte_bloom.flux.domain.algorithm.pricing.decorator.ColdChainDecorator
 import org.byte_bloom.flux.domain.algorithm.pricing.decorator.ExpressInsuranceDecorator
 import org.byte_bloom.flux.domain.algorithm.pricing.decorator.FragileHandlingDecorator
@@ -10,21 +8,16 @@ import org.byte_bloom.flux.domain.model.Package
 import org.byte_bloom.flux.domain.model.Route
 import org.byte_bloom.flux.domain.model.Vehicle
 import org.byte_bloom.flux.domain.model.Warehouse
-import org.byte_bloom.flux.domain.repository.PackageRepository
-import org.byte_bloom.flux.domain.repository.VehicleRepository
-import org.byte_bloom.flux.domain.repository.WarehouseRepository
 import org.byte_bloom.flux.ui.utils.printWarehouseGraph
 import org.byte_bloom.flux.di.networkModule
 import org.byte_bloom.flux.di.repositoryModule
 import org.byte_bloom.flux.di.useCaseModule
 import org.byte_bloom.flux.di.validatorModule
-import org.byte_bloom.flux.domain.algorithm.routing.testRoutingComparison
-import org.byte_bloom.flux.domain.algorithm.routing.benchmarkRouters
-import org.byte_bloom.flux.domain.algorithm.routing.testRoutingComparison
+import org.byte_bloom.flux.ui.scenarios.testRoutingComparison
+import org.byte_bloom.flux.ui.scenarios.benchmarkRouters
 import org.byte_bloom.flux.domain.model.Priority
 import org.byte_bloom.flux.domain.model.RegionalZone
 import org.byte_bloom.flux.domain.request.GreedyDispatchRequest
-import org.byte_bloom.flux.domain.repository.RouteRepository
 import org.byte_bloom.flux.domain.request.PackageUpdateRequest
 import org.byte_bloom.flux.domain.request.RouteUpdateRequest
 import org.byte_bloom.flux.domain.request.VehicleUpdateRequest
@@ -47,15 +40,11 @@ import org.byte_bloom.flux.domain.usecase.crud.warehouse.CreateWarehouseUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.DeleteWarehouseUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.GetWarehouseByIdUseCase
 import org.byte_bloom.flux.domain.usecase.crud.warehouse.UpdateWarehouseUseCase
-import org.byte_bloom.flux.ui.scenarios.runKnapsackDispatchScenario
 import org.byte_bloom.flux.ui.scenarios.runTelemetryScenario
 import org.byte_bloom.flux.ui.scenarios.testPackageCrudFlow
 import org.byte_bloom.flux.ui.scenarios.testWarehouseCrudFlow
 import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
-import org.byte_bloom.flux.ui.utils.runAllScenarios
-import org.byte_bloom.flux.ui.utils.testCommandPattern
 import org.byte_bloom.flux.ui.utils.NetworkLoader
-import org.byte_bloom.flux.ui.utils.drowPackageAssignmentRing
 import org.byte_bloom.flux.ui.utils.testGreedyFleetDispatchUseCase
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.java.KoinJavaComponent.getKoin
