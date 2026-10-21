@@ -39,6 +39,15 @@ sealed class LogisticsException(message: String, cause: Throwable? = null) : Exc
 
         class DatabaseConflictException(val reason: String, cause: Throwable? = null) :
             DataAccessException("Database conflict: $reason", cause)
+
+        class CallNotPermittedException(val retryAfterMs: Long? = null) : DataAccessException(retryAfterMs?.let {
+                    "Request rejected because the circuit breaker is OPEN. Retry after ${it}ms."
+                } ?: "Request rejected because the circuit breaker is OPEN."
+            )
+
+        class RemoteHttpException(val statusCode: Int, val reason: String) : DataAccessException(
+            "Remote HTTP error $statusCode: $reason"
+        )
     }
 
 
