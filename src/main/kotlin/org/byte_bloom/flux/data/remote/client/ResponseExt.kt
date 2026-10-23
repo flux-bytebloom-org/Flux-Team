@@ -7,8 +7,9 @@ import org.byte_bloom.flux.domain.exception.LogisticsException
 
 internal suspend fun HttpResponse.requireSuccess(): HttpResponse {
     if (!status.isSuccess()) {
-        throw LogisticsException.DataAccessException.DatabaseConflictException(
-            "HTTP ${status.value}: ${bodyAsText()}"
+        throw LogisticsException.DataAccessException.RemoteHttpException(
+            statusCode = status.value,
+            reason = bodyAsText()
         )
     }
     return this
