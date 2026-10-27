@@ -10,6 +10,7 @@ import org.byte_bloom.flux.data.remote.datasource.impl.SupabasePackageDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseRouteDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseVehicleDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseWarehouseDataSource
+import org.byte_bloom.flux.domain.algorithm.circuitbreaker.CircuitBreaker
 import org.koin.dsl.module
 
 val networkModule = module {
@@ -41,4 +42,6 @@ val networkModule = module {
             client = get()
         )
     }
+
+    single<CircuitBreaker> { CircuitBreaker() }
 }
