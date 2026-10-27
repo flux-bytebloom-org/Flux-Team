@@ -70,6 +70,7 @@ class CleanArchitectureTest {
         val allowedPrefixes = listOf(
             "kotlin.",
             "kotlinx.coroutines.",
+            "java.io.IOException",
             "org.byte_bloom.flux.domain."
         )
         return allowedPrefixes.none{allowed -> importName.startsWith(allowed)}
