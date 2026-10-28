@@ -8,6 +8,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import com.google.common.truth.Truth.assertThat
+import org.byte_bloom.flux.data.remote.resilience.circuitbreaker.CircuitBreaker
+import org.byte_bloom.flux.data.remote.resilience.NanoClock
 import org.byte_bloom.flux.domain.exception.LogisticsException.DataAccessException.CallNotPermittedException
 import org.byte_bloom.flux.domain.exception.LogisticsException.DataAccessException.RemoteHttpException
 import org.junit.jupiter.api.Test

@@ -1,11 +1,11 @@
-package org.byte_bloom.flux.domain.algorithm.circuitbreaker
+package org.byte_bloom.flux.data.remote.resilience.circuitbreaker
 
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import org.byte_bloom.flux.domain.algorithm.circuitbreaker.NanoClock
-import org.byte_bloom.flux.domain.algorithm.circuitbreaker.SystemNanoClock
+import org.byte_bloom.flux.data.remote.resilience.NanoClock
+import org.byte_bloom.flux.data.remote.resilience.SystemNanoClock
 import org.byte_bloom.flux.domain.exception.LogisticsException.DataAccessException.CallNotPermittedException
 import org.byte_bloom.flux.domain.exception.isTransient
 

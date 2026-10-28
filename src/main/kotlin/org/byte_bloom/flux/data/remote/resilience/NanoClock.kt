@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.domain.algorithm.circuitbreaker
+package org.byte_bloom.flux.data.remote.resilience
 
 fun interface NanoClock {
     fun nanoTime(): Long
