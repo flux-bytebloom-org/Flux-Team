@@ -15,6 +15,8 @@ import org.byte_bloom.flux.data.remote.middleware.ResiliencePipeline
 import org.byte_bloom.flux.data.remote.middleware.RetryMiddleware
 import org.byte_bloom.flux.data.remote.resilience.circuitbreaker.CircuitBreaker
 import org.koin.dsl.module
+import org.byte_bloom.flux.data.remote.resilience.ratelimit.RateLimiter
+import org.byte_bloom.flux.data.remote.middleware.RateLimiterMiddleware
 
 val networkModule = module {
 
@@ -45,6 +47,24 @@ val networkModule = module {
             listOf(
                 RetryMiddleware(),
                 CircuitBreakerMiddleware(get())
+            )
+        )
+    }
+
+    single<RateLimiter> {
+        RateLimiter(
+            maxBucketCapacity = 10,
+            refillRatePerSecond = 5.0
+        )
+    }
+
+
+    single {
+        ResiliencePipeline(
+            listOf(
+
+                CircuitBreakerMiddleware(get()) ,
+                RateLimiterMiddleware(get())
             )
         )
     }
