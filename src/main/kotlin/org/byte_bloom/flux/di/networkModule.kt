@@ -12,6 +12,7 @@ import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseVehicleDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseWarehouseDataSource
 import org.byte_bloom.flux.data.remote.middleware.CircuitBreakerMiddleware
 import org.byte_bloom.flux.data.remote.middleware.ResiliencePipeline
+import org.byte_bloom.flux.data.remote.middleware.RetryMiddleware
 import org.byte_bloom.flux.data.remote.resilience.circuitbreaker.CircuitBreaker
 import org.koin.dsl.module
 
@@ -42,6 +43,7 @@ val networkModule = module {
     single {
         ResiliencePipeline(
             listOf(
+                RetryMiddleware(),
                 CircuitBreakerMiddleware(get())
             )
         )
