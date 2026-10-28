@@ -71,7 +71,9 @@ val useCaseModule = module {
     factory { RemovePackageFromQueueUseCase(get()) }
     factory { ReroutePackageUseCase(get()) }
     factory { SplitAndRerouteShipmentsUseCase(get()) }
-    factory { OptimizeCargoWithKnapsackUseCase() }
+    factory { OptimizeCargoWithKnapsackUseCase()}
+    factory { OptimizeCargoWithWeightAndVolumeUseCase()}
+
 
     // ===== Vehicle/Package Matching =====
     factory { FindSmallestFitVehicleUseCase() }
