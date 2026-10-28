@@ -7,7 +7,8 @@ data class Package(
     val weight: Double?,
     val originHub: Warehouse,
     val destinationHub: Warehouse,
-    val priority: Priority
+    val priority: Priority,
+    val volumeM3: Double = 0.0
 ) : PackageComponent {
 
     override fun getDescription(): String {
@@ -18,4 +19,3 @@ data class Package(
         return baseRate
     }
 }
-

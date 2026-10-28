@@ -4,6 +4,6 @@ data class Vehicle(
     val id: String,
     val currentHub: Warehouse,
     val maxCapacityKg: Double,
-    val costPerKm: Double
+    val costPerKm: Double,
+    val maxVolumeM3: Double = 0.0
 )
-
