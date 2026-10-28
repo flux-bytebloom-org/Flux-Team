@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.data.remote.ratelimit
+package org.byte_bloom.flux.data.remote.resilience.ratelimit
 
 import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicInteger

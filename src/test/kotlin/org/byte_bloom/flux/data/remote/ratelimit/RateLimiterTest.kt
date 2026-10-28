@@ -1,7 +1,7 @@
 package org.byte_bloom.flux.data.remote.ratelimit
 
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.byte_bloom.flux.data.remote.resilience.ratelimit.RateLimiter
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
