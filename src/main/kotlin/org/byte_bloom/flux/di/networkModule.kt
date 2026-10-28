@@ -11,6 +11,7 @@ import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseRouteDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseVehicleDataSource
 import org.byte_bloom.flux.data.remote.datasource.impl.SupabaseWarehouseDataSource
 import org.koin.dsl.module
+import org.byte_bloom.flux.data.remote.ratelimit.RateLimiter
 
 val networkModule = module {
 
@@ -39,6 +40,13 @@ val networkModule = module {
     single<RemoteWarehouseDataSource> {
         SupabaseWarehouseDataSource(
             client = get()
+        )
+    }
+
+    single<RateLimiter> {
+        RateLimiter(
+            maxBucketCapacity = 10,
+            refillRatePerSecond = 5.0
         )
     }
 }
