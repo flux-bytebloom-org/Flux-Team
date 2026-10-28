@@ -1,6 +1,9 @@
 package org.byte_bloom.flux.data.remote.retry
 
 import kotlinx.coroutines.test.runTest
+import org.byte_bloom.flux.data.remote.resilience.retry.retrySuspendWithBackoffInternal
+import org.byte_bloom.flux.data.remote.resilience.retry.retryWithBackoff
+import org.byte_bloom.flux.data.remote.resilience.retry.retryWithBackoffInternal
 import org.byte_bloom.flux.domain.exception.LogisticsException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows

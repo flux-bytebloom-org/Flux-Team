@@ -1,4 +1,4 @@
-package org.byte_bloom.flux.data.remote.retry
+package org.byte_bloom.flux.data.remote.resilience.retry
 
 import kotlinx.coroutines.delay
 import org.byte_bloom.flux.domain.exception.isTransient

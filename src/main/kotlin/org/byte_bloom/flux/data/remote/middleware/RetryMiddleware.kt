@@ -1,6 +1,6 @@
 package org.byte_bloom.flux.data.remote.middleware
 
-import org.byte_bloom.flux.data.remote.retry.retrySuspendWithBackoff
+import org.byte_bloom.flux.data.remote.resilience.retry.retrySuspendWithBackoff
 
 class RetryMiddleware : ResilienceMiddleware {
 
