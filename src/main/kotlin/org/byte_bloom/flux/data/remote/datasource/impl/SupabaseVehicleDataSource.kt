@@ -11,45 +11,62 @@ import org.byte_bloom.flux.data.remote.client.requireSuccess
 import org.byte_bloom.flux.data.remote.datasource.RemoteVehicleDataSource
 import org.byte_bloom.flux.data.remote.dto.VehicleRequestDto
 import org.byte_bloom.flux.data.remote.dto.VehicleResponseDto
+import org.byte_bloom.flux.data.remote.middleware.ResiliencePipeline
 
 class SupabaseVehicleDataSource(
-    private val client: HttpClient = SupabaseHttpClient.client
+    private val client: HttpClient = SupabaseHttpClient.client,
+    private val pipeline: ResiliencePipeline
 ) : RemoteVehicleDataSource {
 
     private val table = "vehicles"
 
-    override suspend fun getAll(): List<VehicleResponseDto> = withContext(Dispatchers.IO) {
-        client.get(table).requireSuccess().body()
-    }
+    override suspend fun getAll(): List<VehicleResponseDto> =
+        pipeline.execute {
+            withContext(Dispatchers.IO) {
+                client.get(table).requireSuccess().body()
+            }
+        }
 
-    override suspend fun getById(id: String): VehicleResponseDto? = withContext(Dispatchers.IO) {
-        client.get(table) { url { parameters.append("id", "eq.$id") } }
-            .requireSuccess()
-            .body<List<VehicleResponseDto>>().firstOrNull()
-    }
+    override suspend fun getById(id: String): VehicleResponseDto? =
+        pipeline.execute {
+            withContext(Dispatchers.IO) {
+                client.get(table) { url { parameters.append("id", "eq.$id") } }
+                    .requireSuccess()
+                    .body<List<VehicleResponseDto>>().firstOrNull()
+            }
+        }
 
-    override suspend fun create(dto: VehicleRequestDto): VehicleResponseDto = withContext(Dispatchers.IO) {
-        client.post(table) {
-            header("Prefer", "return=representation")
-            contentType(ContentType.Application.Json)
-            setBody(dto)
-        }.requireSuccess().body<List<VehicleResponseDto>>().first()
-    }
+    override suspend fun create(dto: VehicleRequestDto): VehicleResponseDto =
+        pipeline.execute {
+            withContext(Dispatchers.IO) {
+                client.post(table) {
+                    header("Prefer", "return=representation")
+                    contentType(ContentType.Application.Json)
+                    setBody(dto)
+                }.requireSuccess().body<List<VehicleResponseDto>>().first()
+            }
+        }
 
-    override suspend fun update(id: String, dto: VehicleRequestDto): VehicleResponseDto = withContext(Dispatchers.IO) {
-        client.patch(table) {
-            url { parameters.append("id", "eq.$id") }
-            header("Prefer", "return=representation")
-            contentType(ContentType.Application.Json)
-            setBody(dto)
-        }.requireSuccess().body<List<VehicleResponseDto>>().first()
-    }
+    override suspend fun update(id: String, dto: VehicleRequestDto): VehicleResponseDto =
+        pipeline.execute {
+            withContext(Dispatchers.IO) {
+                client.patch(table) {
+                    url { parameters.append("id", "eq.$id") }
+                    header("Prefer", "return=representation")
+                    contentType(ContentType.Application.Json)
+                    setBody(dto)
+                }.requireSuccess().body<List<VehicleResponseDto>>().first()
+            }
+        }
 
-    override suspend fun delete(id: String): VehicleResponseDto? = withContext(Dispatchers.IO) {
-        client.delete(table) {
-            url { parameters.append("id", "eq.$id") }
-            header("Prefer", "return=representation")
-        }.requireSuccess().body<List<VehicleResponseDto>>().firstOrNull()
-    }
+    override suspend fun delete(id: String): VehicleResponseDto? =
+        pipeline.execute {
+            withContext(Dispatchers.IO) {
+                client.delete(table) {
+                    url { parameters.append("id", "eq.$id") }
+                    header("Prefer", "return=representation")
+                }.requireSuccess().body<List<VehicleResponseDto>>().firstOrNull()
+            }
+        }
 
 }
